@@ -9,7 +9,7 @@ $details = $details ?? null;
 $homeUrl = $homeUrl ?? '/';
 $accent  = $accent ?? '#60a5fa'; // default blue
 
-$isDebug = !empty($_ENV['APP_DEBUG']) && $_ENV['APP_DEBUG'] === 'true';
+$isDebug = !empty(env('APP_DEBUG')) && env('APP_DEBUG') === 'true';
 ?>
 <!doctype html>
 <html lang="en">

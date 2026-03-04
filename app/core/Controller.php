@@ -2,12 +2,42 @@
 
 class Controller
 {
+    protected Router $router;
+
+    public function __construct(Router $router)
+    {
+        $this->router = $router;
+    }
+
     /* =========================
        MODELS
        ========================= */
     protected function model(string $model)
     {
-        require_once "app/models/{$model}.php";
+        $modelFile = "app/models/{$model}.php";
+
+        if (!file_exists($modelFile)) {
+            $this->router->renderError(
+                404,
+                'Not Found',
+                'The requested resource could not be found.',
+                "Model file not found: {$modelFile}"
+            );
+            return null;
+        }
+
+        require_once $modelFile;
+
+        if (!class_exists($model)) {
+            $this->router->renderError(
+                500,
+                'Server Error',
+                'A server configuration error occurred.',
+                "Model class not found: {$model}"
+            );
+            return null;
+        }
+
         return new $model();
     }
 
@@ -19,8 +49,12 @@ class Controller
         $viewFile = "app/views/{$view}.php";
 
         if (!file_exists($viewFile)) {
-            http_response_code(500);
-            echo "View not found: {$viewFile}";
+            $this->router->renderError(
+                404,
+                'Not Found',
+                'The requested resource could not be found.',
+                "View not found: {$viewFile}"
+            );
             return;
         }
 

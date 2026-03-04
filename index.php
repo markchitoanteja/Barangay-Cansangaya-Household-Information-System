@@ -1,24 +1,43 @@
 <?php
-date_default_timezone_set('Asia/Manila');
 
+date_default_timezone_set('Asia/Manila');
 session_start();
 
-require_once 'app/core/Router.php';
-require_once 'app/bootstrap/autoload.php';
+/**
+ * Register error handler FIRST so it can catch autoload/bootstrap errors too.
+ */
+require_once __DIR__ . '/app/core/ErrorHandler.php';
+ErrorHandler::register();
+
+/**
+ * Load autoload + core router + helpers
+ */
+require_once __DIR__ . '/app/bootstrap/autoload.php';
+require_once __DIR__ . '/app/core/Router.php';
 
 helpers();
 
-// Resolve request path
-$uri  = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-$base = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/\\');
+/**
+ * Resolve request path (supports subfolder installs like /myproject)
+ */
+$uri  = $_SERVER['REQUEST_URI'] ?? '/';
+$path = parse_url($uri, PHP_URL_PATH) ?? '/';
 
-if ($base !== '' && $base !== '/' && str_starts_with($uri, $base)) {
-    $uri = substr($uri, strlen($base));
+$scriptDir = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '')), '/');
+if ($scriptDir !== '' && $scriptDir !== '/') {
+    // Remove base folder prefix if present
+    if (strpos($path, $scriptDir) === 0) {
+        $path = substr($path, strlen($scriptDir));
+    }
 }
 
-$path = '/' . ltrim($uri, '/');   // always starts with "/"
-if ($path === '//') $path = '/';
+$path = '/' . ltrim($path, '/');
+if ($path === '//') {
+    $path = '/';
+}
 
-// Dispatch request
+/**
+ * Dispatch request
+ */
 $router = new Router();
 $router->dispatch($path);

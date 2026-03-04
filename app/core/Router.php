@@ -115,7 +115,8 @@ class Router
             return;
         }
 
-        $controller = new $controllerName();
+        // ✅ FIX: pass Router instance into Controller constructor
+        $controller = new $controllerName($this);
 
         if (!method_exists($controller, $method)) {
             $this->renderError(404, 'Not Found', 'The page you requested could not be found.', "Missing method: {$controllerName}::{$method}");
@@ -162,7 +163,8 @@ class Router
                 return true;
             }
 
-            $controller = new $controllerName();
+            // ✅ FIX: pass Router instance into Controller constructor
+            $controller = new $controllerName($this);
 
             if (!method_exists($controller, $method)) {
                 $this->renderError(500, 'Server Error', 'Route points to missing controller method.', "Missing method: {$controllerName}::{$method}");
@@ -181,7 +183,7 @@ class Router
         return false;
     }
 
-    private function renderError(int $code, string $title, string $message, ?string $details = null): void
+    public function renderError(int $code, string $title, string $message, ?string $details = null): void
     {
         http_response_code($code);
 

@@ -7,5 +7,5 @@ return function (Router $router) {
 
     // Auth routes
     $router->get('/login', 'LoginController@index');
-    $router->post('/login', 'LoginController@login');
+    $router->post('/authenticate', 'LoginController@authenticate');
 };

@@ -93,6 +93,10 @@ body {
     border: 1px solid #eee;
 }
 
+.alert-section {
+    width: 420px;
+}
+
 .login-title {
     font-weight: 800;
     margin-bottom: 5px;
