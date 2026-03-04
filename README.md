@@ -86,27 +86,27 @@ and administrative data** through a centralized web interface.
 1.  **Clone the repository**
 
 ``` bash
-git clone https://github.com/yourusername/barangay-household-system.git
+git clone https://github.com/markchitoanteja/Barangay-Cansangaya-Household-Information-System.git
 ```
 
 2.  **Navigate to the project**
 
 ``` bash
-cd barangay-household-system
+cd Barangay-Cansangaya-Household-Information-System
 ```
 
 3.  **Create `.env` file**
 
 Example configuration:
 
-    APP_NAME=Barangay Cansangaya Household Information System
-    APP_VERSION=1.0.0
-
     DB_HOST=127.0.0.1
+    DB_NAME=bchis
     DB_USER=root
     DB_PASS=
-    DB_NAME=cansangaya_db
     DB_CHARSET=utf8mb4
+
+    APP_DEBUG=true
+    APP_VERSION=1.0.1
 
 4.  **Start your local server**
 
@@ -165,4 +165,10 @@ efficiency through a centralized web-based system.
 
 ## 👨‍💻 Developer
 
-Developed for an **Information Technology Capstone Project**.
+Developed by **Mark Chito Anteja**
+
+[![Facebook](https://img.shields.io/badge/Facebook-Mark%20Chito%20Anteja-1877F2?style=for-the-badge&logo=facebook&logoColor=white)](https://www.facebook.com/markchito/)
+
+[![GitHub](https://img.shields.io/badge/GitHub-markchito-181717?style=for-the-badge&logo=github)](https://github.com/markchitoanteja)
+
+[![Email](https://img.shields.io/badge/Email-contact-red?style=for-the-badge&logo=gmail&logoColor=white)](mailto:00anteja23@gmail.com)
