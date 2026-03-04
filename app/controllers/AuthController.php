@@ -3,7 +3,7 @@
 require_once 'app/core/Controller.php';
 require_once 'app/core/Database.php';
 
-class LoginController extends Controller
+class AuthController extends Controller
 {
     protected $response;
 
@@ -39,10 +39,8 @@ class LoginController extends Controller
 
         if (!empty($user) && password_verify($password, $user['password_hash'])) {
 
-            // session_set('is_login', true);
-            session_set('user_id', $user['id']);
-            session_set('username', $user['username']);
-            session_set('role', $user['role']);
+            session_set('is_login', true);
+            session_set('user', $user);
 
             if ($remember) {
                 session_set('remember_me', true);
@@ -53,5 +51,22 @@ class LoginController extends Controller
         }
 
         return json($response);
+    }
+
+    public function logout()
+    {
+        session_remove('is_login');
+        session_remove('user');
+
+        flash('login_notif', [
+            'title' => 'Logged out',
+            'text' => 'Logged out successfully.',
+            'icon' => 'success',
+        ]);
+
+        return json([
+            'success' => true,
+            'message' => 'Logged out successfully.',
+        ]);
     }
 }

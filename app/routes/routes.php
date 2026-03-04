@@ -6,6 +6,10 @@ return function (Router $router) {
     $router->get('/', 'HomeController@index');
 
     // Auth routes
-    $router->get('/login', 'LoginController@index');
-    $router->post('/authenticate', 'LoginController@authenticate');
+    $router->get('/login', 'AuthController@index');
+    $router->post('/authenticate', 'AuthController@authenticate');
+    $router->post('/logout', 'AuthController@logout');
+
+    // Admin routes
+    $router->get('/dashboard', 'AdminController@dashboard');
 };

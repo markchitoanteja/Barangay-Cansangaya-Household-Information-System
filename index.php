@@ -1,43 +1,57 @@
 <?php
 
+define('BASE_PATH', __DIR__);
+ob_start();
+
 date_default_timezone_set('Asia/Manila');
 session_start();
 
-/**
- * Register error handler FIRST so it can catch autoload/bootstrap errors too.
- */
 require_once __DIR__ . '/app/core/ErrorHandler.php';
-ErrorHandler::register();
+ErrorHandler::register(); // early fallback
 
-/**
- * Load autoload + core router + helpers
- */
 require_once __DIR__ . '/app/bootstrap/autoload.php';
 require_once __DIR__ . '/app/core/Router.php';
 
+// Make sure the exception class is loaded.
+// If your autoload.php already loads it, you can remove this require_once.
+require_once __DIR__ . '/app/exceptions/DatabaseConnectionException.php';
+
 helpers();
 
-/**
- * Resolve request path (supports subfolder installs like /myproject)
- */
 $uri  = $_SERVER['REQUEST_URI'] ?? '/';
 $path = parse_url($uri, PHP_URL_PATH) ?? '/';
 
 $scriptDir = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '')), '/');
 if ($scriptDir !== '' && $scriptDir !== '/') {
-    // Remove base folder prefix if present
     if (strpos($path, $scriptDir) === 0) {
         $path = substr($path, strlen($scriptDir));
     }
 }
 
 $path = '/' . ltrim($path, '/');
-if ($path === '//') {
-    $path = '/';
-}
+if ($path === '//') $path = '/';
 
-/**
- * Dispatch request
- */
 $router = new Router();
-$router->dispatch($path);
+
+try {
+
+    // Force DB connection early if you want DB errors immediately.
+    // (If you don't need early connection, you can remove this and let controllers hit DB when needed.)
+    Database::pdo();
+
+    $router->dispatch($path);
+} catch (DatabaseConnectionException $e) {
+
+    // Uses your adapted Router::renderError() logic inside the exception
+    $e->render();
+} catch (Throwable $e) {
+
+    // Any other unexpected error -> your standard error page
+    $router->renderError(
+        500,
+        'Server Error',
+        'Something went wrong while processing your request.',
+        $e->getMessage() . " in {$e->getFile()}:{$e->getLine()}"
+    );
+    exit;
+}

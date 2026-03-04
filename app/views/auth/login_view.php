@@ -156,7 +156,7 @@
     </div>
 
     <script>
-        const flashData = <?= json_encode(get_flash('login_success', null)) ?>;
+        const flashData = <?= json_encode(get_flash('login_notif', null)) ?>;
     </script>
 
     <!-- jQuery -->

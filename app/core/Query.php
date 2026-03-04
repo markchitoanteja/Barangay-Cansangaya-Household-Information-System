@@ -11,7 +11,7 @@ final class Query
      */
     public static function table(string $table): QueryBuilder
     {
-        return new QueryBuilder(DB::pdo(), $table);
+        return new QueryBuilder(Database::pdo(), $table);
     }
 }
 

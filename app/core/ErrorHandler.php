@@ -4,10 +4,16 @@ class ErrorHandler
 {
     private static bool $handling = false;
 
-    public static function register(): void
+    /** @var callable|null */
+    private static $renderer = null;
+
+    public static function register(?callable $renderer = null): void
     {
+        self::$renderer = $renderer;
+
         error_reporting(E_ALL);
         ini_set('display_errors', '0');
+        ini_set('log_errors', '1');
 
         set_exception_handler([self::class, 'handleException']);
         set_error_handler([self::class, 'handleError']);
@@ -16,7 +22,6 @@ class ErrorHandler
 
     public static function handleException(Throwable $e): void
     {
-        // Prevent recursion if logging triggers warnings
         if (!self::$handling) {
             self::$handling = true;
             self::logThrowable($e);
@@ -26,22 +31,33 @@ class ErrorHandler
             http_response_code(500);
         }
 
-        // You can keep your HTML 500 page if you want, but DO NOT skip logging.
-        echo "An unexpected error occurred.";
+        // prevent partial output from breaking your HTML error page
+        while (ob_get_level() > 0) {
+            @ob_end_clean();
+        }
+
+        // GUI render if available
+        if (is_callable(self::$renderer)) {
+            try {
+                call_user_func(self::$renderer, $e);
+            } catch (Throwable $renderFail) {
+                // fallback
+                echo "An unexpected error occurred.";
+            }
+        } else {
+            echo "An unexpected error occurred.";
+        }
+
         exit;
     }
 
     public static function handleError(int $severity, string $message, string $file, int $line): bool
     {
-        // Respect @ suppression
         if (!(error_reporting() & $severity)) {
             return true;
         }
 
-        // ✅ GUARANTEE LOGGING even for warnings/notices (like undefined array key)
         self::writeLogSafe(self::formatPhpError($severity, $message, $file, $line));
-
-        // Convert to exception so normal flow stops
         throw new ErrorException($message, 0, $severity, $file, $line);
     }
 
@@ -60,7 +76,35 @@ class ErrorHandler
             . PHP_EOL;
 
         self::writeLogSafe($msg);
+
+        if (!headers_sent()) {
+            http_response_code(500);
+        }
+
+        while (ob_get_level() > 0) {
+            @ob_end_clean();
+        }
+
+        if (is_callable(self::$renderer)) {
+            try {
+                call_user_func(self::$renderer, new ErrorException(
+                    $error['message'],
+                    0,
+                    $error['type'],
+                    $error['file'],
+                    $error['line']
+                ));
+            } catch (Throwable $renderFail) {
+                echo "A fatal error occurred.";
+            }
+        } else {
+            echo "A fatal error occurred.";
+        }
+
+        exit;
     }
+
+    // ---------------- your existing helpers below ----------------
 
     private static function logThrowable(Throwable $e): void
     {
@@ -111,20 +155,16 @@ class ErrorHandler
         $logFile = self::logFilePath();
         $logDir  = dirname($logFile);
 
-        // disable handler during logging to avoid recursion
-        $prev = set_error_handler(function () {
-            return true;
-        });
+        $prev = set_error_handler(fn() => true);
 
         try {
             if (!is_dir($logDir)) {
                 @mkdir($logDir, 0777, true);
             }
 
-            $ok = @file_put_contents($logFile, $msg, FILE_APPEND);
+            $ok = @file_put_contents($logFile, $msg, FILE_APPEND | LOCK_EX);
 
             if ($ok === false) {
-                // fallback to php error log
                 error_log("ErrorHandler: failed to write to $logFile");
                 error_log($msg);
             }
@@ -139,8 +179,7 @@ class ErrorHandler
 
     private static function logFilePath(): string
     {
-        // project_root/logs/error.log
-        $root = dirname(__DIR__, 2);
+        $root = defined('BASE_PATH') ? BASE_PATH : dirname(__DIR__, 3);
         return $root . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR . 'error.log';
     }
 }

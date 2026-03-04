@@ -49,16 +49,36 @@ class Controller
         $viewFile = "app/views/{$view}.php";
 
         if (!file_exists($viewFile)) {
-            $this->router->renderError(
-                404,
-                'Not Found',
-                'The requested resource could not be found.',
-                "View not found: {$viewFile}"
-            );
-            return;
+            $this->router->renderError(404, 'Not Found', 'The requested resource could not be found.', "View not found: {$viewFile}");
+            exit;
         }
 
         extract($data, EXTR_SKIP);
-        require $viewFile;
+
+        ob_start();
+
+        $prevHandler = set_error_handler(function ($severity, $msg, $file, $line) {
+            if (!(error_reporting() & $severity)) {
+                return false;
+            }
+            throw new ErrorException($msg, 0, $severity, $file, $line);
+        });
+
+        try {
+            require $viewFile;
+            restore_error_handler();
+            ob_end_flush();
+        } catch (Throwable $e) {
+            restore_error_handler();
+            ob_end_clean();
+
+            $this->router->renderError(
+                500,
+                'Server Error',
+                'A view rendering error occurred.',
+                $e->getMessage() . " in {$e->getFile()}:{$e->getLine()}"
+            );
+            exit;
+        }
     }
 }
