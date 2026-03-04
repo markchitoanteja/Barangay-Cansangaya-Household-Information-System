@@ -78,8 +78,12 @@ if (!function_exists('session_destroy_all')) {
 */
 
 if (!function_exists('flash')) {
-    function flash(string $key, string $value): void
+    function flash(string $key, mixed $value): void
     {
+        if (!isset($_SESSION['_flash'])) {
+            $_SESSION['_flash'] = [];
+        }
+
         $_SESSION['_flash'][$key] = $value;
     }
 }
@@ -94,11 +98,13 @@ if (!function_exists('flash')) {
 if (!function_exists('get_flash')) {
     function get_flash(string $key, mixed $default = null): mixed
     {
+        if (!isset($_SESSION['_flash'])) {
+            return $default;
+        }
+
         $value = $_SESSION['_flash'][$key] ?? $default;
 
-        if (isset($_SESSION['_flash'][$key])) {
-            unset($_SESSION['_flash'][$key]);
-        }
+        unset($_SESSION['_flash'][$key]);
 
         return $value;
     }

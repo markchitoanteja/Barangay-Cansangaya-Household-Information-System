@@ -2,15 +2,11 @@
 
 class ErrorHandler
 {
-    /**
-     * Register all handlers.
-     */
+    private static bool $handling = false;
+
     public static function register(): void
     {
-        // Report everything so the handler can catch it
         error_reporting(E_ALL);
-
-        // Do not display errors to users (log instead)
         ini_set('display_errors', '0');
 
         set_exception_handler([self::class, 'handleException']);
@@ -18,104 +14,74 @@ class ErrorHandler
         register_shutdown_function([self::class, 'handleShutdown']);
     }
 
-    /**
-     * Handles uncaught exceptions/throwables.
-     */
     public static function handleException(Throwable $e): void
     {
-        self::logThrowable($e);
+        // Prevent recursion if logging triggers warnings
+        if (!self::$handling) {
+            self::$handling = true;
+            self::logThrowable($e);
+        }
 
-        // If headers not sent, set 500
         if (!headers_sent()) {
             http_response_code(500);
         }
 
-        // Keep response simple (you can replace with a view)
+        // You can keep your HTML 500 page if you want, but DO NOT skip logging.
         echo "An unexpected error occurred.";
-
         exit;
     }
 
-    /**
-     * Converts PHP errors into ErrorException so they flow into handleException().
-     *
-     * Return true to tell PHP we handled the error.
-     */
     public static function handleError(int $severity, string $message, string $file, int $line): bool
     {
-        // Respect @ operator (suppressed errors)
+        // Respect @ suppression
         if (!(error_reporting() & $severity)) {
             return true;
         }
 
+        // ✅ GUARANTEE LOGGING even for warnings/notices (like undefined array key)
+        self::writeLogSafe(self::formatPhpError($severity, $message, $file, $line));
+
+        // Convert to exception so normal flow stops
         throw new ErrorException($message, 0, $severity, $file, $line);
     }
 
-    /**
-     * Catches fatal errors on shutdown (E_ERROR, E_PARSE, etc.).
-     */
     public static function handleShutdown(): void
     {
         $error = error_get_last();
+        if ($error === null) return;
 
-        if ($error === null) {
-            return;
-        }
-
-        // Only log fatal errors here
         $fatalTypes = [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR];
+        if (!in_array($error['type'], $fatalTypes, true)) return;
 
-        if (!in_array($error['type'], $fatalTypes, true)) {
-            return;
-        }
-
-        $message = "[" . date('Y-m-d H:i:s') . "] "
-            . self::friendlyErrorType($error['type']) . ": "
-            . $error['message']
+        $msg = "[" . date('Y-m-d H:i:s') . "] "
+            . "FATAL(" . $error['type'] . "): " . $error['message']
             . " | File: " . $error['file']
             . " | Line: " . $error['line']
-            . PHP_EOL . PHP_EOL;
+            . PHP_EOL;
 
-        self::writeLog($message);
-
-        // If possible, respond with 500
-        if (!headers_sent()) {
-            http_response_code(500);
-        }
-
-        echo "An unexpected error occurred.";
+        self::writeLogSafe($msg);
     }
 
-    /**
-     * Logs any Throwable with stack trace.
-     */
     private static function logThrowable(Throwable $e): void
     {
-        $message = "[" . date('Y-m-d H:i:s') . "] "
+        $msg = "[" . date('Y-m-d H:i:s') . "] "
             . get_class($e) . ": " . $e->getMessage()
             . " | File: " . $e->getFile()
             . " | Line: " . $e->getLine()
             . PHP_EOL
             . $e->getTraceAsString()
-            . PHP_EOL . PHP_EOL;
+            . PHP_EOL;
 
-        self::writeLog($message);
+        self::writeLogSafe($msg);
     }
 
-    /**
-     * Writes to /logs/error.log in project root.
-     */
-    private static function writeLog(string $message): void
+    private static function formatPhpError(int $severity, string $message, string $file, int $line): string
     {
-        // app/core -> app -> project_root
-        $rootDir = dirname(__DIR__, 2);
-        $logDir  = $rootDir . DIRECTORY_SEPARATOR . "logs";
-
-        if (!is_dir($logDir)) {
-            mkdir($logDir, 0777, true);
-        }
-
-        file_put_contents($logDir . DIRECTORY_SEPARATOR . "error.log", $message, FILE_APPEND);
+        return "[" . date('Y-m-d H:i:s') . "] "
+            . self::friendlyErrorType($severity) . ": " . $message
+            . " | File: " . $file
+            . " | Line: " . $line
+            . PHP_EOL;
     }
 
     private static function friendlyErrorType(int $type): string
@@ -138,5 +104,43 @@ class ErrorHandler
             E_USER_DEPRECATED => 'E_USER_DEPRECATED',
             default => 'E_UNKNOWN',
         };
+    }
+
+    private static function writeLogSafe(string $msg): void
+    {
+        $logFile = self::logFilePath();
+        $logDir  = dirname($logFile);
+
+        // disable handler during logging to avoid recursion
+        $prev = set_error_handler(function () {
+            return true;
+        });
+
+        try {
+            if (!is_dir($logDir)) {
+                @mkdir($logDir, 0777, true);
+            }
+
+            $ok = @file_put_contents($logFile, $msg, FILE_APPEND);
+
+            if ($ok === false) {
+                // fallback to php error log
+                error_log("ErrorHandler: failed to write to $logFile");
+                error_log($msg);
+            }
+        } finally {
+            if ($prev !== null) {
+                set_error_handler($prev);
+            } else {
+                restore_error_handler();
+            }
+        }
+    }
+
+    private static function logFilePath(): string
+    {
+        // project_root/logs/error.log
+        $root = dirname(__DIR__, 2);
+        return $root . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR . 'error.log';
     }
 }
