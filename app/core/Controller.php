@@ -12,6 +12,10 @@ class Controller
     /* =========================
        MODELS
        ========================= */
+    /**
+     * @param string $model
+     * @return object
+     */
     protected function model(string $model)
     {
         $modelFile = "app/models/{$model}.php";
@@ -23,7 +27,7 @@ class Controller
                 'The requested resource could not be found.',
                 "Model file not found: {$modelFile}"
             );
-            return null;
+            exit;
         }
 
         require_once $modelFile;
@@ -35,7 +39,7 @@ class Controller
                 'A server configuration error occurred.',
                 "Model class not found: {$model}"
             );
-            return null;
+            exit;
         }
 
         return new $model();

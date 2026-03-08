@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title><?= env('APP_NAME') ?> - Login</title>
+    <title><?= env('APP_NAME') ?></title>
 
     <!-- Favicon -->
     <link rel="shortcut icon" href="<?= base_url('public/assets/img/favicon.ico') ?>" type="image/x-icon">
@@ -71,12 +71,11 @@
                         <!-- ROLE SELECTOR -->
                         <div class="role-selector mb-4">
                             <div class="btn-group w-100" role="group" aria-label="Role selector">
-                                <input type="radio" class="btn-check" name="role" id="login_role_admin" value="admin" checked>
+                                <input type="radio" class="btn-check" name="role" id="login_role_admin" value="ADMIN" <?= session_get('remember_role') !== 'STAFF' ? 'checked' : '' ?>>
                                 <label class="btn btn-outline-primary" for="login_role_admin">
                                     <i class="fa-solid fa-user-shield me-1"></i> Administrator
                                 </label>
-
-                                <input type="radio" class="btn-check" name="role" id="login_role_staff" value="staff">
+                                <input type="radio" class="btn-check" name="role" id="login_role_staff" value="STAFF" <?= session_get('remember_role') === 'STAFF' ? 'checked' : '' ?>>
                                 <label class="btn btn-outline-primary" for="login_role_staff">
                                     <i class="fa-solid fa-user me-1"></i> Staff
                                 </label>
@@ -85,8 +84,7 @@
 
                         <!-- USERNAME -->
                         <div class="form-floating mb-3">
-                            <input
-                                type="text" class="form-control" id="login_username" placeholder="Username" required>
+                            <input type="text" class="form-control" id="login_username" value="<?= session_get('remember_me') ? session_get('remember_username') : '' ?>" placeholder="Username" required>
                             <label for="login_username">
                                 <i class="fa-regular fa-user me-1"></i> Username
                             </label>
@@ -94,7 +92,7 @@
 
                         <!-- PASSWORD -->
                         <div class="form-floating mb-3 position-relative">
-                            <input type="password" class="form-control" id="login_password" placeholder="Password" required>
+                            <input type="password" class="form-control" id="login_password" value="<?= session_get('remember_me') ? session_get('remember_password') : '' ?>" placeholder="Password" required>
                             <label for="login_password">
                                 <i class="fa-solid fa-lock me-1"></i> Password
                             </label>
@@ -106,7 +104,7 @@
                         <!-- OPTIONS -->
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="login_remember">
+                                <input class="form-check-input" type="checkbox" id="login_remember" <?= session_get('remember_me') ? 'checked' : '' ?>>
                                 <label class="form-check-label small" for="login_remember">Remember me</label>
                             </div>
 

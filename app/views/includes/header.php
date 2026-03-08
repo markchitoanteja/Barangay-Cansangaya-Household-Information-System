@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title><?= env('APP_NAME') ?> - <?= isset($title) ? $title : 'Unknown Page' ?></title>
+    <title><?= isset($title) ? $title : 'Unknown Page' ?> | <?= env('APP_NAME') ?></title>
 
     <!-- Favicon -->
     <link rel="shortcut icon" href="<?= base_url('public/assets/img/favicon.ico') ?>" type="image/x-icon">
@@ -34,21 +34,44 @@
 
             <div class="nav-section">System Navigation</div>
             <nav class="nav flex-column side-nav">
-                <a class="nav-link <?= ($title == 'Dashboard') ? 'active' : '' ?>" href="dashboard"><i class="fa-solid fa-gauge"></i> Dashboard</a>
-                
+
+                <!-- Accessible by ADMIN and STAFF -->
+                <a class="nav-link loadable <?= ($title == 'Dashboard') ? 'active' : '' ?>" href="dashboard">
+                    <i class="fa-solid fa-gauge"></i> Dashboard
+                </a>
+                <a class="nav-link loadable <?= ($title == 'Households') ? 'active' : '' ?>" href="households">
+                    <i class="fa-solid fa-house"></i> Households
+                </a>
+                <a class="nav-link loadable <?= ($title == 'Residents') ? 'active' : '' ?>" href="residents">
+                    <i class="fa-solid fa-users"></i> Residents
+                </a>
+                <a class="nav-link loadable <?= ($title == 'Demographics') ? 'active' : '' ?>" href="demographics">
+                    <i class="fa-solid fa-chart-column"></i> Demographics
+                </a>
+                <a class="nav-link loadable <?= ($title == 'Housing & Facilities') ? 'active' : '' ?>" href="housing-and-facilities">
+                    <i class="fa-solid fa-building"></i> Housing & Facilities
+                </a>
+                <a class="nav-link loadable <?= ($title == 'Livelihood') ? 'active' : '' ?>" href="livelihood">
+                    <i class="fa-solid fa-briefcase"></i> Livelihood
+                </a>
+                <a class="nav-link loadable <?= ($title == 'Social Sectors') ? 'active' : '' ?>" href="social-sectors">
+                    <i class="fa-solid fa-hand-holding-heart"></i> Social Sectors
+                </a>
+                <a class="nav-link loadable <?= ($title == 'Health Monitoring') ? 'active' : '' ?>" href="health-monitoring">
+                    <i class="fa-solid fa-heart-pulse"></i> Health Monitoring
+                </a>
+                <a class="nav-link loadable <?= ($title == 'Reports') ? 'active' : '' ?>" href="reports">
+                    <i class="fa-solid fa-file-lines"></i> Reports
+                </a>
+                <!-- ADMIN ONLY -->
                 <?php if (isset($user) && $user['role'] === 'ADMIN'): ?>
-                    <a class="nav-link <?= ($title == 'Households') ? 'active' : '' ?>" href="households"><i class="fa-solid fa-house"></i> Households</a>
-                    <a class="nav-link <?= ($title == 'Residents') ? 'active' : '' ?>" href="residents"><i class="fa-solid fa-users"></i> Residents</a>
-                    <a class="nav-link <?= ($title == 'Demographics') ? 'active' : '' ?>" href="demographics"><i class="fa-solid fa-chart-column"></i> Demographics</a>
-                    <a class="nav-link <?= ($title == 'Housing & Facilities') ? 'active' : '' ?>" href="housing_facilities"><i class="fa-solid fa-building"></i> Housing & Facilities</a>
-                    <a class="nav-link <?= ($title == 'Livelihood') ? 'active' : '' ?>" href="livelihood"><i class="fa-solid fa-briefcase"></i> Livelihood</a>
-                    <a class="nav-link <?= ($title == 'Social Sectors') ? 'active' : '' ?>" href="social_sectors"><i class="fa-solid fa-hand-holding-heart"></i> Social Sectors</a>
-                    <a class="nav-link <?= ($title == 'Health Monitoring') ? 'active' : '' ?>" href="health_monitoring"><i class="fa-solid fa-heart-pulse"></i> Health Monitoring</a>
-                    <a class="nav-link <?= ($title == 'Reports') ? 'active' : '' ?>" href="reports"><i class="fa-solid fa-file-lines"></i> Reports</a>
-                    <a class="nav-link <?= ($title == 'User Management') ? 'active' : '' ?>" href="user_management"><i class="fa-solid fa-id-badge"></i> User Management</a>
-                    <a class="nav-link <?= ($title == 'Settings') ? 'active' : '' ?>" href="settings"><i class="fa-solid fa-gear"></i> Settings</a>
-                    <a class="nav-link btn_logout" href="javascript:void(0)"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
-                <?php endif ?>
+                    <a class="nav-link loadable <?= ($title == 'User Management') ? 'active' : '' ?>" href="user-management">
+                        <i class="fa-solid fa-id-badge"></i> User Management
+                    </a>
+                <?php endif; ?>
+                <a class="nav-link btn_logout" href="javascript:void(0)">
+                    <i class="fa-solid fa-right-from-bracket"></i> Logout
+                </a>
             </nav>
         </aside>
 
@@ -69,30 +92,22 @@
 
                     <!-- User Dropdown -->
                     <div class="dropdown">
-                        <button class="btn user-chip d-flex align-items-center gap-2"
-                            type="button"
-                            data-bs-toggle="dropdown"
-                            aria-expanded="false">
-
-                            <img src="<?= base_url('public/assets/img/user-avatar.png') ?>"
-                                alt="User"
-                                class="user-chip__avatar">
-
+                        <button class="btn user-chip d-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img src="<?= base_url('public/assets/img/user-avatar.png') ?>" alt="User" class="user-chip__avatar">
                             <span class="user-chip__name d-none d-md-inline">
                                 <?= isset($user) ? esc($user['full_name']) : 'Default User' ?>
                             </span>
-
                             <i class="fa-solid fa-chevron-down user-chip__chev"></i>
                         </button>
 
                         <ul class="dropdown-menu dropdown-menu-end shadow user-menu">
                             <li>
-                                <a class="dropdown-item" href="account_settings">
+                                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#accountSettingsModal">
                                     <i class="fa-solid fa-user-gear me-2"></i> Account Settings
                                 </a>
                             </li>
                             <li>
-                                <a class="dropdown-item" href="about_us">
+                                <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#aboutUsModal">
                                     <i class="fa-solid fa-circle-info me-2"></i> About Us
                                 </a>
                             </li>

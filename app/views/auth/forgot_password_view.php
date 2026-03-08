@@ -5,31 +5,13 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title><?= env('APP_NAME') ?> - Forgot Password</title>
+    <title>Forgot Password | <?= env('APP_NAME') ?></title>
 
     <link rel="shortcut icon" href="<?= base_url('public/assets/img/favicon.ico') ?>" type="image/x-icon">
     <link rel="stylesheet" href="<?= base_url('public/plugins/bootstrap/css/bootstrap.min.css') ?>">
     <link rel="stylesheet" href="<?= base_url('public/plugins/fontawesome/css/all.min.css?v=') . env('APP_VERSION', '1.0.0') ?>">
     <link rel="stylesheet" href="<?= base_url('public/assets/css/login.css?v=') . env('APP_VERSION', '1.0.0') ?>">
-
-    <style>
-        .step-section.d-none {
-            display: none !important;
-        }
-
-        .question-card {
-            background: #f8f9fa;
-            border: 1px solid #e9ecef;
-            border-radius: 12px;
-            padding: 14px;
-            margin-bottom: 14px;
-        }
-
-        .back-link {
-            text-decoration: none;
-            font-size: 0.9rem;
-        }
-    </style>
+    <link rel="stylesheet" href="<?= base_url('public/assets/css/forgot_password.css?v=') . env('APP_VERSION', '1.0.0') ?>">
 </head>
 
 <body>
@@ -121,6 +103,7 @@
 
                         <div class="mb-3">
                             <label class="form-label fw-semibold">Answer the following security questions</label>
+
                             <div id="security_questions_container"></div>
                         </div>
 
@@ -138,17 +121,41 @@
                         <input type="hidden" id="fp_verified_user_id">
 
                         <div class="form-floating mb-3 position-relative">
-                            <input type="password" class="form-control" id="fp_new_password" placeholder="New Password" required>
+                            <input
+                                type="password"
+                                class="form-control"
+                                id="fp_new_password"
+                                placeholder="New Password"
+                                required>
                             <label for="fp_new_password">
                                 <i class="fa-solid fa-lock me-1"></i> New Password
                             </label>
+                            <button
+                                type="button"
+                                class="btn btn-sm position-absolute top-50 end-0 translate-middle-y me-2 text-secondary border-0 toggle-password"
+                                data-target="#fp_new_password"
+                                aria-label="Toggle new password visibility">
+                                <i class="fa-regular fa-eye"></i>
+                            </button>
                         </div>
 
                         <div class="form-floating mb-3 position-relative">
-                            <input type="password" class="form-control" id="fp_confirm_password" placeholder="Confirm Password" required>
+                            <input
+                                type="password"
+                                class="form-control"
+                                id="fp_confirm_password"
+                                placeholder="Confirm Password"
+                                required>
                             <label for="fp_confirm_password">
                                 <i class="fa-solid fa-lock me-1"></i> Confirm Password
                             </label>
+                            <button
+                                type="button"
+                                class="btn btn-sm position-absolute top-50 end-0 translate-middle-y me-2 text-secondary border-0 toggle-password"
+                                data-target="#fp_confirm_password"
+                                aria-label="Toggle confirm password visibility">
+                                <i class="fa-regular fa-eye"></i>
+                            </button>
                         </div>
 
                         <button type="submit" class="btn btn-primary w-100 py-2">

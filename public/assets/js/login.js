@@ -3,6 +3,8 @@ $(function () {
         showAlert(flashData.title, flashData.text, flashData.icon);
     }
 
+    disableDevOptions();
+
     $("#year").text(new Date().getFullYear());
 
     // Password toggle
@@ -30,6 +32,7 @@ $(function () {
         showLoading();
 
         const formData = new FormData();
+
         formData.append('role', role);
         formData.append('username', username);
         formData.append('password', password);
@@ -46,8 +49,10 @@ $(function () {
                 if (response.success) {
                     location.reload();
                 } else {
-                    hideLoading();
-                    $("#login_alert").removeClass("d-none").html('<i class="fa-solid fa-triangle-exclamation me-2"></i>' + response.message);
+                    setTimeout(() => {
+                        hideLoading();
+                        $("#login_alert").removeClass("d-none").html('<i class="fa-solid fa-triangle-exclamation me-2"></i>' + response.message);
+                    }, 250);
                 }
             },
             error: function (xhr) {
@@ -57,6 +62,48 @@ $(function () {
             },
         });
     });
+
+    function disableDevOptions() {
+        // Disable right-click
+        $(document).on("contextmenu", function (e) {
+            e.preventDefault();
+        });
+
+        // Disable key combinations used for DevTools
+        $(document).keydown(function (e) {
+
+            // F12
+            if (e.keyCode == 123) {
+                return false;
+            }
+
+            // Ctrl+Shift+I
+            if (e.ctrlKey && e.shiftKey && e.keyCode == 73) {
+                return false;
+            }
+
+            // Ctrl+Shift+J
+            if (e.ctrlKey && e.shiftKey && e.keyCode == 74) {
+                return false;
+            }
+
+            // Ctrl+Shift+C
+            if (e.ctrlKey && e.shiftKey && e.keyCode == 67) {
+                return false;
+            }
+
+            // Ctrl+U (View Source)
+            if (e.ctrlKey && e.keyCode == 85) {
+                return false;
+            }
+
+            // Ctrl+S
+            if (e.ctrlKey && e.keyCode == 83) {
+                return false;
+            }
+
+        });
+    }
 
     function showLoading() {
         $("#loadingOverlay").removeClass("d-none");
