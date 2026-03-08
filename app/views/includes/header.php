@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Barangay Household Information System - <?= isset($title) ? $title : 'Unknown Page' ?></title>
+    <title><?= env('APP_NAME') ?> - <?= isset($title) ? $title : 'Unknown Page' ?></title>
 
     <!-- Favicon -->
     <link rel="shortcut icon" href="<?= base_url('public/assets/img/favicon.ico') ?>" type="image/x-icon">
@@ -35,17 +35,20 @@
             <div class="nav-section">System Navigation</div>
             <nav class="nav flex-column side-nav">
                 <a class="nav-link <?= ($title == 'Dashboard') ? 'active' : '' ?>" href="dashboard"><i class="fa-solid fa-gauge"></i> Dashboard</a>
-                <a class="nav-link <?= ($title == 'Households') ? 'active' : '' ?>" href="households"><i class="fa-solid fa-house"></i> Households</a>
-                <a class="nav-link <?= ($title == 'Residents') ? 'active' : '' ?>" href="residents"><i class="fa-solid fa-users"></i> Residents</a>
-                <a class="nav-link <?= ($title == 'Demographics') ? 'active' : '' ?>" href="demographics"><i class="fa-solid fa-chart-column"></i> Demographics</a>
-                <a class="nav-link <?= ($title == 'Housing & Facilities') ? 'active' : '' ?>" href="housing_facilities"><i class="fa-solid fa-building"></i> Housing & Facilities</a>
-                <a class="nav-link <?= ($title == 'Livelihood') ? 'active' : '' ?>" href="livelihood"><i class="fa-solid fa-briefcase"></i> Livelihood</a>
-                <a class="nav-link <?= ($title == 'Social Sectors') ? 'active' : '' ?>" href="social_sectors"><i class="fa-solid fa-hand-holding-heart"></i> Social Sectors</a>
-                <a class="nav-link <?= ($title == 'Health Monitoring') ? 'active' : '' ?>" href="health_monitoring"><i class="fa-solid fa-heart-pulse"></i> Health Monitoring</a>
-                <a class="nav-link <?= ($title == 'Reports') ? 'active' : '' ?>" href="reports"><i class="fa-solid fa-file-lines"></i> Reports</a>
-                <a class="nav-link <?= ($title == 'User Management') ? 'active' : '' ?>" href="user_management"><i class="fa-solid fa-id-badge"></i> User Management</a>
-                <a class="nav-link <?= ($title == 'Settings') ? 'active' : '' ?>" href="settings"><i class="fa-solid fa-gear"></i> Settings</a>
-                <a class="nav-link btn_logout" href="javascript:void(0)"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+                
+                <?php if (isset($user) && $user['role'] === 'ADMIN'): ?>
+                    <a class="nav-link <?= ($title == 'Households') ? 'active' : '' ?>" href="households"><i class="fa-solid fa-house"></i> Households</a>
+                    <a class="nav-link <?= ($title == 'Residents') ? 'active' : '' ?>" href="residents"><i class="fa-solid fa-users"></i> Residents</a>
+                    <a class="nav-link <?= ($title == 'Demographics') ? 'active' : '' ?>" href="demographics"><i class="fa-solid fa-chart-column"></i> Demographics</a>
+                    <a class="nav-link <?= ($title == 'Housing & Facilities') ? 'active' : '' ?>" href="housing_facilities"><i class="fa-solid fa-building"></i> Housing & Facilities</a>
+                    <a class="nav-link <?= ($title == 'Livelihood') ? 'active' : '' ?>" href="livelihood"><i class="fa-solid fa-briefcase"></i> Livelihood</a>
+                    <a class="nav-link <?= ($title == 'Social Sectors') ? 'active' : '' ?>" href="social_sectors"><i class="fa-solid fa-hand-holding-heart"></i> Social Sectors</a>
+                    <a class="nav-link <?= ($title == 'Health Monitoring') ? 'active' : '' ?>" href="health_monitoring"><i class="fa-solid fa-heart-pulse"></i> Health Monitoring</a>
+                    <a class="nav-link <?= ($title == 'Reports') ? 'active' : '' ?>" href="reports"><i class="fa-solid fa-file-lines"></i> Reports</a>
+                    <a class="nav-link <?= ($title == 'User Management') ? 'active' : '' ?>" href="user_management"><i class="fa-solid fa-id-badge"></i> User Management</a>
+                    <a class="nav-link <?= ($title == 'Settings') ? 'active' : '' ?>" href="settings"><i class="fa-solid fa-gear"></i> Settings</a>
+                    <a class="nav-link btn_logout" href="javascript:void(0)"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+                <?php endif ?>
             </nav>
         </aside>
 

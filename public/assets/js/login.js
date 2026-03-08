@@ -47,13 +47,13 @@ $(function () {
                     location.reload();
                 } else {
                     hideLoading();
-                    $("#login_alert").removeClass("d-none").text(response.message);
+                    $("#login_alert").removeClass("d-none").html('<i class="fa-solid fa-triangle-exclamation me-2"></i>' + response.message);
                 }
             },
             error: function (xhr) {
                 hideLoading();
                 console.error(xhr.responseText);
-                $("#login_alert").removeClass("d-none").text("Internal Server Error");
+                $("#login_alert").removeClass("d-none").html('<i class="fa-solid fa-triangle-exclamation me-2"></i>' + "Internal Server Error");
             },
         });
     });

@@ -24,6 +24,16 @@ class AuthController extends Controller
 
         $this->view('auth/login_view');
     }
+    
+    public function forgot_password()
+    {
+        if (session_get('is_login', false) === true) {
+            redirect('dashboard');
+            return;
+        }
+
+        $this->view('auth/forgot_password_view');
+    }
 
     public function authenticate()
     {

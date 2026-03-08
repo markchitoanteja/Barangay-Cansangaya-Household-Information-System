@@ -1,174 +1,145 @@
-# Barangay Cansangaya Household Information System
 
-A lightweight **PHP MVC web application** developed as part of a
-capstone project titled:
+# Barangay Household Information System (BHIS)
+### Barangay Cansangaya – Can-Avid, Eastern Samar
 
-**"Innovative Web Application Development for Barangay Cansangaya
-Household Information System."**
+This guide explains how to install and start the **Barangay Household Information System (BHIS)**.
 
-The system helps barangay staff manage **household records, residents,
-and administrative data** through a centralized web interface.
+---
 
-------------------------------------------------------------------------
+# Folder Structure
 
-## 📸 Screenshot
+Your system package should look like this:
 
-![Login Page](docs/screenshot.png)
+Barangay-Cansangaya-Household-Information-System
+│
+├─ app
+├─ docs
+│  ├─ startup.png
+│  ├─ login.png
+│  └─ dashboard.png
+│
+├─ logs
+├─ public
+├─ setup
+│  └─ Setup.exe
+│
+└─ README.md
 
-------------------------------------------------------------------------
+**Do not rename or move any of these folders.**
 
-## ✨ Features
+---
 
--   Secure **Admin / Staff authentication**
--   Household information management
--   Resident records
--   Certificate and documentation support
--   Flash messaging system
--   Lightweight custom **MVC architecture**
--   Environment configuration using `.env`
--   Modular **helper system**
--   Session-based authentication
+# System Requirements
 
-------------------------------------------------------------------------
+Before installing, make sure your computer has:
 
-## 🧱 Project Architecture
+- Windows 10 or Windows 11
+- XAMPP installed in C:\xampp
+- At least 4 GB RAM
+- At least 2 GB free disk space
 
-    app
-    │
-    ├─ core
-    │   ├─ Controller.php
-    │   ├─ Database.php
-    │   └─ Env.php
-    │
-    ├─ controllers
-    │   ├─ HomeController.php
-    │   ├─ LoginController.php
-    │   └─ DashboardController.php
-    │
-    ├─ models
-    │   └─ User.php
-    │
-    ├─ views
-    │   ├─ auth
-    │   │   └─ login.php
-    │   └─ home
-    │       └─ index.php
-    │
-    ├─ helpers
-    │   ├─ env_helper.php
-    │   ├─ request_helper.php
-    │   ├─ response_helper.php
-    │   ├─ session_helper.php
-    │   ├─ url_helper.php
-    │   └─ debug_helper.php
-    │
-    ├─ bootstrap
-    │   └─ autoload.php
-    │
-    docs
-    └─ screenshot.png
+If XAMPP is not installed, please install it first.
 
-    public
-    └─ assets
+---
 
-------------------------------------------------------------------------
+# Installation Steps
 
-## ⚙️ Requirements
+## Step 1 — Open the System Folder
 
--   PHP **8.0+**
--   MySQL / MariaDB
--   Apache / Nginx
+Open the folder:
 
-------------------------------------------------------------------------
+Barangay-Cansangaya-Household-Information-System
 
-## 🚀 Installation
+---
 
-1.  **Clone the repository**
+## Step 2 — Run the Installer
 
-``` bash
-git clone https://github.com/markchitoanteja/Barangay-Cansangaya-Household-Information-System.git
-```
+Open the **setup** folder and double-click:
 
-2.  **Navigate to the project**
+Setup.exe
 
-``` bash
-cd Barangay-Cansangaya-Household-Information-System
-```
+Follow the installation instructions on the screen.
 
-3.  **Create `.env` file**
+The installer will install the **BHIS Launcher** on your computer.
 
-Example configuration:
+---
 
-    DB_HOST=127.0.0.1
-    DB_NAME=bchis
-    DB_USER=root
-    DB_PASS=
-    DB_CHARSET=utf8mb4
+# Starting the System
 
-    APP_DEBUG=true
-    APP_VERSION=1.0.1
+After installation:
 
-4.  **Start your local server**
+1. Go to your Desktop
+2. Double-click the icon:
 
-``` bash
-php -S localhost:8000
-```
+Barangay Household Information System
 
-Open:
+The launcher will automatically:
 
-    http://localhost:8000
+- Start Apache
+- Start MySQL
+- Open the system in your browser
 
-------------------------------------------------------------------------
+---
 
-## 🔐 Authentication Flow
+# System Screenshots
 
-    HomeController
-          │
-          ├─ if logged in → DashboardController
-          │
-          └─ if not logged in → LoginController
-                                     │
-                                     ▼
-                                  Login View
+## Startup Launcher
 
-Session helpers:
+![Startup Screen](docs/startup.png)
 
-``` php
-session_set('is_login', true);
-session_get('is_login');
-session_destroy_all();
-```
+The launcher prepares the system and starts the required services.
 
-------------------------------------------------------------------------
+---
 
-## 🎨 Frontend
+## Login Screen
 
--   **Bootstrap 5**
--   **Font Awesome**
--   **jQuery**
--   Custom CSS
+![Login Screen](docs/login.png)
 
-------------------------------------------------------------------------
+Enter your assigned username and password to log in.
 
-## 📚 Capstone Information
+---
 
-**Project Title**
+## Dashboard
 
-> Innovative Web Application Development for Barangay Cansangaya
-> Household Information System
+![Dashboard](docs/dashboard.png)
 
-Purpose:\
-To digitize barangay household data and improve administrative
-efficiency through a centralized web-based system.
+After logging in, the dashboard displays the main system functions and barangay data.
 
-------------------------------------------------------------------------
+---
 
-## 👨‍💻 Developer
+# Opening the System Manually (Optional)
 
-Developed by **Mark Chito Anteja**
+If needed, you can open the system directly using your web browser.
 
-[![Facebook](https://img.shields.io/badge/Facebook-Mark%20Chito%20Anteja-1877F2?style=for-the-badge&logo=facebook&logoColor=white)](https://www.facebook.com/markchito/)
+http://localhost/Barangay-Cansangaya-Household-Information-System
 
-[![GitHub](https://img.shields.io/badge/GitHub-markchito-181717?style=for-the-badge&logo=github)](https://github.com/markchitoanteja)
+---
 
-[![Email](https://img.shields.io/badge/Email-contact-red?style=for-the-badge&logo=gmail&logoColor=white)](mailto:00anteja23@gmail.com)
+# Important Notes
+
+- Do not rename the system folder.
+- Do not move the system folder after installation.
+- XAMPP must remain installed in C:\xampp
+
+Changing these may cause the system to stop working.
+
+---
+
+# Troubleshooting
+
+If the system does not open:
+
+1. Make sure XAMPP is installed in C:\xampp
+2. Make sure Apache and MySQL can run
+3. Restart the BHIS Launcher
+
+---
+
+# Technical Support
+
+If you encounter problems, please contact the system developer or IT administrator.
+
+---
+
+© 2026 BCHIS — Barangay Cansangaya Household Information System
+All Rights Reserved.

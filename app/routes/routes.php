@@ -7,6 +7,7 @@ return function (Router $router) {
 
     // Auth routes
     $router->get('/login', 'AuthController@index');
+    $router->get('/forgot-password', 'AuthController@forgot_password');
     $router->post('/authenticate', 'AuthController@authenticate');
     $router->post('/logout', 'AuthController@logout');
 

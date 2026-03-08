@@ -1,11 +1,11 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Barangay Cansangaya Household Information System - Login</title>
+    <title><?= env('APP_NAME') ?> - Login</title>
 
     <!-- Favicon -->
     <link rel="shortcut icon" href="<?= base_url('public/assets/img/favicon.ico') ?>" type="image/x-icon">
@@ -110,7 +110,7 @@
                                 <label class="form-check-label small" for="login_remember">Remember me</label>
                             </div>
 
-                            <a href="javascript:void(0)" class="small text-decoration-none">
+                            <a href="<?= base_url('forgot-password') ?>" class="small text-decoration-none">
                                 Forgot password?
                             </a>
                         </div>
@@ -155,6 +155,7 @@
         </div>
     </div>
 
+    <!-- Global JavaScript Variables -->
     <script>
         const flashData = <?= json_encode(get_flash('login_notif', null)) ?>;
     </script>
