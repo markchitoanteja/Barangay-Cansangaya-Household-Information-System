@@ -266,7 +266,6 @@ The dashboard provides access to system functions and barangay data.
 -   Do **not move** the system folder after installation.
 -   XAMPP must remain installed in:
 
-```
     C:\xampp
 
 Changing these settings may cause the system to stop working.
