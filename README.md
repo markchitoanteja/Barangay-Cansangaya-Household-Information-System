@@ -78,8 +78,6 @@ requirements.
 
 3.  Install XAMPP in the default directory:
 
-```{=html}
-<!-- -->
 ```
     C:\xampp
 
@@ -131,15 +129,11 @@ Open your browser and go to:
 1.  Click **New**
 2.  Create a database named:
 
-```{=html}
-<!-- -->
 ```
     bchis
 
 3.  Set the collation to:
 
-```{=html}
-<!-- -->
 ```
     utf8mb4_general_ci
 
@@ -152,8 +146,6 @@ Open your browser and go to:
 3.  Click **Choose File**
 4.  Select the file located at:
 
-```{=html}
-<!-- -->
 ```
     app/data/database_schema.sql
 
@@ -187,8 +179,6 @@ After installation:
 1.  Go to your **Desktop**
 2.  Double-click:
 
-```{=html}
-<!-- -->
 ```
     Barangay Household Information System
 
@@ -276,8 +266,6 @@ The dashboard provides access to system functions and barangay data.
 -   Do **not move** the system folder after installation.
 -   XAMPP must remain installed in:
 
-```{=html}
-<!-- -->
 ```
     C:\xampp
 
