@@ -6,29 +6,6 @@ This guide explains how to install and start the **Barangay Household Informatio
 
 ---
 
-# Folder Structure
-
-Your system package should look like this:
-
-Barangay-Cansangaya-Household-Information-System
-│
-├─ app
-├─ docs
-│  ├─ startup.png
-│  ├─ login.png
-│  └─ dashboard.png
-│
-├─ logs
-├─ public
-├─ setup
-│  └─ Setup.exe
-│
-└─ README.md
-
-**Do not rename or move any of these folders.**
-
----
-
 # System Requirements
 
 Before installing, make sure your computer has:
