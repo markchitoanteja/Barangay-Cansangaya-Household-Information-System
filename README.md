@@ -181,6 +181,7 @@ After installation:
 
 ```
     Barangay Household Information System
+```
 
 The launcher will automatically:
 
@@ -266,6 +267,9 @@ The dashboard provides access to system functions and barangay data.
 -   Do **not move** the system folder after installation.
 -   XAMPP must remain installed in:
 
+```{=html}
+<!-- -->
+```
     C:\xampp
 
 Changing these settings may cause the system to stop working.
