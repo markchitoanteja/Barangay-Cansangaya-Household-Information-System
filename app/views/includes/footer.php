@@ -112,75 +112,46 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
 
-                    <form id="accountSettingsForm">
+                    <form action="javascript:void(0)" id="accountSettingsForm">
                         <div class="modal-body gov-modal-body">
                             <div class="gov-section">
                                 <div class="gov-section__label">Account Information</div>
-
                                 <div class="settings-profile">
-                                    <img src="<?= base_url('public/assets/img/user-avatar.png') ?>"
-                                        alt="User Avatar"
-                                        class="settings-profile__avatar">
-
+                                    <img src="<?= base_url('public/assets/img/user-avatar.png') ?>" alt="User Avatar" class="settings-profile__avatar">
                                     <div>
                                         <h6 class="mb-1"><?= isset($user) ? esc($user['full_name']) : 'Default User' ?></h6>
                                         <div class="text-muted small mb-1"><?= isset($user) ? esc($user['role']) : 'STAFF' ?></div>
                                         <div class="text-muted small">Authorized system user</div>
                                     </div>
                                 </div>
-
                                 <div class="row g-3 mt-1">
                                     <div class="col-md-6">
                                         <div class="form-floating">
-                                            <input type="text"
-                                                class="form-control gov-input"
-                                                id="full_name"
-                                                name="full_name"
-                                                value="<?= isset($user) ? esc($user['full_name']) : '' ?>"
-                                                placeholder="Full Name">
+                                            <input type="text" class="form-control gov-input" id="full_name" name="full_name" value="<?= isset($user) ? esc($user['full_name']) : '' ?>" placeholder="Full Name" required>
                                             <label for="full_name">
                                                 <i class="fa-regular fa-user me-1"></i> Full Name
                                             </label>
                                         </div>
                                     </div>
-
                                     <div class="col-md-6">
                                         <div class="form-floating">
-                                            <input type="text"
-                                                class="form-control gov-input"
-                                                id="username"
-                                                name="username"
-                                                value="<?= isset($user) && isset($user['username']) ? esc($user['username']) : '' ?>"
-                                                placeholder="Username">
+                                            <input type="text" class="form-control gov-input" id="username" name="username" value="<?= isset($user) && isset($user['username']) ? esc($user['username']) : '' ?>" placeholder="Username" required>
                                             <label for="username">
                                                 <i class="fa-regular fa-user me-1"></i> Username
                                             </label>
                                         </div>
                                     </div>
-
                                     <div class="col-md-6">
                                         <div class="form-floating">
-                                            <input type="text"
-                                                class="form-control gov-input"
-                                                id="role"
-                                                name="role"
-                                                value="<?= isset($user) ? esc($user['role']) : '' ?>"
-                                                placeholder="User Role"
-                                                readonly>
+                                            <input type="text" class="form-control gov-input" id="role" name="role" value="<?= isset($user) ? esc($user['role']) : '' ?>" placeholder="User Role" readonly>
                                             <label for="role">
                                                 <i class="fa-solid fa-id-badge me-1"></i> User Role
                                             </label>
                                         </div>
                                     </div>
-
                                     <div class="col-md-6">
                                         <div class="form-floating">
-                                            <input type="text"
-                                                class="form-control gov-input"
-                                                id="created_at"
-                                                value="<?= isset($user) && isset($user['created_at']) ? esc(date('F d, Y h:i A', strtotime($user['created_at']))) : '' ?>"
-                                                placeholder="Date Created"
-                                                readonly>
+                                            <input type="text" class="form-control gov-input" id="created_at" value="<?= isset($user) && isset($user['created_at']) ? esc(date('F d, Y h:i A', strtotime($user['created_at']))) : '' ?>" placeholder="Date Created" readonly>
                                             <label for="created_at">
                                                 <i class="fa-regular fa-calendar me-1"></i> Date Created
                                             </label>
@@ -188,75 +159,48 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div class="gov-section">
                                 <div class="gov-section__label">Change Password</div>
-
                                 <div class="row g-3">
                                     <div class="col-md-4">
                                         <div class="form-floating position-relative">
-                                            <input type="password"
-                                                class="form-control gov-input gov-input--password"
-                                                id="current_password"
-                                                name="current_password"
-                                                placeholder="Current Password">
+                                            <input type="password" class="form-control gov-input gov-input--password" id="current_password" name="current_password" placeholder="Current Password">
                                             <label for="current_password">
                                                 <i class="fa-solid fa-lock me-1"></i> Current Password
                                             </label>
-                                            <button type="button"
-                                                class="btn btn-sm password-toggle toggle-password"
-                                                data-target="#current_password"
-                                                aria-label="Toggle password visibility">
+                                            <button type="button" class="btn btn-sm password-toggle toggle-password" data-target="#current_password" aria-label="Toggle password visibility">
                                                 <i class="fa-regular fa-eye"></i>
                                             </button>
                                         </div>
                                     </div>
-
                                     <div class="col-md-4">
                                         <div class="form-floating position-relative">
-                                            <input type="password"
-                                                class="form-control gov-input gov-input--password"
-                                                id="new_password"
-                                                name="new_password"
-                                                placeholder="New Password">
+                                            <input type="password" class="form-control gov-input gov-input--password" id="new_password" name="new_password" placeholder="New Password">
                                             <label for="new_password">
                                                 <i class="fa-solid fa-lock me-1"></i> New Password
                                             </label>
-                                            <button type="button"
-                                                class="btn btn-sm password-toggle toggle-password"
-                                                data-target="#new_password"
-                                                aria-label="Toggle password visibility">
+                                            <button type="button" class="btn btn-sm password-toggle toggle-password" data-target="#new_password" aria-label="Toggle password visibility">
                                                 <i class="fa-regular fa-eye"></i>
                                             </button>
                                         </div>
                                     </div>
-
                                     <div class="col-md-4">
                                         <div class="form-floating position-relative">
-                                            <input type="password"
-                                                class="form-control gov-input gov-input--password"
-                                                id="confirm_password"
-                                                name="confirm_password"
-                                                placeholder="Confirm Password">
+                                            <input type="password" class="form-control gov-input gov-input--password" id="confirm_password" name="confirm_password" placeholder="Confirm Password">
                                             <label for="confirm_password">
                                                 <i class="fa-solid fa-lock me-1"></i> Confirm Password
                                             </label>
-                                            <button type="button"
-                                                class="btn btn-sm password-toggle toggle-password"
-                                                data-target="#confirm_password"
-                                                aria-label="Toggle password visibility">
+                                            <button type="button" class="btn btn-sm password-toggle toggle-password" data-target="#confirm_password" aria-label="Toggle password visibility">
                                                 <i class="fa-regular fa-eye"></i>
                                             </button>
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="settings-note mt-3">
                                     Password updates should only be performed by the authorized account holder.
                                 </div>
                             </div>
                         </div>
-
                         <div class="modal-footer gov-modal-footer">
                             <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Close</button>
                             <button type="submit" class="btn gov-btn-primary px-4">
@@ -352,6 +296,11 @@
             </div>
         </div>
 
+        <script>
+            const USER_ID = <?= json_encode($user["id"]) ?>;
+            const APP_DEBUG = <?= env('APP_DEBUG', true) ?>;
+        </script>
+
         <!-- Bootstrap Bundle (includes Popper) -->
         <script src="<?= base_url('public/plugins/bootstrap/js/bootstrap.bundle.min.js') ?>"></script>
         <!-- JQuery -->
@@ -360,6 +309,5 @@
         <script src="<?= base_url('public/plugins/sweetalert2/sweetalert2.all.min.js') ?>"></script>
         <!-- Custom Script -->
         <script src="<?= base_url('public/assets/js/app.js?v=') . env('APP_VERSION', '1.0.0') ?>"></script>
-        </body>
-
-        </html>
+    </body>
+</html>

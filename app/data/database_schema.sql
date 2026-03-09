@@ -55,10 +55,10 @@ VALUES ('Barangay Staff', 'staff', '$2y$10$cRLnC4R97XVT9A7Whi8HB.I2IgOr3BCTFCFr7
 
 -- Example security questions
 INSERT INTO security_questions (user_id, question, answer_hash) VALUES
-(1, 'What is your favorite color?', '$2y$10$examplehashedanswer1'),
-(1, 'What is the name of your first pet?', '$2y$10$examplehashedanswer2'),
-(2, 'What is your mother''s maiden name?', '$2y$10$examplehashedanswer3'),
-(2, 'What was your first school?', '$2y$10$examplehashedanswer4');
+(1, 'What is your favorite color?', '$2a$12$tz2Eh3rDTv2HxGrpayprcuZLLR7nw5neAUNZmXOLrm2SiFsk./Dhi'),
+(1, 'What is the name of your first pet?', '$2a$12$tz2Eh3rDTv2HxGrpayprcuZLLR7nw5neAUNZmXOLrm2SiFsk./Dhi'),
+(2, 'What is your mother''s maiden name?', '$2a$12$tz2Eh3rDTv2HxGrpayprcuZLLR7nw5neAUNZmXOLrm2SiFsk./Dhi'),
+(2, 'What was your first school?', '$2a$12$tz2Eh3rDTv2HxGrpayprcuZLLR7nw5neAUNZmXOLrm2SiFsk./Dhi');
 
 -- =========================================================
 -- END OF SCHEMA

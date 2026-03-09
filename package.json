@@ -1,0 +1,15 @@
+{
+  "scripts": {
+    "version": "node scripts/bump-version.js",
+    "build": "npm run version && tsc",
+    "watch": "tsc -w"
+  },
+  "devDependencies": {
+    "@types/bootstrap": "^5.2.10",
+    "@types/jquery": "^4.0.0",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "sweetalert2": "^11.26.22"
+  }
+}
