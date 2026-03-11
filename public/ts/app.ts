@@ -1,7 +1,8 @@
 /// <reference types="jquery" />
 
-$((): void => {
+import Swal, { SweetAlertResult } from "sweetalert2";
 
+$((): void => {
     const today: Date = new Date();
     let currentDate: Date = new Date(today.getFullYear(), today.getMonth(), 1);
 
@@ -9,6 +10,7 @@ $((): void => {
     updateCalendarReferenceDate();
     enableDevOptions(APP_DEBUG);
 
+    // Calendar modal events
     $("#calendarModal").on("shown.bs.modal", (): void => {
         renderCalendar(currentDate);
     });
@@ -23,8 +25,8 @@ $((): void => {
         renderCalendar(currentDate);
     });
 
+    // Logout
     $(document).on("click", ".btn_logout", (): void => {
-
         Swal.fire({
             title: "Logout?",
             text: "Are you sure you want to logout?",
@@ -34,270 +36,170 @@ $((): void => {
             cancelButtonColor: "#d33",
             confirmButtonText: "Yes, logout",
             cancelButtonText: "Cancel"
-        }).then((result: any) => {
-
+        }).then((result: SweetAlertResult) => {
             if (result.isConfirmed) {
-
                 showLoading();
-
-                setTimeout((): void => {
-
+                setTimeout(() => {
                     $.ajax({
                         url: "logout",
                         type: "POST",
                         dataType: "json",
                         processData: false,
                         contentType: false,
-
-                        success: (response: { success: boolean }): void => {
-
-                            if (response.success) {
-                                location.reload();
-                            } else {
-                                hideLoading();
-                            }
-
+                        success: (response: { success: boolean }) => {
+                            if (response.success) location.reload();
+                            else hideLoading();
                         },
-
-                        error: (_xhr: JQuery.jqXHR, _status: string, error: string): void => {
-
-                            console.error(error);
+                        error: (jqXHR, textStatus, errorThrown) => {
+                            console.error(errorThrown);
                             hideLoading();
-
                         }
-
                     });
-
                 }, 250);
             }
         });
     });
 
+    // Loadable links
     $(document).on("click", ".loadable", function (this: HTMLAnchorElement, e: JQuery.ClickEvent): void {
-
         e.preventDefault();
-
-        const url: string | undefined = $(this).attr("href");
-
+        const url = $(this).attr("href");
         showLoading();
 
         setTimeout((): void => {
-
-            if (url) {
-                window.location.href = url;
-            }
-
+            if (url) window.location.href = url;
         }, 250);
-
     });
 
+    // Toggle password visibility
     $(document).on("click", ".toggle-password", function (this: HTMLElement): void {
-
-        const target = $(this).data("target") as string;
+        const target = $(this).data("target") as string ?? "";
         const input = $(target);
         const icon = $(this).find("i");
 
         if (input.attr("type") === "password") {
-
             input.attr("type", "text");
             icon.removeClass("fa-eye").addClass("fa-eye-slash");
-
         } else {
-
             input.attr("type", "password");
             icon.removeClass("fa-eye-slash").addClass("fa-eye");
-
         }
-
     });
 
+    // Account settings form
     $("#accountSettingsForm").on("submit", (): void => {
-
-        console.log("test");
-
+        console.log("Account settings form submitted");
     });
-
 });
 
-
 function enableDevOptions(enable: boolean): void {
-
     if (!enable) {
-
-        $(document).on("contextmenu", (e: JQuery.ContextMenuEvent): void => {
-
-            e.preventDefault();
-
-        });
+        $(document).on("contextmenu", (e: JQuery.ContextMenuEvent): void => e.preventDefault());
 
         $(document).on("keydown", (e: JQuery.KeyDownEvent): boolean | void => {
-
-            if (e.keyCode === 123) return false; // F12
-
-            if (e.ctrlKey && e.shiftKey && e.keyCode === 73) return false; // Ctrl+Shift+I
-            if (e.ctrlKey && e.shiftKey && e.keyCode === 74) return false; // Ctrl+Shift+J
-            if (e.ctrlKey && e.shiftKey && e.keyCode === 67) return false; // Ctrl+Shift+C
-
-            if (e.ctrlKey && e.keyCode === 85) return false; // Ctrl+U
-            if (e.ctrlKey && e.keyCode === 83) return false; // Ctrl+S
-
+            const key = e.which || e.keyCode;
+            if (key === 123) return false; // F12
+            if (e.ctrlKey && e.shiftKey && [73, 74, 67].includes(key)) return false; // Ctrl+Shift+I/J/C
+            if (e.ctrlKey && [85, 83].includes(key)) return false; // Ctrl+U/S
         });
-
     }
-
 }
 
-
 function updateTopbarDate(): void {
-
     const today: Date = new Date();
-
     $("#todayText").text(
-
         today.toLocaleDateString("en-PH", {
             weekday: "short",
             year: "numeric",
             month: "short",
             day: "numeric"
         })
-
     );
-
 }
 
-
 function updateCalendarReferenceDate(): void {
-
     const today: Date = new Date();
-
     $("#calendarTodayText").text(
-
         today.toLocaleDateString("en-PH", {
             weekday: "long",
             year: "numeric",
             month: "long",
             day: "numeric"
         })
-
     );
-
 }
-
 
 function isSameDay(a: Date, b: Date): boolean {
-
-    return (
-        a.getFullYear() === b.getFullYear() &&
+    return a.getFullYear() === b.getFullYear() &&
         a.getMonth() === b.getMonth() &&
-        a.getDate() === b.getDate()
-    );
-
+        a.getDate() === b.getDate();
 }
 
-
 function renderCalendar(dateObj: Date): void {
-
     const today: Date = new Date();
-
-    const year: number = dateObj.getFullYear();
-    const month: number = dateObj.getMonth();
+    const year = dateObj.getFullYear();
+    const month = dateObj.getMonth();
 
     $("#calendarTitle").text(
-
         new Date(year, month, 1).toLocaleDateString("en-PH", {
             month: "long",
             year: "numeric"
         })
-
     );
 
-    const firstDayOfMonth: Date = new Date(year, month, 1);
-    const startWeekday: number = firstDayOfMonth.getDay();
-    const daysInMonth: number = new Date(year, month + 1, 0).getDate();
-    const daysInPrevMonth: number = new Date(year, month, 0).getDate();
+    const firstDayOfMonth = new Date(year, month, 1);
+    const startWeekday = firstDayOfMonth.getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const daysInPrevMonth = new Date(year, month, 0).getDate();
+    const totalCells = 42;
 
-    const totalCells: number = 42;
-
-    let html: string = "";
+    let html = "";
 
     for (let i = 0; i < totalCells; i++) {
-
         let dayNumber: number;
-        let cellMonth: number = month;
-        let cellYear: number = year;
-        let classes: string = "calendar-day";
+        let cellMonth = month;
+        let cellYear = year;
+        let classes = "calendar-day";
 
         if (i < startWeekday) {
-
             dayNumber = daysInPrevMonth - startWeekday + i + 1;
-
             cellMonth = month - 1;
-
             if (cellMonth < 0) {
-
                 cellMonth = 11;
                 cellYear = year - 1;
-
             }
-
             classes += " calendar-day--muted";
-
-        }
-        else if (i >= startWeekday + daysInMonth) {
-
+        } else if (i >= startWeekday + daysInMonth) {
             dayNumber = i - (startWeekday + daysInMonth) + 1;
-
             cellMonth = month + 1;
-
             if (cellMonth > 11) {
-
                 cellMonth = 0;
                 cellYear = year + 1;
-
             }
-
             classes += " calendar-day--muted";
-
-        }
-        else {
-
+        } else {
             dayNumber = i - startWeekday + 1;
-
         }
 
-        const thisDate: Date = new Date(cellYear, cellMonth, dayNumber);
-
-        const isTodayCell: boolean = isSameDay(thisDate, today);
-
-        if (isTodayCell) {
-
-            classes += " calendar-day--today";
-
-        }
+        const thisDate = new Date(cellYear, cellMonth, dayNumber);
+        const isTodayCell = isSameDay(thisDate, today);
+        if (isTodayCell) classes += " calendar-day--today";
 
         html += `
             <div class="${classes}">
                 <div class="calendar-day__number">${dayNumber}</div>
-                ${isTodayCell ? `<div class="calendar-day__badge">Today</div>` : ``}
+                ${isTodayCell ? `<div class="calendar-day__badge">Today</div>` : ""}
             </div>
         `;
-
     }
 
     $("#calendarDays").html(html);
-
 }
-
 
 function showLoading(): void {
-
     $("#loadingOverlay").removeClass("d-none");
-
 }
 
-
 function hideLoading(): void {
-
     $("#loadingOverlay").addClass("d-none");
-
 }

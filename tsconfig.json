@@ -2,11 +2,18 @@
   "compilerOptions": {
     "target": "ES6",
     "module": "ESNext",
+    "moduleResolution": "node", // replace "node10"
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "rootDir": "./public/ts",
     "outDir": "./public/assets/js",
     "sourceMap": true,
     "strict": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "lib": [
+      "DOM",
+      "ES2017"
+    ]
   },
   "include": [
     "public/ts/**/*.ts"

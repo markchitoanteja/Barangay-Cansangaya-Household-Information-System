@@ -1,11 +1,12 @@
-"use strict";
 /// <reference types="jquery" />
+import Swal from "sweetalert2";
 $(() => {
     const today = new Date();
     let currentDate = new Date(today.getFullYear(), today.getMonth(), 1);
     updateTopbarDate();
     updateCalendarReferenceDate();
     enableDevOptions(APP_DEBUG);
+    // Calendar modal events
     $("#calendarModal").on("shown.bs.modal", () => {
         renderCalendar(currentDate);
     });
@@ -17,6 +18,7 @@ $(() => {
         currentDate.setMonth(currentDate.getMonth() + 1);
         renderCalendar(currentDate);
     });
+    // Logout
     $(document).on("click", ".btn_logout", () => {
         Swal.fire({
             title: "Logout?",
@@ -38,15 +40,13 @@ $(() => {
                         processData: false,
                         contentType: false,
                         success: (response) => {
-                            if (response.success) {
+                            if (response.success)
                                 location.reload();
-                            }
-                            else {
+                            else
                                 hideLoading();
-                            }
                         },
-                        error: (_xhr, _status, error) => {
-                            console.error(error);
+                        error: (jqXHR, textStatus, errorThrown) => {
+                            console.error(errorThrown);
                             hideLoading();
                         }
                     });
@@ -54,18 +54,20 @@ $(() => {
             }
         });
     });
+    // Loadable links
     $(document).on("click", ".loadable", function (e) {
         e.preventDefault();
         const url = $(this).attr("href");
         showLoading();
         setTimeout(() => {
-            if (url) {
+            if (url)
                 window.location.href = url;
-            }
         }, 250);
     });
+    // Toggle password visibility
     $(document).on("click", ".toggle-password", function () {
-        const target = $(this).data("target");
+        var _a;
+        const target = (_a = $(this).data("target")) !== null && _a !== void 0 ? _a : "";
         const input = $(target);
         const icon = $(this).find("i");
         if (input.attr("type") === "password") {
@@ -77,28 +79,22 @@ $(() => {
             icon.removeClass("fa-eye-slash").addClass("fa-eye");
         }
     });
+    // Account settings form
     $("#accountSettingsForm").on("submit", () => {
-        console.log("test");
+        console.log("Account settings form submitted");
     });
 });
 function enableDevOptions(enable) {
     if (!enable) {
-        $(document).on("contextmenu", (e) => {
-            e.preventDefault();
-        });
+        $(document).on("contextmenu", (e) => e.preventDefault());
         $(document).on("keydown", (e) => {
-            if (e.keyCode === 123)
+            const key = e.which || e.keyCode;
+            if (key === 123)
                 return false; // F12
-            if (e.ctrlKey && e.shiftKey && e.keyCode === 73)
-                return false; // Ctrl+Shift+I
-            if (e.ctrlKey && e.shiftKey && e.keyCode === 74)
-                return false; // Ctrl+Shift+J
-            if (e.ctrlKey && e.shiftKey && e.keyCode === 67)
-                return false; // Ctrl+Shift+C
-            if (e.ctrlKey && e.keyCode === 85)
-                return false; // Ctrl+U
-            if (e.ctrlKey && e.keyCode === 83)
-                return false; // Ctrl+S
+            if (e.ctrlKey && e.shiftKey && [73, 74, 67].includes(key))
+                return false; // Ctrl+Shift+I/J/C
+            if (e.ctrlKey && [85, 83].includes(key))
+                return false; // Ctrl+U/S
         });
     }
 }
@@ -121,9 +117,9 @@ function updateCalendarReferenceDate() {
     }));
 }
 function isSameDay(a, b) {
-    return (a.getFullYear() === b.getFullYear() &&
+    return a.getFullYear() === b.getFullYear() &&
         a.getMonth() === b.getMonth() &&
-        a.getDate() === b.getDate());
+        a.getDate() === b.getDate();
 }
 function renderCalendar(dateObj) {
     const today = new Date();
@@ -167,13 +163,12 @@ function renderCalendar(dateObj) {
         }
         const thisDate = new Date(cellYear, cellMonth, dayNumber);
         const isTodayCell = isSameDay(thisDate, today);
-        if (isTodayCell) {
+        if (isTodayCell)
             classes += " calendar-day--today";
-        }
         html += `
             <div class="${classes}">
                 <div class="calendar-day__number">${dayNumber}</div>
-                ${isTodayCell ? `<div class="calendar-day__badge">Today</div>` : ``}
+                ${isTodayCell ? `<div class="calendar-day__badge">Today</div>` : ""}
             </div>
         `;
     }

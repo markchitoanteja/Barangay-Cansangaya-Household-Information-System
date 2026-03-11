@@ -1,21 +1,48 @@
-"use strict";
 /// <reference types="jquery" />
-$(() => {
+
+interface UsernameValidationResponse {
+    success: boolean;
+    message?: string;
+    data?: { user_id: string };
+}
+
+interface SecurityQuestionsResponse {
+    success: boolean;
+    data?: { id: string; question: string }[];
+    message?: string;
+}
+
+interface VerifyAnswersResponse {
+    success: boolean;
+    user_id?: string;
+    message?: string;
+}
+
+interface ResetPasswordResponse {
+    success: boolean;
+    message?: string;
+}
+
+$((): void => {
     disableDevOptions();
     $("#year").text(new Date().getFullYear());
+
     // --- Step 1: Validate username ---
-    $("#forgot_step1_form").on("submit", function (e) {
-        var _a, _b;
+    $("#forgot_step1_form").on("submit", function (e: JQuery.SubmitEvent): void {
         e.preventDefault();
         hideAlert();
-        const username = ((_a = $("#fp_username").val()) !== null && _a !== void 0 ? _a : "").trim();
-        const role = ((_b = $('input[name="role"]:checked').val()) !== null && _b !== void 0 ? _b : "");
-        if (!username)
-            return showAlert("Please enter your username.");
+
+        const username = ($("#fp_username").val() as string ?? "").trim();
+        const role = ($('input[name="role"]:checked').val() as string ?? "");
+
+        if (!username) return showAlert("Please enter your username.");
+
         showLoading();
+
         const formData = new FormData();
         formData.append("username", username);
         formData.append("role", role);
+
         $.ajax({
             url: "validate-username",
             type: "POST",
@@ -23,19 +50,22 @@ $(() => {
             processData: false,
             contentType: false,
             data: formData,
-            success: (response) => {
-                setTimeout(() => {
-                    var _a, _b, _c;
+            success: (response: UsernameValidationResponse): void => {
+                setTimeout((): void => {
                     hideLoading();
+
                     if (!response.success) {
-                        return showAlert((_a = response.message) !== null && _a !== void 0 ? _a : "Username not found. Please check your input.");
+                        return showAlert(response.message ?? "Username not found. Please check your input.");
                     }
-                    const userId = (_c = (_b = response.data) === null || _b === void 0 ? void 0 : _b.user_id) !== null && _c !== void 0 ? _c : "";
-                    if (!userId)
-                        return showAlert("Invalid user data.");
+
+                    const userId = response.data?.user_id ?? "";
+                    if (!userId) return showAlert("Invalid user data.");
+
                     $("#fp_user_id").val(userId);
+
                     const questionForm = new FormData();
                     questionForm.append("user_id", userId);
+
                     $.ajax({
                         url: "get-security-questions",
                         type: "POST",
@@ -43,9 +73,9 @@ $(() => {
                         processData: false,
                         contentType: false,
                         data: questionForm,
-                        success: (resp) => {
-                            var _a;
+                        success: (resp: SecurityQuestionsResponse): void => {
                             const $container = $("#security_questions_container").empty();
+
                             if (resp.success && resp.data && resp.data.length > 0) {
                                 resp.data.forEach((q, index) => {
                                     const html = `
@@ -68,12 +98,11 @@ $(() => {
                                     $container.append(html);
                                 });
                                 goToStep(2);
-                            }
-                            else {
-                                showAlert((_a = resp.message) !== null && _a !== void 0 ? _a : "No security questions found for this account.");
+                            } else {
+                                showAlert(resp.message ?? "No security questions found for this account.");
                             }
                         },
-                        error: (jqXHR, textStatus, errorThrown) => {
+                        error: (jqXHR: JQuery.jqXHR, textStatus: string, errorThrown: string): void => {
                             hideLoading();
                             console.error(errorThrown);
                             showAlert("Something went wrong while fetching security questions.");
@@ -81,34 +110,36 @@ $(() => {
                     });
                 }, 250);
             },
-            error: (jqXHR, textStatus, errorThrown) => {
+            error: (jqXHR: JQuery.jqXHR, textStatus: string, errorThrown: string): void => {
                 hideLoading();
                 console.error(errorThrown);
                 showAlert("Something went wrong. Please try again.");
             }
         });
     });
+
     // --- Step 2: Verify security answers ---
-    $("#forgot_step2_form").on("submit", function (e) {
-        var _a;
+    $("#forgot_step2_form").on("submit", function (e: JQuery.SubmitEvent): void {
         e.preventDefault();
         hideAlert();
-        const userId = (_a = $("#fp_user_id").val()) !== null && _a !== void 0 ? _a : "";
-        const answers = [];
-        $(".security-answer").each((index, element) => {
-            var _a;
-            const input = element;
-            const answer = ((_a = $(input).val()) !== null && _a !== void 0 ? _a : "").trim().toLowerCase();
-            answers.push({ id: $(input).data("question-id"), answer });
+
+        const userId = $("#fp_user_id").val() as string ?? "";
+        const answers: { id: string; answer: string }[] = [];
+
+        $(".security-answer").each((index: number, element: HTMLElement): void => {
+            const input = element as HTMLInputElement;
+            const answer = ($(input).val() as string ?? "").trim().toLowerCase();
+            answers.push({ id: $(input).data("question-id") as string, answer });
         });
-        if (answers.length === 0)
-            return showAlert("No security questions found.");
-        if (answers.some(a => !a.answer))
-            return showAlert("Please answer all security questions.");
+
+        if (answers.length === 0) return showAlert("No security questions found.");
+        if (answers.some(a => !a.answer)) return showAlert("Please answer all security questions.");
+
         showLoading();
         const formData = new FormData();
         formData.append("user_id", userId);
         formData.append("answers", JSON.stringify(answers));
+
         $.ajax({
             url: "verify-security-answers",
             type: "POST",
@@ -116,42 +147,42 @@ $(() => {
             processData: false,
             contentType: false,
             data: formData,
-            success: (response) => {
-                var _a, _b;
+            success: (response: VerifyAnswersResponse): void => {
                 hideLoading();
-                if (!response.success)
-                    return showAlert((_a = response.message) !== null && _a !== void 0 ? _a : "Incorrect security answers.");
-                $("#fp_verified_user_id").val((_b = response.user_id) !== null && _b !== void 0 ? _b : "");
+
+                if (!response.success) return showAlert(response.message ?? "Incorrect security answers.");
+
+                $("#fp_verified_user_id").val(response.user_id ?? "");
                 goToStep(3);
             },
-            error: (jqXHR, textStatus, errorThrown) => {
+            error: (jqXHR: JQuery.jqXHR, textStatus: string, errorThrown: string): void => {
                 hideLoading();
                 console.error(errorThrown);
                 showAlert("Something went wrong. Please try again.");
             }
         });
     });
+
     // --- Step 3: Reset password ---
-    $("#forgot_step3_form").on("submit", function (e) {
-        var _a, _b, _c;
+    $("#forgot_step3_form").on("submit", function (e: JQuery.SubmitEvent): void {
         e.preventDefault();
         hideAlert();
-        const userId = (_a = $("#fp_verified_user_id").val()) !== null && _a !== void 0 ? _a : "";
-        const newPassword = ((_b = $("#fp_new_password").val()) !== null && _b !== void 0 ? _b : "").trim();
-        const confirmPassword = ((_c = $("#fp_confirm_password").val()) !== null && _c !== void 0 ? _c : "").trim();
-        if (!userId)
-            return showAlert("Invalid password reset session.");
-        if (!newPassword || !confirmPassword)
-            return showAlert("Please complete all password fields.");
-        if (newPassword.length < 8)
-            return showAlert("Password must be at least 8 characters long.");
-        if (newPassword !== confirmPassword)
-            return showAlert("Passwords do not match.");
+
+        const userId = $("#fp_verified_user_id").val() as string ?? "";
+        const newPassword = ($("#fp_new_password").val() as string ?? "").trim();
+        const confirmPassword = ($("#fp_confirm_password").val() as string ?? "").trim();
+
+        if (!userId) return showAlert("Invalid password reset session.");
+        if (!newPassword || !confirmPassword) return showAlert("Please complete all password fields.");
+        if (newPassword.length < 8) return showAlert("Password must be at least 8 characters long.");
+        if (newPassword !== confirmPassword) return showAlert("Passwords do not match.");
+
         showLoading();
         const formData = new FormData();
         formData.append("user_id", userId);
         formData.append("password", newPassword);
         formData.append("password_confirm", confirmPassword);
+
         $.ajax({
             url: "reset-password",
             type: "POST",
@@ -159,65 +190,63 @@ $(() => {
             processData: false,
             contentType: false,
             data: formData,
-            success: (response) => {
-                var _a, _b;
+            success: (response: ResetPasswordResponse): void => {
                 hideLoading();
-                if (!response.success)
-                    return showAlert((_a = response.message) !== null && _a !== void 0 ? _a : "Password reset failed.");
+
+                if (!response.success) return showAlert(response.message ?? "Password reset failed.");
+
                 Swal.fire({
                     icon: "success",
                     title: "Password Reset Successful",
-                    text: (_b = response.message) !== null && _b !== void 0 ? _b : "You can now log in with your new password.",
+                    text: response.message ?? "You can now log in with your new password.",
                     confirmButtonText: "Go to Login"
                 }).then(() => {
                     window.location.href = BASE_URL + "login";
                 });
             },
-            error: (jqXHR, textStatus, errorThrown) => {
+            error: (jqXHR: JQuery.jqXHR, textStatus: string, errorThrown: string): void => {
                 hideLoading();
                 console.error(errorThrown);
                 showAlert("A server error occurred. Please try again.");
             }
         });
     });
+
     // --- Back to step 1 ---
-    $("#back_to_step1").on("click", () => goToStep(1));
+    $("#back_to_step1").on("click", (): void => goToStep(1));
+
     // --- Toggle password visibility ---
-    $(document).on("click", ".toggle-password", function () {
-        var _a;
-        const target = (_a = $(this).data("target")) !== null && _a !== void 0 ? _a : "";
+    $(document).on("click", ".toggle-password", function (this: HTMLElement): void {
+        const target = $(this).data("target") as string ?? "";
         const $input = $(target);
         const $icon = $(this).find("i"); // <-- FIXED
+
         if ($input.attr("type") === "password") {
             $input.attr("type", "text");
             $icon.removeClass("fa-eye").addClass("fa-eye-slash");
-        }
-        else {
+        } else {
             $input.attr("type", "password");
             $icon.removeClass("fa-eye-slash").addClass("fa-eye");
         }
     });
+
     // --- Helper functions ---
-    function showLoading() { $("#loadingOverlay").removeClass("d-none"); }
-    function hideLoading() { $("#loadingOverlay").addClass("d-none"); }
-    function showAlert(message) { $("#forgot_alert").removeClass("d-none").html('<i class="fa-solid fa-triangle-exclamation me-2"></i>' + message); }
-    function hideAlert() { $("#forgot_alert").addClass("d-none").html(''); }
-    function goToStep(step) {
+    function showLoading(): void { $("#loadingOverlay").removeClass("d-none"); }
+    function hideLoading(): void { $("#loadingOverlay").addClass("d-none"); }
+    function showAlert(message: string): void { $("#forgot_alert").removeClass("d-none").html('<i class="fa-solid fa-triangle-exclamation me-2"></i>' + message); }
+    function hideAlert(): void { $("#forgot_alert").addClass("d-none").html(''); }
+    function goToStep(step: number): void {
         $("#forgot_step1_form, #forgot_step2_form, #forgot_step3_form").addClass("d-none");
         $("#forgot_step" + step + "_form").removeClass("d-none");
         hideAlert();
     }
-    function disableDevOptions() {
-        $(document).on("contextmenu", (e) => e.preventDefault());
-        $(document).on("keydown", (e) => {
+    function disableDevOptions(): void {
+        $(document).on("contextmenu", (e: JQuery.ContextMenuEvent) => e.preventDefault());
+        $(document).on("keydown", (e: JQuery.KeyDownEvent) => {
             const key = e.which || e.keyCode;
-            if ([123].includes(key))
-                return false; // F12
-            if (e.ctrlKey && e.shiftKey && [73, 74, 67].includes(key))
-                return false; // Ctrl+Shift+I/J/C
-            if (e.ctrlKey && [83, 85].includes(key))
-                return false; // Ctrl+S/U
+            if ([123].includes(key)) return false; // F12
+            if (e.ctrlKey && e.shiftKey && [73, 74, 67].includes(key)) return false; // Ctrl+Shift+I/J/C
+            if (e.ctrlKey && [83, 85].includes(key)) return false; // Ctrl+S/U
         });
     }
 });
-//# sourceMappingURL=forgot_password.js.map

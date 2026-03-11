@@ -1,14 +1,18 @@
-"use strict";
 // login.ts (browser-ready)
+
 // Ensure jQuery and Swal are available globally via type definitions
+
 $(function () {
     // Show flash message if available
     if (typeof flashData !== 'undefined' && flashData) {
-        showAlert(flashData.title, flashData.text, flashData.icon);
+        showAlert(flashData.title, flashData.text, flashData.icon as "success" | "error" | "warning");
     }
+
     disableDevOptions();
+
     // Update year in footer
     $("#year").text(new Date().getFullYear());
+
     // Password toggle
     $("#togglePassword").on("click", function () {
         const $pw = $("#login_password");
@@ -16,22 +20,34 @@ $(function () {
         $pw.attr("type", isPassword ? "text" : "password");
         $(this).html(isPassword
             ? '<i class="fa-regular fa-eye-slash"></i>'
-            : '<i class="fa-regular fa-eye"></i>');
+            : '<i class="fa-regular fa-eye"></i>'
+        );
     });
+
     // Form submission
     $("#login_form").on("submit", function (e) {
         e.preventDefault();
-        const role = $('input[name="role"]:checked').val() || '';
-        const username = $("#login_username").val().trim();
-        const password = $("#login_password").val().trim();
+
+        const role = ($('input[name="role"]:checked').val() as string) || '';
+        const username = ($("#login_username").val() as string).trim();
+        const password = ($("#login_password").val() as string).trim();
         const remember = $("#login_remember").is(":checked");
+
         $("#login_alert").addClass("d-none");
+
         showLoading();
+
         const formData = new FormData();
         formData.append('role', role);
         formData.append('username', username);
         formData.append('password', password);
         formData.append('remember', remember ? '1' : '0');
+
+        interface LoginResponse {
+            success: boolean;
+            message?: string;
+        }
+
         $.ajax({
             url: 'authenticate',
             type: 'POST',
@@ -39,28 +55,31 @@ $(function () {
             dataType: 'JSON',
             processData: false,
             contentType: false,
-            success: function (response) {
+            success: function (response: LoginResponse) {
                 if (response.success) {
                     location.reload();
-                }
-                else {
+                } else {
                     setTimeout(() => {
-                        var _a;
                         hideLoading();
-                        $("#login_alert").removeClass("d-none").html('<i class="fa-solid fa-triangle-exclamation me-2"></i>' + ((_a = response.message) !== null && _a !== void 0 ? _a : "Login failed"));
+                        $("#login_alert").removeClass("d-none").html(
+                            '<i class="fa-solid fa-triangle-exclamation me-2"></i>' + (response.message ?? "Login failed")
+                        );
                     }, 250);
                 }
             },
             error: function (xhr) {
                 hideLoading();
                 console.error(xhr.responseText);
-                $("#login_alert").removeClass("d-none").html('<i class="fa-solid fa-triangle-exclamation me-2"></i>Internal Server Error');
+                $("#login_alert").removeClass("d-none").html(
+                    '<i class="fa-solid fa-triangle-exclamation me-2"></i>Internal Server Error'
+                );
             }
         });
     });
+
     function disableDevOptions() {
         $(document).on("contextmenu", (e) => e.preventDefault());
-        $(document).keydown((e) => {
+        $(document).keydown((e: JQuery.KeyDownEvent) => {
             const key = e.which || e.keyCode;
             if ([123, 73, 74, 67, 85, 83].includes(key) && (e.ctrlKey || e.shiftKey)) {
                 e.preventDefault();
@@ -68,14 +87,16 @@ $(function () {
             }
         });
     }
+
     function showLoading() {
         $("#loadingOverlay").removeClass("d-none");
     }
+
     function hideLoading() {
         $("#loadingOverlay").addClass("d-none");
     }
-    function showAlert(title, text, icon = "success") {
+
+    function showAlert(title: string, text: string, icon: "success" | "error" | "warning" = "success") {
         Swal.fire({ title, text, icon });
     }
 });
-//# sourceMappingURL=login.js.map

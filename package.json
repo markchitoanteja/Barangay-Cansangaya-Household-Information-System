@@ -1,8 +1,8 @@
 {
   "scripts": {
     "version": "node scripts/bump-version.js",
-    "build": "npm run version && tsc",
-    "watch": "tsc -w"
+    "build": "npm run version && npx tsc",
+    "watch": "npx tsc -w"
   },
   "devDependencies": {
     "@types/bootstrap": "^5.2.10",
