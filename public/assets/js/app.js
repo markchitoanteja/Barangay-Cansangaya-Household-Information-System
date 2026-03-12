@@ -1,11 +1,15 @@
+"use strict";
 /// <reference types="jquery" />
-import Swal from "sweetalert2";
 $(() => {
     const today = new Date();
     let currentDate = new Date(today.getFullYear(), today.getMonth(), 1);
     updateTopbarDate();
     updateCalendarReferenceDate();
     enableDevOptions(APP_DEBUG);
+    // Show flash message if available
+    if (typeof flashData !== 'undefined' && flashData) {
+        showFlash(flashData.title, flashData.text, flashData.icon);
+    }
     // Calendar modal events
     $("#calendarModal").on("shown.bs.modal", () => {
         renderCalendar(currentDate);
@@ -40,12 +44,14 @@ $(() => {
                         processData: false,
                         contentType: false,
                         success: (response) => {
-                            if (response.success)
+                            if (response.success) {
                                 location.reload();
-                            else
+                            }
+                            else {
                                 hideLoading();
+                            }
                         },
-                        error: (jqXHR, textStatus, errorThrown) => {
+                        error: (_jqXHR, _textStatus, errorThrown) => {
                             console.error(errorThrown);
                             hideLoading();
                         }
@@ -60,15 +66,13 @@ $(() => {
         const url = $(this).attr("href");
         showLoading();
         setTimeout(() => {
-            if (url)
+            if (url) {
                 window.location.href = url;
+            }
         }, 250);
     });
-    // Toggle password visibility
     $(document).on("click", ".toggle-password", function () {
-        var _a;
-        const target = (_a = $(this).data("target")) !== null && _a !== void 0 ? _a : "";
-        const input = $(target);
+        const input = $(this).siblings("input"); // find the input next to the button
         const icon = $(this).find("i");
         if (input.attr("type") === "password") {
             input.attr("type", "text");
@@ -79,11 +83,85 @@ $(() => {
             icon.removeClass("fa-eye-slash").addClass("fa-eye");
         }
     });
-    // Account settings form
-    $("#accountSettingsForm").on("submit", () => {
-        console.log("Account settings form submitted");
+    $("#account_settings_current_password, #account_settings_new_password, #account_settings_confirm_password, #account_settings_username").on("input", () => {
+        clearValidation();
+    });
+    $("#accountSettingsForm").on("submit", (e) => {
+        const getTrimmedValue = (selector) => { var _a; return ((_a = $(selector).val()) !== null && _a !== void 0 ? _a : "").toString().trim(); };
+        const user_id = getTrimmedValue("#account_settings_user_id");
+        const full_name = getTrimmedValue("#account_settings_full_name");
+        const username = getTrimmedValue("#account_settings_username");
+        const current_password = getTrimmedValue("#account_settings_current_password");
+        const new_password = getTrimmedValue("#account_settings_new_password");
+        const confirm_password = getTrimmedValue("#account_settings_confirm_password");
+        clearValidation();
+        let valid = true;
+        // --- Password mutual requirement ---
+        if (current_password && (!new_password || !confirm_password)) {
+            valid = false;
+            if (!new_password) {
+                $("#account_settings_new_password").addClass("border-danger").parent().after(`<div class="text-danger small password-error">New password is required when changing password.</div>`);
+            }
+            if (!confirm_password) {
+                $("#account_settings_confirm_password").addClass("border-danger").parent().after(`<div class="text-danger small password-error">Confirm password is required when changing password.</div>`);
+            }
+        }
+        else if ((new_password || confirm_password) && !current_password) {
+            valid = false;
+            $("#account_settings_current_password").addClass("border-danger").parent().after(`<div class="text-danger small password-error">Current password is required to change password.</div>`);
+        }
+        // --- New & Confirm match ---
+        if ((new_password && confirm_password) && new_password !== confirm_password) {
+            valid = false;
+            $("#account_settings_new_password, #account_settings_confirm_password").addClass("border-danger");
+            $("#account_settings_new_password").parent().after(`<div class="text-danger small password-error">Passwords do not match.</div>`);
+        }
+        if (!valid)
+            return;
+        showLoading();
+        // --- Prepare data for AJAX submission ---
+        const formData = {
+            user_id,
+            full_name,
+            username,
+            current_password,
+            new_password,
+            confirm_password
+        };
+        $.ajax({
+            url: "update-account",
+            method: "POST",
+            data: formData,
+            dataType: "JSON",
+            success: (response) => {
+                setTimeout(() => {
+                    if (response.success) {
+                        location.reload();
+                    }
+                    else {
+                        hideLoading();
+                        if (response.errors.username) {
+                            $("#account_settings_username").addClass("border-danger").parent().after(`<div class="text-danger small username-error">${response.errors.username}</div>`);
+                        }
+                        if (response.errors.current_password) {
+                            $("#account_settings_current_password").addClass("border-danger").parent().after(`<div class="text-danger small password-error">${response.errors.current_password}</div>`);
+                        }
+                    }
+                }, 250);
+            },
+            error: (xhr, status, error) => {
+                console.error("AJAX Error:", error);
+            }
+        });
     });
 });
+function clearValidation() {
+    $(".password-error, .username-error").remove();
+    $(".gov-input").removeClass("border-danger");
+}
+function showFlash(title, text, icon = "success") {
+    Swal.fire({ title, text, icon });
+}
 function enableDevOptions(enable) {
     if (!enable) {
         $(document).on("contextmenu", (e) => e.preventDefault());
@@ -92,9 +170,9 @@ function enableDevOptions(enable) {
             if (key === 123)
                 return false; // F12
             if (e.ctrlKey && e.shiftKey && [73, 74, 67].includes(key))
-                return false; // Ctrl+Shift+I/J/C
+                return false;
             if (e.ctrlKey && [85, 83].includes(key))
-                return false; // Ctrl+U/S
+                return false;
         });
     }
 }
@@ -117,9 +195,9 @@ function updateCalendarReferenceDate() {
     }));
 }
 function isSameDay(a, b) {
-    return a.getFullYear() === b.getFullYear() &&
+    return (a.getFullYear() === b.getFullYear() &&
         a.getMonth() === b.getMonth() &&
-        a.getDate() === b.getDate();
+        a.getDate() === b.getDate());
 }
 function renderCalendar(dateObj) {
     const today = new Date();
@@ -163,12 +241,15 @@ function renderCalendar(dateObj) {
         }
         const thisDate = new Date(cellYear, cellMonth, dayNumber);
         const isTodayCell = isSameDay(thisDate, today);
-        if (isTodayCell)
+        if (isTodayCell) {
             classes += " calendar-day--today";
+        }
         html += `
             <div class="${classes}">
                 <div class="calendar-day__number">${dayNumber}</div>
-                ${isTodayCell ? `<div class="calendar-day__badge">Today</div>` : ""}
+                ${isTodayCell
+            ? `<div class="calendar-day__badge">Today</div>`
+            : ""}
             </div>
         `;
     }

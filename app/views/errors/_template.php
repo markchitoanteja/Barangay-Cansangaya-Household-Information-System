@@ -266,7 +266,7 @@ $isDebug = !empty(env('APP_DEBUG')) && env('APP_DEBUG') === 'true';
 
             <?php if ($isDebug && !empty($details)): ?>
                 <details>
-                    <summary>Technical details (debug)</summary>
+                    <summary>Technical details (click to view)</summary>
                     <pre><?= htmlspecialchars($details) ?></pre>
                 </details>
             <?php endif; ?>

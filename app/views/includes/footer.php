@@ -127,32 +127,32 @@
                                 <div class="row g-3 mt-1">
                                     <div class="col-md-6">
                                         <div class="form-floating">
-                                            <input type="text" class="form-control gov-input" id="full_name" name="full_name" value="<?= isset($user) ? esc($user['full_name']) : '' ?>" placeholder="Full Name" required>
-                                            <label for="full_name">
+                                            <input type="text" class="form-control gov-input" id="account_settings_full_name" value="<?= isset($user) ? esc($user['full_name']) : '' ?>" placeholder="Full Name" required>
+                                            <label for="account_settings_full_name">
                                                 <i class="fa-regular fa-user me-1"></i> Full Name
                                             </label>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-floating">
-                                            <input type="text" class="form-control gov-input" id="username" name="username" value="<?= isset($user) && isset($user['username']) ? esc($user['username']) : '' ?>" placeholder="Username" required>
-                                            <label for="username">
+                                            <input type="text" class="form-control gov-input" id="account_settings_username" value="<?= isset($user) && isset($user['username']) ? esc($user['username']) : '' ?>" placeholder="Username" required>
+                                            <label for="account_settings_username">
                                                 <i class="fa-regular fa-user me-1"></i> Username
                                             </label>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-floating">
-                                            <input type="text" class="form-control gov-input" id="role" name="role" value="<?= isset($user) ? esc($user['role']) : '' ?>" placeholder="User Role" readonly>
-                                            <label for="role">
+                                            <input type="text" class="form-control gov-input" id="account_settings_role" value="<?= isset($user) ? esc($user['role']) : '' ?>" placeholder="User Role" readonly>
+                                            <label for="account_settings_role">
                                                 <i class="fa-solid fa-id-badge me-1"></i> User Role
                                             </label>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-floating">
-                                            <input type="text" class="form-control gov-input" id="created_at" value="<?= isset($user) && isset($user['created_at']) ? esc(date('F d, Y h:i A', strtotime($user['created_at']))) : '' ?>" placeholder="Date Created" readonly>
-                                            <label for="created_at">
+                                            <input type="text" class="form-control gov-input" id="account_settings_created_at" value="<?= isset($user) && isset($user['created_at']) ? esc(date('F d, Y h:i A', strtotime($user['created_at']))) : '' ?>" placeholder="Date Created" readonly>
+                                            <label for="account_settings_created_at">
                                                 <i class="fa-regular fa-calendar me-1"></i> Date Created
                                             </label>
                                         </div>
@@ -164,8 +164,8 @@
                                 <div class="row g-3">
                                     <div class="col-md-4">
                                         <div class="form-floating position-relative">
-                                            <input type="password" class="form-control gov-input gov-input--password" id="current_password" name="current_password" placeholder="Current Password">
-                                            <label for="current_password">
+                                            <input type="password" class="form-control gov-input gov-input--password" id="account_settings_current_password" placeholder="Current Password">
+                                            <label for="account_settings_current_password">
                                                 <i class="fa-solid fa-lock me-1"></i> Current Password
                                             </label>
                                             <button type="button" class="btn btn-sm password-toggle toggle-password" data-target="#current_password" aria-label="Toggle password visibility">
@@ -175,8 +175,8 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-floating position-relative">
-                                            <input type="password" class="form-control gov-input gov-input--password" id="new_password" name="new_password" placeholder="New Password">
-                                            <label for="new_password">
+                                            <input type="password" class="form-control gov-input gov-input--password" id="account_settings_new_password" placeholder="New Password">
+                                            <label for="account_settings_new_password">
                                                 <i class="fa-solid fa-lock me-1"></i> New Password
                                             </label>
                                             <button type="button" class="btn btn-sm password-toggle toggle-password" data-target="#new_password" aria-label="Toggle password visibility">
@@ -186,8 +186,8 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-floating position-relative">
-                                            <input type="password" class="form-control gov-input gov-input--password" id="confirm_password" name="confirm_password" placeholder="Confirm Password">
-                                            <label for="confirm_password">
+                                            <input type="password" class="form-control gov-input gov-input--password" id="account_settings_confirm_password" placeholder="Confirm Password">
+                                            <label for="account_settings_confirm_password">
                                                 <i class="fa-solid fa-lock me-1"></i> Confirm Password
                                             </label>
                                             <button type="button" class="btn btn-sm password-toggle toggle-password" data-target="#confirm_password" aria-label="Toggle password visibility">
@@ -202,6 +202,8 @@
                             </div>
                         </div>
                         <div class="modal-footer gov-modal-footer">
+                            <input type="hidden" value="<?= $user["id"] ?>" id="account_settings_user_id">
+
                             <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Close</button>
                             <button type="submit" class="btn gov-btn-primary px-4">
                                 <i class="fa-solid fa-floppy-disk me-2"></i>Save Changes
@@ -299,6 +301,7 @@
         <script>
             const USER_ID = <?= json_encode($user["id"]) ?>;
             const APP_DEBUG = <?= env('APP_DEBUG', true) ?>;
+            const flashData = <?= json_encode(get_flash('flash_notif', null)) ?>;
         </script>
 
         <!-- Bootstrap Bundle (includes Popper) -->

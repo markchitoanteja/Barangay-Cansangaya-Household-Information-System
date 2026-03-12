@@ -18,7 +18,6 @@ class Query
 final class QueryBuilder
 {
     private PDO $pdo;
-
     private string $table;
     private array $select = ['*'];
     private array $wheres = [];
@@ -28,56 +27,44 @@ final class QueryBuilder
     private ?int $limit = null;
     private ?int $offset = null;
 
-    /**
-     * @param PDO $pdo Active PDO connection.
-     * @param string $table Table name.
-     */
     public function __construct(PDO $pdo, string $table)
     {
         $this->pdo = $pdo;
         $this->table = $this->id($table);
     }
 
+    // ----------------------------
+    // New: Create table if not exists
+    // ----------------------------
     /**
-     * Set selected columns.
+     * Create a table if it does not exist using raw SQL.
      *
-     * Examples:
-     *  - select('*')
-     *  - select('id, name, email')
-     *
-     * @param string $columns Comma-separated columns or '*'.
+     * @param string $columnsDefinition Example: "id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(50)"
+     * @param string|null $engine Optional table engine, default 'InnoDB'
+     * @return bool True if executed successfully
      */
+    public function createTableIfNotExists(string $columnsDefinition, ?string $engine = 'InnoDB'): bool
+    {
+        $sql = "CREATE TABLE IF NOT EXISTS {$this->table} ({$columnsDefinition}) ENGINE={$engine} DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
+        $stmt = $this->pdo->prepare($sql);
+        return $stmt->execute();
+    }
+
+    // ----------------------------
+    // CRUD Methods
+    // ----------------------------
     public function select(string $columns = '*'): self
     {
         $columns = trim($columns);
-
         if ($columns === '*') {
             $this->select = ['*'];
-            return $this;
+        } else {
+            $parts = array_map('trim', explode(',', $columns));
+            $this->select = array_map(fn($c) => $this->id($c), $parts);
         }
-
-        $parts = array_map('trim', explode(',', $columns));
-        $this->select = array_map(fn($c) => $this->id($c), $parts);
-
         return $this;
     }
 
-    /**
-     * Add WHERE conditions.
-     *
-     * Supported forms:
-     *  - where('id', 3)
-     *  - where('name', 'Mark')
-     *  - where('id', '>=', 3)
-     *  - where(['id' => 3, 'name' => 'Mark'])
-     *  - where('id', 'IN', [1,2,3])
-     *
-     * @param string|array $field Column name or associative array of column => value.
-     * @param mixed $opOrValue Operator (when using 3 args) or value (when using 2 args).
-     * @param mixed|null $value Value (when using 3 args).
-     *
-     * @throws InvalidArgumentException For invalid operators or IN with invalid values.
-     */
     public function where(string|array $field, mixed $opOrValue = null, mixed $value = null): self
     {
         if (is_array($field)) {
@@ -97,7 +84,6 @@ final class QueryBuilder
 
         $op = strtoupper(trim($op));
         $allowedOps = ['=', '!=', '<>', '>', '>=', '<', '<=', 'LIKE', 'NOT LIKE', 'IN', 'NOT IN'];
-
         if (!in_array($op, $allowedOps, true)) {
             throw new InvalidArgumentException("Invalid operator: {$op}");
         }
@@ -108,46 +94,27 @@ final class QueryBuilder
             if (!is_array($val) || count($val) === 0) {
                 throw new InvalidArgumentException("{$op} requires a non-empty array.");
             }
-
             $placeholders = [];
             foreach ($val as $v) {
                 $placeholders[] = $this->param($v);
             }
-
             $this->wheres[] = "{$col} {$op} (" . implode(', ', $placeholders) . ")";
             return $this;
         }
 
         $ph = $this->param($val);
         $this->wheres[] = "{$col} {$op} {$ph}";
-
         return $this;
     }
 
-    /**
-     * Set ORDER BY clause.
-     *
-     * @param string $column Column name.
-     * @param string $dir Sort direction ('ASC' or 'DESC'). Defaults to 'ASC'.
-     *
-     * @throws InvalidArgumentException For invalid column identifiers.
-     */
     public function orderBy(string $column, string $dir = 'ASC'): self
     {
         $this->orderBy = $this->id($column);
-
         $dir = strtoupper(trim($dir));
         $this->orderDir = ($dir === 'DESC') ? 'DESC' : 'ASC';
-
         return $this;
     }
 
-    /**
-     * Set LIMIT and optional OFFSET.
-     *
-     * @param int $limit Maximum rows to return.
-     * @param int $offset Rows to skip before returning results.
-     */
     public function limit(int $limit, int $offset = 0): self
     {
         $this->limit = max(0, $limit);
@@ -155,11 +122,6 @@ final class QueryBuilder
         return $this;
     }
 
-    /**
-     * Execute the built SELECT query and return all rows.
-     *
-     * @return array<int, array<string, mixed>>
-     */
     public function get(): array
     {
         $sql = $this->buildSelectSql();
@@ -168,73 +130,38 @@ final class QueryBuilder
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Execute the built SELECT query and return the first row (or null).
-     *
-     * @return array<string, mixed>|null
-     */
     public function first(): ?array
     {
         $prevLimit = $this->limit;
         $prevOffset = $this->offset;
-
-        if ($this->limit === null) {
-            $this->limit(1, 0);
-        }
-
+        if ($this->limit === null) $this->limit(1, 0);
         $rows = $this->get();
-
         $this->limit = $prevLimit;
         $this->offset = $prevOffset;
-
         return $rows[0] ?? null;
     }
 
-    /**
-     * Insert a row into the current table.
-     *
-     * @param array<string, mixed> $data Column => value.
-     * @return string Last insert ID.
-     */
     public function insert(array $data): string
     {
-        if (!$data) {
-            throw new InvalidArgumentException("Insert data cannot be empty.");
-        }
+        if (!$data) throw new InvalidArgumentException("Insert data cannot be empty.");
 
         $cols = [];
         $vals = [];
-
         foreach ($data as $k => $v) {
             $cols[] = $this->id((string)$k);
             $vals[] = $this->param($v);
         }
 
-        $sql = "INSERT INTO {$this->table} (" . implode(', ', $cols) . ")
-                VALUES (" . implode(', ', $vals) . ")";
-
+        $sql = "INSERT INTO {$this->table} (" . implode(', ', $cols) . ") VALUES (" . implode(', ', $vals) . ")";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute($this->params);
-
         return $this->pdo->lastInsertId();
     }
 
-    /**
-     * Update rows in the current table.
-     *
-     * Requires at least one WHERE condition for safety.
-     *
-     * @param array<string, mixed> $data Column => value.
-     * @return int Affected rows.
-     */
     public function update(array $data): int
     {
-        if (!$data) {
-            throw new InvalidArgumentException("Update data cannot be empty.");
-        }
-        if (!$this->wheres) {
-            throw new RuntimeException("Refusing to UPDATE without WHERE.");
-        }
+        if (!$data) throw new InvalidArgumentException("Update data cannot be empty.");
+        if (!$this->wheres) throw new RuntimeException("Refusing to UPDATE without WHERE.");
 
         $sets = [];
         foreach ($data as $k => $v) {
@@ -244,71 +171,51 @@ final class QueryBuilder
         }
 
         $sql = "UPDATE {$this->table} SET " . implode(', ', $sets) . $this->buildWhereSql();
-
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute($this->params);
-
         return $stmt->rowCount();
     }
 
-    /**
-     * Delete rows from the current table.
-     *
-     * Requires at least one WHERE condition for safety.
-     *
-     * @return int Affected rows.
-     */
     public function delete(): int
     {
-        if (!$this->wheres) {
-            throw new RuntimeException("Refusing to DELETE without WHERE.");
-        }
+        if (!$this->wheres) throw new RuntimeException("Refusing to DELETE without WHERE.");
 
         $sql = "DELETE FROM {$this->table}" . $this->buildWhereSql();
-
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute($this->params);
-
         return $stmt->rowCount();
     }
 
-    /**
-     * Build the final SELECT SQL statement.
-     */
+    public function exists(): bool
+    {
+        $sql = "SELECT EXISTS(SELECT 1 FROM {$this->table}" . $this->buildWhereSql() . " LIMIT 1) AS exists_result";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($this->params);
+        return (bool) $stmt->fetchColumn();
+    }
+
+    // ----------------------------
+    // Private helpers
+    // ----------------------------
     private function buildSelectSql(): string
     {
         $sql = "SELECT " . implode(', ', $this->select) . " FROM {$this->table}";
         $sql .= $this->buildWhereSql();
 
-        if ($this->orderBy) {
-            $sql .= " ORDER BY {$this->orderBy} {$this->orderDir}";
-        }
-
+        if ($this->orderBy) $sql .= " ORDER BY {$this->orderBy} {$this->orderDir}";
         if ($this->limit !== null) {
             $sql .= " LIMIT " . (int)$this->limit;
-
-            if ($this->offset !== null && $this->offset > 0) {
-                $sql .= " OFFSET " . (int)$this->offset;
-            }
+            if ($this->offset !== null && $this->offset > 0) $sql .= " OFFSET " . (int)$this->offset;
         }
-
         return $sql;
     }
 
-    /**
-     * Build the WHERE SQL fragment.
-     */
     private function buildWhereSql(): string
     {
         if (!$this->wheres) return '';
         return " WHERE " . implode(' AND ', $this->wheres);
     }
 
-    /**
-     * Register a bound parameter and return its placeholder.
-     *
-     * @param mixed $value Value to bind.
-     */
     private function param(mixed $value): string
     {
         $key = ':p' . (count($this->params) + 1);
@@ -316,25 +223,11 @@ final class QueryBuilder
         return $key;
     }
 
-    /**
-     * Validate and return a safe SQL identifier (table/column).
-     *
-     * Allows: letters, numbers, underscore. Also allows '*' for SELECT.
-     *
-     * @throws InvalidArgumentException For invalid identifiers.
-     */
     private function id(string $identifier): string
     {
         $identifier = trim($identifier);
-
-        if ($identifier === '*') {
-            return '*';
-        }
-
-        if (!preg_match('/^[a-zA-Z0-9_]+$/', $identifier)) {
-            throw new InvalidArgumentException("Invalid identifier: {$identifier}");
-        }
-
+        if ($identifier === '*') return '*';
+        if (!preg_match('/^[a-zA-Z0-9_]+$/', $identifier)) throw new InvalidArgumentException("Invalid identifier: {$identifier}");
         return $identifier;
     }
 }

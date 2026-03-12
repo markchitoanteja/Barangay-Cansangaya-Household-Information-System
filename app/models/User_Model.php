@@ -4,7 +4,7 @@ require_once 'app/core/Query.php';
 
 class User_Model extends Query
 {
-    public function MOD_GET_USER_BY_USERNAME_AND_ROLE($username, $role): ?array
+    public function MOD_GET_USER_BY_USERNAME_AND_ROLE(string $username, string $role): ?array
     {
         $data = $this->table('users')->where('username', '=', $username)->where('role', '=', $role)->first();
 
@@ -18,7 +18,7 @@ class User_Model extends Query
         return $data;
     }
 
-    public function MOD_VERIFY_SECURITY_ANSWERS($user_id, $answers): bool
+    public function MOD_VERIFY_SECURITY_ANSWERS(int $user_id, mixed $answers): bool
     {
         $stored_answers = $this->table('security_questions')
             ->where('user_id', '=', $user_id)
@@ -58,7 +58,7 @@ class User_Model extends Query
         return true;
     }
 
-    public function MOD_RESET_PASSWORD($user_id, $password): bool
+    public function MOD_RESET_PASSWORD(int $user_id, string $password): bool
     {
         $password_hash = password_hash($password, PASSWORD_BCRYPT);
 
@@ -67,5 +67,29 @@ class User_Model extends Query
             ->update([
                 'password_hash' => $password_hash
             ]);
+    }
+
+    public function MOD_CHECK_IF_USERNAME_EXISTS(string $username, int $user_id): bool
+    {
+        return $this->table('users')->where('username', $username)->where('id', '!=', $user_id)->exists();
+    }
+
+    public function MOD_GET_HASHED_PASSWORD_BY_ID(int $user_id): string
+    {
+        $row = $this->table('users')->select('password_hash')->where('id', $user_id)->first();
+
+        return $row['password_hash'];
+    }
+
+    public function MOD_UPDATE_ACCOUNT(int $user_id, array $data): bool
+    {
+        return $this->table('users')->where('id', $user_id)->update($data);
+    }
+
+    public function MOD_GET_USER_BY_ID($user_id): ?array
+    {
+        $data = $this->table('users')->where('id', $user_id)->first();
+
+        return $data;
     }
 }

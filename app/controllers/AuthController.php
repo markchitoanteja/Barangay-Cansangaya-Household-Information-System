@@ -9,6 +9,8 @@ class AuthController extends Controller
 
     public function __construct()
     {
+        $this->model('Seed_Database_Model')->MOD_SEED_DATABASE();
+
         $this->response = [
             'success' => false,
             'message' => '',
@@ -49,7 +51,6 @@ class AuthController extends Controller
         $response['message'] = 'Invalid username or password.';
 
         if (!empty($user) && password_verify($password, $user['password_hash'])) {
-
             session_set('is_login', true);
             session_set('user', $user);
 

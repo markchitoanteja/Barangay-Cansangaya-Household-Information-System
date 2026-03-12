@@ -908,3 +908,14 @@ body {
         align-items: flex-start;
     }
 }
+
+.border-danger {
+    border-color: #dc3545 !important;
+}
+
+.password-error,
+.username-error {
+    margin-top: 0.25rem;
+    font-size: 0.85rem;
+    color: #dc3545;
+}

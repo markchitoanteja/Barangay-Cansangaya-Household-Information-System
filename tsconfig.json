@@ -2,7 +2,6 @@
   "compilerOptions": {
     "target": "ES6",
     "module": "ESNext",
-    "moduleResolution": "node", // replace "node10"
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "rootDir": "./public/ts",

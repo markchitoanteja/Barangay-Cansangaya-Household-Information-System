@@ -26,4 +26,5 @@ return function (Router $router) {
     $router->get('/health-monitoring', 'AdminController@health_monitoring');
     $router->get('/reports', 'AdminController@reports');
     $router->get('/user-management', 'AdminController@user_management');
+    $router->post('/update-account', 'AdminController@update_account');
 };
