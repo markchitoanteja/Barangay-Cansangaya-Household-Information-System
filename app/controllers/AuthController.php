@@ -5,18 +5,6 @@ require_once 'app/core/Database.php';
 
 class AuthController extends Controller
 {
-    protected $response;
-
-    public function __construct()
-    {
-        $this->model('Seed_Database_Model')->MOD_SEED_DATABASE();
-
-        $this->response = [
-            'success' => false,
-            'message' => '',
-        ];
-    }
-
     public function index()
     {
         if (session_get('is_login', false) === true) {
@@ -204,6 +192,12 @@ class AuthController extends Controller
                 'message' => 'Password reset failed.'
             ]);
         }
+
+        flash('login_notif', [
+            'title' => 'Success',
+            'text' => 'Your password has been reset successfully.',
+            'icon' => 'success',
+        ]);
 
         return json([
             'success' => true,

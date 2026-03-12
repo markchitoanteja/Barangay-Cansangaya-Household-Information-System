@@ -5,16 +5,6 @@ require_once 'app/core/Database.php';
 
 class AdminController extends Controller
 {
-    protected $response;
-
-    public function __construct()
-    {
-        $this->response = [
-            'success' => false,
-            'message' => '',
-        ];
-    }
-
     /*----- Start Admin Pages Views -----*/
     public function dashboard()
     {
@@ -204,21 +194,32 @@ class AdminController extends Controller
         $current_page = (int)(input('page') ?? 1);
         if ($current_page < 1) $current_page = 1;
 
-        $total_users = $user_model->MOD_GET_USERS_COUNT($user_id);
-        $total_pages = (int)ceil($total_users / $per_page);
+        // --- Get search filters from URL ---
+        $search_input = trim((string) input('search_input'));
+        $role = trim((string) input('role'));
+        $status = trim((string) input('status'));
 
+        // --- Fetch filtered users ---
+        $all_users = $user_model->MOD_SEARCH_USERS($search_input, $role, $status, $user_id);
+
+        // Pagination calculations
+        $total_users = count($all_users);
+        $total_pages = (int)ceil($total_users / $per_page);
         $offset = ($current_page - 1) * $per_page;
 
-        // --- Fetch paginated users ---
-        $users = $user_model->MOD_GET_USERS_PAGINATED($user_id, $per_page, $offset);
+        // Slice users for current page
+        $users = array_slice($all_users, $offset, $per_page);
 
-        // --- Prepare data for the view ---
+        // --- Prepare data for view ---
         $data = [
             'title' => 'User Management',
             'user' => $current_user,
             'users' => $users,
             'current_page' => $current_page,
-            'total_pages' => $total_pages
+            'total_pages' => $total_pages,
+            'search_input' => $search_input,
+            'role' => $role,
+            'status' => $status
         ];
 
         // --- Load views ---
@@ -300,10 +301,5 @@ class AdminController extends Controller
         }
 
         return json($response);
-    }
-    
-    public function search_user()
-    {
-        
     }
 }

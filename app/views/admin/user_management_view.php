@@ -2,7 +2,7 @@
     <!-- PANEL HEADER -->
     <div class="panel-header d-flex justify-content-between align-items-center mb-3">
         <span></span>
-        <button class="btn gov-btn-primary" data-bs-toggle="modal" data-bs-target="#userModal">
+        <button class="btn gov-btn-primary btn-user-management" data-title="ADD USER ACCOUNT" data-bs-toggle="modal" data-bs-target="#userModal">
             <i class="fa-solid fa-user-plus me-2"></i>Add Staff
         </button>
     </div>
@@ -10,39 +10,45 @@
     <!-- PANEL BODY -->
     <div class="panel-body mb-3">
         <!-- FILTERS -->
-        <div class="row g-2 mb-3">
-            <div class="col-md-4">
-                <div class="form-floating">
-                    <input type="text" class="form-control gov-input" id="searchUser" placeholder="Search User">
+        <form id="searchForm" action="javascript:void(0)" class="row g-2 mb-3">
+            <div class="col-md-4 d-flex flex-column">
+                <div class="form-floating flex-grow-1">
+                    <input type="text" name="search_input" class="form-control gov-input" id="searchUser" placeholder="Search User" value="<?= esc($search_input ?? '') ?>">
                     <label><i class="fa-solid fa-magnifying-glass me-1"></i>Search Name / Username</label>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="form-floating">
-                    <select class="form-select gov-input" id="filterRole">
+
+            <div class="col-md-3 d-flex flex-column">
+                <div class="form-floating flex-grow-1">
+                    <select class="form-select gov-input" name="role" id="filterRole">
                         <option value="">All Roles</option>
-                        <option value="ADMIN">ADMIN</option>
-                        <option value="STAFF">STAFF</option>
+                        <option value="ADMIN" <?= ($role ?? '') === 'ADMIN' ? 'selected' : '' ?>>ADMIN</option>
+                        <option value="STAFF" <?= ($role ?? '') === 'STAFF' ? 'selected' : '' ?>>STAFF</option>
                     </select>
                     <label><i class="fa-solid fa-user-shield me-1"></i>User Role</label>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="form-floating">
-                    <select class="form-select gov-input" id="filterStatus">
+
+            <div class="col-md-3 d-flex flex-column">
+                <div class="form-floating flex-grow-1">
+                    <select class="form-select gov-input" name="status" id="filterStatus">
                         <option value="">All Status</option>
-                        <option value="ACTIVE">ACTIVE</option>
-                        <option value="DISABLED">DISABLED</option>
+                        <option value="1" <?= ($status ?? '') === '1' ? 'selected' : '' ?>>ACTIVE</option>
+                        <option value="0" <?= ($status ?? '') === '0' ? 'selected' : '' ?>>DISABLED</option>
                     </select>
                     <label><i class="fa-solid fa-toggle-on me-1"></i>Account Status</label>
                 </div>
             </div>
-            <div class="col-md-2 d-flex align-items-center">
-                <button class="btn btn-primary w-100" id="search_filter_button">
+
+            <div class="col-md-2 d-flex gap-2">
+                <button type="submit" class="btn btn-primary flex-grow-1" id="search_filter_button">
                     <i class="fa-solid fa-magnifying-glass me-2"></i>Search
                 </button>
+                <a href="user-management" class="btn btn-outline-secondary flex-grow-1 loadable">
+                    <i class="fa-solid fa-arrows-rotate me-2"></i>Reset
+                </a>
             </div>
-        </div>
+        </form>
 
         <!-- USERS TABLE -->
         <div class="table-responsive">
@@ -55,11 +61,11 @@
                         <th>Role</th>
                         <th>Status</th>
                         <th>Date Created</th>
-                        <th class="text-end">Actions</th>
+                        <th class="text-center">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php if ($users): ?>
+                    <?php if (!empty($users)): ?>
                         <?php $counter = ($current_page - 1) * 10 + 1; ?>
                         <?php foreach ($users as $user): ?>
                             <tr>
@@ -74,21 +80,21 @@
                                     <?php endif; ?>
                                 </td>
                                 <td>
-                                    <?php if ($user['is_active'] === 1): ?>
+                                    <?php if ($user['is_active'] == 1): ?>
                                         <span class="badge bg-success">ACTIVE</span>
                                     <?php else: ?>
                                         <span class="badge bg-danger">DISABLED</span>
                                     <?php endif; ?>
                                 </td>
                                 <td><?= date("F d, Y", strtotime($user['created_at'])) ?></td>
-                                <td class="text-end">
-                                    <button class="btn btn-sm btn-soft me-1" data-bs-toggle="modal" data-bs-target="#userModal"
+                                <td class="text-center">
+                                    <button class="btn btn-sm btn-soft me-1 btn-user-management" data-title="UPDATE USER ACCOUNT" data-bs-toggle="modal" data-bs-target="#userModal"
                                         data-user-id="<?= $user['id'] ?>" data-full-name="<?= esc($user['full_name']) ?>"
                                         data-username="<?= esc($user['username']) ?>" data-role="<?= $user['role'] ?>"
                                         data-status="<?= $user['is_active'] ?>">
                                         <i class="fa-solid fa-pen"></i>
                                     </button>
-                                    <?php if ($user['is_active'] === 1): ?>
+                                    <?php if ($user['is_active'] == 1): ?>
                                         <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#disableUserModal"
                                             data-user-id="<?= $user['id'] ?>">
                                             <i class="fa-solid fa-user-slash"></i>
@@ -116,16 +122,23 @@
         <?php if ($total_pages > 1): ?>
             <nav aria-label="User pagination">
                 <ul class="pagination justify-content-center mt-3">
+                    <?php
+                    // Keep search filters in pagination links
+                    $query_params = $_GET;
+                    ?>
                     <li class="page-item <?= ($current_page <= 1) ? 'disabled' : '' ?>">
-                        <a class="page-link" href="?page=<?= $current_page - 1 ?>">&laquo; Prev</a>
+                        <?php $query_params['page'] = $current_page - 1; ?>
+                        <a class="loadable page-link" href="?<?= http_build_query($query_params) ?>">&laquo; Prev</a>
                     </li>
                     <?php for ($p = 1; $p <= $total_pages; $p++): ?>
+                        <?php $query_params['page'] = $p; ?>
                         <li class="page-item <?= ($p == $current_page) ? 'active' : '' ?>">
-                            <a class="page-link" href="?page=<?= $p ?>"><?= $p ?></a>
+                            <a class="loadable page-link" href="?<?= http_build_query($query_params) ?>"><?= $p ?></a>
                         </li>
                     <?php endfor; ?>
                     <li class="page-item <?= ($current_page >= $total_pages) ? 'disabled' : '' ?>">
-                        <a class="page-link" href="?page=<?= $current_page + 1 ?>">Next &raquo;</a>
+                        <?php $query_params['page'] = $current_page + 1; ?>
+                        <a class="loadable page-link" href="?<?= http_build_query($query_params) ?>">Next &raquo;</a>
                     </li>
                 </ul>
             </nav>

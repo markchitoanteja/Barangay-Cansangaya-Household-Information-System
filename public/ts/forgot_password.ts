@@ -25,7 +25,7 @@ interface ResetPasswordResponse {
 
 $((): void => {
     enableDevOptions(APP_DEBUG);
-    
+
     $("#year").text(new Date().getFullYear());
 
     // --- Step 1: Validate username ---
@@ -192,18 +192,13 @@ $((): void => {
             contentType: false,
             data: formData,
             success: (response: ResetPasswordResponse): void => {
-                hideLoading();
+                setTimeout(() => {
+                    hideLoading();
 
-                if (!response.success) return showAlert(response.message ?? "Password reset failed.");
+                    if (!response.success) return showAlert(response.message ?? "Password reset failed.");
 
-                Swal.fire({
-                    icon: "success",
-                    title: "Password Reset Successful",
-                    text: response.message ?? "You can now log in with your new password.",
-                    confirmButtonText: "Go to Login"
-                }).then(() => {
-                    window.location.href = BASE_URL + "login";
-                });
+                    location.href = BASE_URL;
+                }, 250);
             },
             error: (jqXHR: JQuery.jqXHR, textStatus: string, errorThrown: string): void => {
                 hideLoading();

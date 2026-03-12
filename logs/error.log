@@ -1,0 +1,4 @@
+[2026-03-12 22:28:34] E_WARNING: Undefined array key "user_id" | File: C:\xampp\htdocs\Barangay-Cansangaya-Household-Information-System\app\controllers\AdminController.php | Line: 309
+[2026-03-12 22:29:55] E_WARNING: Undefined array key "name" | File: C:\xampp\htdocs\Barangay-Cansangaya-Household-Information-System\app\models\User_Model.php | Line: 135
+[2026-03-12 22:30:55] E_WARNING: Undefined array key "status" | File: C:\xampp\htdocs\Barangay-Cansangaya-Household-Information-System\app\models\User_Model.php | Line: 146
+[2026-03-12 22:37:31] E_DEPRECATED: trim(): Passing null to parameter #1 ($string) of type string is deprecated | File: C:\xampp\htdocs\Barangay-Cansangaya-Household-Information-System\app\controllers\AdminController.php | Line: 198

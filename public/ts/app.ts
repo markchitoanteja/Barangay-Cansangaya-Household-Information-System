@@ -91,6 +91,12 @@ $((): void => {
         }
     });
 
+    $(document).on("click", ".btn-user-management", function () {
+        const title = $(this).data('title');
+
+        $("#user_management_title").html(title);
+    });
+
     $("#account_settings_current_password, #account_settings_new_password, #account_settings_confirm_password, #account_settings_username").on("input", () => {
         clearValidation();
     });
@@ -172,31 +178,29 @@ $((): void => {
         });
     });
 
-    $("#search_filter_button").on("click", (): void => {
-        const search_data = $("#searchUser").val()?.toString().trim();
+    $("#searchForm").on("submit", (e: JQuery.SubmitEvent) => {
+        const search_input = $("#searchUser").val()?.toString().trim();
         const role = $("#filterRole").val()?.toString().trim();
         const status = $("#filterStatus").val()?.toString().trim();
 
+        // Build URL parameters
+        const params = new URLSearchParams();
+
+        if (search_input) params.set("search_input", search_input);
+        if (role) params.set("role", role);
+        if (status) params.set("status", status);
+
+        // Reset page to 1 on new search
+        params.set("page", "1");
+
+        // Reload page with query string
+        const baseUrl = window.location.pathname; // keeps /user-management
+
         showLoading();
 
-        const formData = { search_data, role, status };
-
-        $.ajax({
-            url: "search-user",
-            method: "POST",
-            data: formData,
-            dataType: "JSON",
-            success: (response) => {
-                setTimeout(() => {
-                    console.log(response);
-
-                    hideLoading();
-                }, 250);
-            },
-            error: (xhr, status, error) => {
-                console.error("AJAX Error:", error);
-            }
-        });
+        setTimeout(() => {
+            window.location.href = `${baseUrl}?${params.toString()}`;
+        }, 250);
     });
 });
 

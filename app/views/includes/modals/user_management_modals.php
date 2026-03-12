@@ -5,7 +5,7 @@
                 <div class="d-flex align-items-center gap-3">
                     <img src="<?= base_url('public/assets/img/logo.png') ?>" class="gov-modal-logo">
                     <div>
-                        <h5 class="modal-title mb-0">USER ACCOUNT</h5>
+                        <h5 class="modal-title mb-0" id="user_management_title">USER ACCOUNT</h5>
                         <small class="gov-modal-subtitle">Barangay Cansangaya Household Information System</small>
                     </div>
                 </div>

@@ -117,4 +117,42 @@ class User_Model extends Query
             ? count($this->table('users')->where('id', '!=', $exclude_user_id)->get())
             : 0;
     }
+
+    public function MOD_SEARCH_USERS(string $search_input, string $role, string $status, int $exclude_user_id): array
+    {
+        // Ensure inputs are strings
+        $search_input = trim((string)$search_input);
+        $role = trim((string)$role);
+        $status = trim((string)$status);
+
+        // Start query excluding current user
+        $query = $this->table('users')->where('id', '!=', $exclude_user_id);
+
+        // Apply role filter if provided
+        if ($role !== '') {
+            $query->where('role', '=', $role);
+        }
+
+        // Apply status filter if provided
+        if ($status !== '') {
+            $status_int = (int)$status;
+            $query->where('is_active', '=', $status_int);
+        }
+
+        // Fetch initial results from DB
+        $users = $query->orderBy('id', 'DESC')->get();
+
+        // Apply search input filter (name OR username, case-insensitive)
+        if ($search_input !== '') {
+            $search_lower = strtolower($search_input);
+
+            $users = array_filter($users, function ($user) use ($search_lower) {
+                return str_contains(strtolower($user['full_name']), $search_lower) ||
+                    str_contains(strtolower($user['username']), $search_lower);
+            });
+        }
+
+        // Re-index array to ensure consecutive keys
+        return array_values($users);
+    }
 }
