@@ -51,23 +51,27 @@ class AuthController extends Controller
         $response['message'] = 'Invalid username or password.';
 
         if (!empty($user) && password_verify($password, $user['password_hash'])) {
-            session_set('is_login', true);
-            session_set('user', $user);
+            if ($user['is_active']) {
+                session_set('is_login', true);
+                session_set('user', $user);
 
-            if ($remember) {
-                session_set('remember_me', true);
-                session_set('remember_username', $username);
-                session_set('remember_password', $password);
-                session_set('remember_role', $role);
+                if ($remember) {
+                    session_set('remember_me', true);
+                    session_set('remember_username', $username);
+                    session_set('remember_password', $password);
+                    session_set('remember_role', $role);
+                } else {
+                    session_remove('remember_me');
+                    session_remove('remember_username');
+                    session_remove('remember_password');
+                    session_remove('remember_role');
+                }
+
+                $response['success'] = true;
+                $response['message'] = 'Login successful.';
             } else {
-                session_remove('remember_me');
-                session_remove('remember_username');
-                session_remove('remember_password');
-                session_remove('remember_role');
+                $response['message'] = 'This account is currently inactive. Please contact the system administrator for assistance.';
             }
-
-            $response['success'] = true;
-            $response['message'] = 'Login successful.';
         }
 
         return json($response);
@@ -83,13 +87,20 @@ class AuthController extends Controller
         $user = $user_model->MOD_GET_USER_BY_USERNAME_AND_ROLE($username, $role);
 
         if (!empty($user)) {
-            return json([
-                'success' => true,
-                'message' => 'Username is valid.',
-                'data' => [
-                    'user_id' => $user['id'],
-                ],
-            ]);
+            if ($user['is_active']) {
+                return json([
+                    'success' => true,
+                    'message' => 'Username is valid.',
+                    'data' => [
+                        'user_id' => $user['id'],
+                    ],
+                ]);
+            } else {
+                return json([
+                    'success' => false,
+                    'message' => 'This account is currently inactive. Please contact the system administrator for assistance.',
+                ]);
+            }
         } else {
             return json([
                 'success' => false,

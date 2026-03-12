@@ -196,11 +196,12 @@
     <!-- Global JavaScript Variables -->
     <script>
         const BASE_URL = "<?= base_url() ?>";
+        const APP_DEBUG = <?= env('APP_DEBUG', true) ?>;
     </script>
 
     <script src="<?= base_url('public/plugins/jquery/jquery-4.0.0.min.js') ?>"></script>
     <script src="<?= base_url('public/plugins/sweetalert2/sweetalert2.all.min.js') ?>"></script>
-    <script src="<?= base_url('public/assets/js/forgot_password.js?v=') . env('APP_VERSION', '1.0.0') ?>"></script>
+    <script src="<?= base_url('public/assets/js/forgot_password.min.js?v=') . env('APP_VERSION', '1.0.0') ?>"></script>
 </body>
 
 </html>

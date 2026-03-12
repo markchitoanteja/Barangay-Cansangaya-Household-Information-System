@@ -8,12 +8,10 @@ $((): void => {
     updateCalendarReferenceDate();
     enableDevOptions(APP_DEBUG);
 
-    // Show flash message if available
     if (typeof flashData !== 'undefined' && flashData) {
         showFlash(flashData.title, flashData.text, flashData.icon as "success" | "error" | "warning");
     }
 
-    // Calendar modal events
     $("#calendarModal").on("shown.bs.modal", (): void => {
         renderCalendar(currentDate);
     });
@@ -28,7 +26,6 @@ $((): void => {
         renderCalendar(currentDate);
     });
 
-    // Logout
     $(document).on("click", ".btn_logout", (): void => {
         Swal.fire({
             title: "Logout?",
@@ -67,24 +64,19 @@ $((): void => {
         });
     });
 
-    // Loadable links
-    $(document).on(
-        "click",
-        ".loadable",
-        function (this: HTMLAnchorElement, e: JQuery.ClickEvent): void {
-            e.preventDefault();
+    $(document).on("click", ".loadable", function (this: HTMLAnchorElement, e: JQuery.ClickEvent): void {
+        e.preventDefault();
 
-            const url = $(this).attr("href");
+        const url = $(this).attr("href");
 
-            showLoading();
+        showLoading();
 
-            setTimeout(() => {
-                if (url) {
-                    window.location.href = url;
-                }
-            }, 250);
-        }
-    );
+        setTimeout(() => {
+            if (url) {
+                window.location.href = url;
+            }
+        }, 250);
+    });
 
     $(document).on("click", ".toggle-password", function () {
         const input = $(this).siblings("input"); // find the input next to the button
@@ -172,6 +164,33 @@ $((): void => {
                             $("#account_settings_current_password").addClass("border-danger").parent().after(`<div class="text-danger small password-error">${response.errors.current_password}</div>`);
                         }
                     }
+                }, 250);
+            },
+            error: (xhr, status, error) => {
+                console.error("AJAX Error:", error);
+            }
+        });
+    });
+
+    $("#search_filter_button").on("click", (): void => {
+        const search_data = $("#searchUser").val()?.toString().trim();
+        const role = $("#filterRole").val()?.toString().trim();
+        const status = $("#filterStatus").val()?.toString().trim();
+
+        showLoading();
+
+        const formData = { search_data, role, status };
+
+        $.ajax({
+            url: "search-user",
+            method: "POST",
+            data: formData,
+            dataType: "JSON",
+            success: (response) => {
+                setTimeout(() => {
+                    console.log(response);
+
+                    hideLoading();
                 }, 250);
             },
             error: (xhr, status, error) => {

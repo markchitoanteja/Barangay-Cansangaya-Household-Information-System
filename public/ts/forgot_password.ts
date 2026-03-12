@@ -24,7 +24,8 @@ interface ResetPasswordResponse {
 }
 
 $((): void => {
-    disableDevOptions();
+    enableDevOptions(APP_DEBUG);
+    
     $("#year").text(new Date().getFullYear());
 
     // --- Step 1: Validate username ---
@@ -240,13 +241,24 @@ $((): void => {
         $("#forgot_step" + step + "_form").removeClass("d-none");
         hideAlert();
     }
-    function disableDevOptions(): void {
-        $(document).on("contextmenu", (e: JQuery.ContextMenuEvent) => e.preventDefault());
-        $(document).on("keydown", (e: JQuery.KeyDownEvent) => {
-            const key = e.which || e.keyCode;
-            if ([123].includes(key)) return false; // F12
-            if (e.ctrlKey && e.shiftKey && [73, 74, 67].includes(key)) return false; // Ctrl+Shift+I/J/C
-            if (e.ctrlKey && [83, 85].includes(key)) return false; // Ctrl+S/U
-        });
+
+    function enableDevOptions(enable: boolean): void {
+        if (!enable) {
+            $(document).on(
+                "contextmenu",
+                (e: JQuery.ContextMenuEvent): void => e.preventDefault()
+            );
+
+            $(document).on(
+                "keydown",
+                (e: JQuery.KeyDownEvent): boolean | void => {
+                    const key = e.which || e.keyCode;
+
+                    if (key === 123) return false; // F12
+                    if (e.ctrlKey && e.shiftKey && [73, 74, 67].includes(key)) return false;
+                    if (e.ctrlKey && [85, 83].includes(key)) return false;
+                }
+            );
+        }
     }
 });

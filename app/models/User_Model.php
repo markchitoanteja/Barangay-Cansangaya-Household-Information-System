@@ -92,4 +92,29 @@ class User_Model extends Query
 
         return $data;
     }
+
+    public function MOD_GET_ALL_USERS_EXCLUDE_CURRENT_USER($user_id): array
+    {
+        $data = $this->table('users')->where('id', '!=', $user_id)->orderBy('id', 'DESC')->get();
+
+        return $data;
+    }
+
+    public function MOD_GET_USERS_PAGINATED($exclude_user_id, int $limit, int $offset): array
+    {
+        return $this->table('users')
+            ->where('id', '!=', $exclude_user_id)
+            ->orderBy('id', 'DESC')
+            ->limit($limit, $offset)
+            ->get();
+    }
+
+    public function MOD_GET_USERS_COUNT($exclude_user_id): int
+    {
+        return $this->table('users')
+            ->where('id', '!=', $exclude_user_id)
+            ->get() // fetch all matching rows
+            ? count($this->table('users')->where('id', '!=', $exclude_user_id)->get())
+            : 0;
+    }
 }

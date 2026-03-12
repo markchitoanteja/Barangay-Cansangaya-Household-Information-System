@@ -30,6 +30,9 @@ class Seed_Database_Model extends Query
             username VARCHAR(60) NOT NULL UNIQUE,
             password_hash VARCHAR(255) NOT NULL,
             role ENUM('ADMIN', 'STAFF') NOT NULL DEFAULT 'STAFF',
+
+            is_active TINYINT(1) NOT NULL DEFAULT 1,
+
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
         ";
@@ -57,18 +60,21 @@ class Seed_Database_Model extends Query
     private function seedUsers(): void
     {
         if (!self::table('users')->exists()) {
+
             self::table('users')->insert([
                 'full_name'     => 'System Administrator',
                 'username'      => 'admin',
                 'password_hash' => '$2y$10$avell4wi0IzOscScWW8HW.ozWZnL.pkcpUnVpaSGlEd1f2B/OT27y',
-                'role'          => 'ADMIN'
+                'role'          => 'ADMIN',
+                'is_active'     => 1
             ]);
 
             self::table('users')->insert([
                 'full_name'     => 'Barangay Staff',
                 'username'      => 'staff',
                 'password_hash' => '$2y$10$cRLnC4R97XVT9A7Whi8HB.I2IgOr3BCTFCFr7o4DWXEjPQB1WcMee',
-                'role'          => 'STAFF'
+                'role'          => 'STAFF',
+                'is_active'     => 1
             ]);
         }
     }
@@ -79,6 +85,7 @@ class Seed_Database_Model extends Query
     private function seedSecurityQuestions(): void
     {
         if (!self::table('security_questions')->exists()) {
+
             $defaultQuestions = [
                 1 => [
                     ['question' => 'What is your favorite color?', 'answer_hash' => '$2a$12$tz2Eh3rDTv2HxGrpayprcuZLLR7nw5neAUNZmXOLrm2SiFsk./Dhi'],

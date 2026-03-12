@@ -8,7 +8,7 @@ $(function () {
         showAlert(flashData.title, flashData.text, flashData.icon as "success" | "error" | "warning");
     }
 
-    disableDevOptions();
+    enableDevOptions(APP_DEBUG);
 
     // Update year in footer
     $("#year").text(new Date().getFullYear());
@@ -77,15 +77,24 @@ $(function () {
         });
     });
 
-    function disableDevOptions() {
-        $(document).on("contextmenu", (e) => e.preventDefault());
-        $(document).keydown((e: JQuery.KeyDownEvent) => {
-            const key = e.which || e.keyCode;
-            if ([123, 73, 74, 67, 85, 83].includes(key) && (e.ctrlKey || e.shiftKey)) {
-                e.preventDefault();
-                return false;
-            }
-        });
+    function enableDevOptions(enable: boolean): void {
+        if (!enable) {
+            $(document).on(
+                "contextmenu",
+                (e: JQuery.ContextMenuEvent): void => e.preventDefault()
+            );
+
+            $(document).on(
+                "keydown",
+                (e: JQuery.KeyDownEvent): boolean | void => {
+                    const key = e.which || e.keyCode;
+
+                    if (key === 123) return false; // F12
+                    if (e.ctrlKey && e.shiftKey && [73, 74, 67].includes(key)) return false;
+                    if (e.ctrlKey && [85, 83].includes(key)) return false;
+                }
+            );
+        }
     }
 
     function showLoading() {

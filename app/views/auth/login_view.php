@@ -156,6 +156,7 @@
     <!-- Global JavaScript Variables -->
     <script>
         const flashData = <?= json_encode(get_flash('login_notif', null)) ?>;
+        const APP_DEBUG = <?= env('APP_DEBUG', true) ?>;
     </script>
 
     <!-- jQuery -->
@@ -163,7 +164,7 @@
     <!-- SweetAlert2 -->
     <script src="<?= base_url('public/plugins/sweetalert2/sweetalert2.all.min.js') ?>"></script>
     <!-- Custom Script -->
-    <script src="<?= base_url('public/assets/js/login.js?v=') . env('APP_VERSION', '1.0.0') ?>"></script>
+    <script src="<?= base_url('public/assets/js/login.min.js?v=') . env('APP_VERSION', '1.0.0') ?>"></script>
 </body>
 
 </html>

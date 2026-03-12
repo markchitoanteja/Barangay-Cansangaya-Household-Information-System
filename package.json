@@ -1,12 +1,21 @@
 {
   "scripts": {
-    "version": "node scripts/bump-version.js",
-    "build": "npm run version && npx tsc",
-    "watch": "npx tsc -w"
+    "version:patch": "node scripts/bump-version.js patch",
+    "version:minor": "node scripts/bump-version.js minor",
+    "version:major": "node scripts/bump-version.js major",
+    "compile": "tsc",
+    "minify": "node scripts/minify.js",
+    "build-patch": "npm run version:patch && npm run compile && npm run minify",
+    "build-minor": "npm run version:minor && npm run compile && npm run minify",
+    "build-major": "npm run version:major && npm run compile && npm run minify",
+    "watch": "tsc -w"
   },
   "devDependencies": {
     "@types/bootstrap": "^5.2.10",
     "@types/jquery": "^4.0.0",
+    "esbuild": "^0.27.3",
+    "glob": "^13.0.6",
+    "terser": "^5.46.0",
     "typescript": "^5.9.3"
   },
   "dependencies": {
