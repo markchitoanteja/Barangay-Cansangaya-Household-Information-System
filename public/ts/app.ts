@@ -49,7 +49,7 @@ $((): void => {
                         contentType: false,
                         success: (response: { success: boolean }) => {
                             if (response.success) {
-                                location.reload();
+                                location.href = "login";
                             } else {
                                 hideLoading();
                             }

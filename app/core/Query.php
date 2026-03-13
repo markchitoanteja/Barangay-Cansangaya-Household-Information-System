@@ -38,6 +38,23 @@ final class QueryBuilder
     }
 
     // ----------------------------
+    // New: Create table if not exists
+    // ----------------------------
+    /**
+     * Create a table if it does not exist using raw SQL.
+     *
+     * @param string $columnsDefinition Example: "id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(50)"
+     * @param string|null $engine Optional table engine, default 'InnoDB'
+     * @return bool True if executed successfully
+     */
+    public function createTableIfNotExists(string $columnsDefinition, ?string $engine = 'InnoDB'): bool
+    {
+        $sql = "CREATE TABLE IF NOT EXISTS {$this->table} ({$columnsDefinition}) ENGINE={$engine} DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
+        $stmt = $this->pdo->prepare($sql);
+        return $stmt->execute();
+    }
+
+    // ----------------------------
     // Raw SQL
     // ----------------------------
     public function raw(string $sql, array $params = []): self

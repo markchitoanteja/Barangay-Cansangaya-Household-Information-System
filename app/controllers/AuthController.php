@@ -24,6 +24,11 @@ class AuthController extends Controller
             redirect('dashboard');
             return;
         }
+        
+        if (session_get('is_login', false) === true) {
+            redirect('dashboard');
+            return;
+        }
 
         // Log page visit
         write_log('ACCESS_PAGE', 'auth', null, 'Accessed forgot password page');

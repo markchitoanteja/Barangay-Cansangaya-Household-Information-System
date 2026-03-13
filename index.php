@@ -11,13 +11,11 @@ ErrorHandler::register(); // early fallback
 
 require_once __DIR__ . '/app/bootstrap/autoload.php';
 require_once __DIR__ . '/app/core/Router.php';
-
-// Make sure the exception class is loaded.
-// If your autoload.php already loads it, you can remove this require_once.
 require_once __DIR__ . '/app/exceptions/DatabaseConnectionException.php';
 
 helpers();
 
+// Normalize request URI
 $uri  = $_SERVER['REQUEST_URI'] ?? '/';
 $path = parse_url($uri, PHP_URL_PATH) ?? '/';
 
@@ -27,26 +25,28 @@ if ($scriptDir !== '' && $scriptDir !== '/') {
         $path = substr($path, strlen($scriptDir));
     }
 }
-
 $path = '/' . ltrim($path, '/');
 if ($path === '//') $path = '/';
 
 $router = new Router();
 
 try {
+    // --- 1. Force DB connection early ---
+    $pdo = Database::pdo();
 
-    // Force DB connection early if you want DB errors immediately.
-    // (If you don't need early connection, you can remove this and let controllers hit DB when needed.)
-    Database::pdo();
+    // --- 2. Seed database if not already seeded ---
+    $seedModel = new Seed_Database_Model();
+    if (!$seedModel->is_seeded()) {  // Make sure you implement is_seeded() in your model
+        $seedModel->MOD_SEED_DATABASE();
+    }
 
+    // --- 3. Dispatch router ---
     $router->dispatch($path);
 } catch (DatabaseConnectionException $e) {
-
-    // Uses your adapted Router::renderError() logic inside the exception
+    // Handle DB connection errors
     $e->render();
 } catch (Throwable $e) {
-
-    // Any other unexpected error -> your standard error page
+    // Handle all other errors
     $router->renderError(
         500,
         'Server Error',

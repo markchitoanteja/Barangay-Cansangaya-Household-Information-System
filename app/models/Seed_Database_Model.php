@@ -19,6 +19,22 @@ class Seed_Database_Model extends Query
     }
 
     /**
+     * Check if the database has already been seeded.
+     *
+     * @return bool
+     */
+    public function is_seeded(): bool
+    {
+        try {
+            // If the 'users' table exists and has at least one row, consider the DB seeded
+            return self::table('users')->exists();
+        } catch (PDOException $e) {
+            // Table does not exist yet, so not seeded
+            return false;
+        }
+    }
+
+    /**
      * Create necessary tables if they don't exist.
      */
     private function createTables(): void
@@ -30,13 +46,10 @@ class Seed_Database_Model extends Query
             username VARCHAR(60) NOT NULL UNIQUE,
             password_hash VARCHAR(255) NOT NULL,
             role ENUM('ADMIN', 'STAFF') NOT NULL DEFAULT 'STAFF',
-
             is_active TINYINT(1) NOT NULL DEFAULT 1,
-
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
         ";
-
         self::table('users')->createTableIfNotExists($usersColumns);
 
         // SECURITY QUESTIONS TABLE
@@ -50,7 +63,6 @@ class Seed_Database_Model extends Query
             CONSTRAINT fk_security_questions_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
             CONSTRAINT uq_user_question UNIQUE (user_id, question)
         ";
-
         self::table('security_questions')->createTableIfNotExists($securityColumns);
 
         // LOGS TABLE
@@ -64,7 +76,6 @@ class Seed_Database_Model extends Query
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             CONSTRAINT fk_logs_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE
         ";
-
         self::table('logs')->createTableIfNotExists($logsColumns);
     }
 
@@ -74,7 +85,6 @@ class Seed_Database_Model extends Query
     private function seedUsers(): void
     {
         if (!self::table('users')->exists()) {
-
             self::table('users')->insert([
                 'full_name'     => 'System Administrator',
                 'username'      => 'admin',
@@ -99,7 +109,6 @@ class Seed_Database_Model extends Query
     private function seedSecurityQuestions(): void
     {
         if (!self::table('security_questions')->exists()) {
-
             $defaultQuestions = [
                 1 => [
                     ['question' => 'What is your favorite color?', 'answer_hash' => '$2a$12$tz2Eh3rDTv2HxGrpayprcuZLLR7nw5neAUNZmXOLrm2SiFsk./Dhi'],
