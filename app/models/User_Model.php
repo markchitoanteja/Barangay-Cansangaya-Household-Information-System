@@ -69,9 +69,13 @@ class User_Model extends Query
             ]);
     }
 
-    public function MOD_CHECK_IF_USERNAME_EXISTS(string $username, int $user_id): bool
+    public function MOD_CHECK_IF_USERNAME_EXISTS(string $username, ?int $user_id = null): bool
     {
-        return $this->table('users')->where('username', $username)->where('id', '!=', $user_id)->exists();
+        if ($user_id) {
+            return $this->table('users')->where('username', $username)->where('id', '!=', $user_id)->exists();
+        } else {
+            return $this->table('users')->where('username', $username)->exists();
+        }
     }
 
     public function MOD_GET_HASHED_PASSWORD_BY_ID(int $user_id): string
@@ -154,5 +158,12 @@ class User_Model extends Query
 
         // Re-index array to ensure consecutive keys
         return array_values($users);
+    }
+
+    public function MOD_ADD_USER_ACCOUNT(array $data): string
+    {
+        $last_inserted_id = $this->table('users')->insert($data);
+
+        return $last_inserted_id;
     }
 }

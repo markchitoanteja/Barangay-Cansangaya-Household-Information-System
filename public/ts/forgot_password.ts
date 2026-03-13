@@ -114,6 +114,7 @@ $((): void => {
             error: (jqXHR: JQuery.jqXHR, textStatus: string, errorThrown: string): void => {
                 hideLoading();
                 console.error(errorThrown);
+                console.log(jqXHR.responseText);
                 showAlert("Something went wrong. Please try again.");
             }
         });

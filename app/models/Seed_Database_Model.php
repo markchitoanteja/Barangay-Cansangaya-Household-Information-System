@@ -52,6 +52,20 @@ class Seed_Database_Model extends Query
         ";
 
         self::table('security_questions')->createTableIfNotExists($securityColumns);
+
+        // LOGS TABLE
+        $logsColumns = "
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            user_id INT NOT NULL,
+            action VARCHAR(255) NOT NULL,
+            target_table VARCHAR(100) DEFAULT NULL,
+            target_id INT DEFAULT NULL,
+            description TEXT DEFAULT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            CONSTRAINT fk_logs_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE
+        ";
+
+        self::table('logs')->createTableIfNotExists($logsColumns);
     }
 
     /**

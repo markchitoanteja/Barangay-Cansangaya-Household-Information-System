@@ -1,9 +1,9 @@
 <section class="panel">
     <!-- PANEL HEADER -->
     <div class="panel-header d-flex justify-content-between align-items-center mb-3">
-        <span></span>
+        <h5><i class="fa-solid fa-users me-2"></i>List of User Accounts</h5>
         <button class="btn gov-btn-primary btn-user-management" data-title="ADD USER ACCOUNT" data-bs-toggle="modal" data-bs-target="#userModal">
-            <i class="fa-solid fa-user-plus me-2"></i>Add Staff
+            <i class="fa-solid fa-user-plus me-2"></i>Add User Account
         </button>
     </div>
 
@@ -11,14 +11,14 @@
     <div class="panel-body mb-3">
         <!-- FILTERS -->
         <form id="searchForm" action="javascript:void(0)" class="row g-2 mb-3">
-            <div class="col-md-4 d-flex flex-column">
+            <div class="col-md-5 d-flex flex-column">
                 <div class="form-floating flex-grow-1">
                     <input type="text" name="search_input" class="form-control gov-input" id="searchUser" placeholder="Search User" value="<?= esc($search_input ?? '') ?>">
                     <label><i class="fa-solid fa-magnifying-glass me-1"></i>Search Name / Username</label>
                 </div>
             </div>
 
-            <div class="col-md-3 d-flex flex-column">
+            <div class="col-md-2 d-flex flex-column">
                 <div class="form-floating flex-grow-1">
                     <select class="form-select gov-input" name="role" id="filterRole">
                         <option value="">All Roles</option>
@@ -29,7 +29,7 @@
                 </div>
             </div>
 
-            <div class="col-md-3 d-flex flex-column">
+            <div class="col-md-2 d-flex flex-column">
                 <div class="form-floating flex-grow-1">
                     <select class="form-select gov-input" name="status" id="filterStatus">
                         <option value="">All Status</option>
@@ -40,13 +40,19 @@
                 </div>
             </div>
 
-            <div class="col-md-2 d-flex gap-2">
-                <button type="submit" class="btn btn-primary flex-grow-1" id="search_filter_button">
-                    <i class="fa-solid fa-magnifying-glass me-2"></i>Search
-                </button>
-                <a href="user-management" class="btn btn-outline-secondary flex-grow-1 loadable">
-                    <i class="fa-solid fa-arrows-rotate me-2"></i>Reset
-                </a>
+            <div class="col-md-3 d-flex flex-column">
+                <div class="row g-2 flex-grow-1">
+                    <div class="col-6 d-flex">
+                        <button type="submit" class="btn btn-primary flex-grow-1" id="search_filter_button">
+                            <i class="fa-solid fa-magnifying-glass me-2"></i>Search
+                        </button>
+                    </div>
+                    <div class="col-6 d-flex">
+                        <button type="button" class="btn btn-outline-secondary flex-grow-1" id="reset_filter_button">
+                            <i class="fa-solid fa-arrows-rotate me-2"></i>Reset
+                        </button>
+                    </div>
+                </div>
             </div>
         </form>
 

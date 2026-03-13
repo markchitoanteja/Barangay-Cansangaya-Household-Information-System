@@ -78,7 +78,7 @@ $((): void => {
         }, 250);
     });
 
-    $(document).on("click", ".toggle-password", function () {
+    $(document).on("click", ".toggle-password", function (): void {
         const input = $(this).siblings("input"); // find the input next to the button
         const icon = $(this).find("i");
 
@@ -91,17 +91,29 @@ $((): void => {
         }
     });
 
-    $(document).on("click", ".btn-user-management", function () {
+    $(document).on("click", ".btn-user-management", function (): void {
         const title = $(this).data('title');
 
         $("#user_management_title").html(title);
     });
 
-    $("#account_settings_current_password, #account_settings_new_password, #account_settings_confirm_password, #account_settings_username").on("input", () => {
-        clearValidation();
+    $("#reset_filter_button").on("click", (): void => {
+        showLoading();
+
+        setTimeout(() => {
+            location.href = "user-management";
+        }, 250);
     });
 
-    $("#accountSettingsForm").on("submit", (e: JQuery.SubmitEvent) => {
+    $("#account_settings_username").on("input", (): void => {
+        clearValidation("#account_settings_username", ".username-error");
+    });
+
+    $("#account_settings_current_password, #account_settings_new_password, #account_settings_confirm_password").on("input", (): void => {
+        clearValidation("#account_settings_current_password, #account_settings_new_password, #account_settings_confirm_password", ".password-error");
+    });
+
+    $("#accountSettingsForm").on("submit", (): void => {
         const getTrimmedValue = (selector: string) => ($(selector).val() ?? "").toString().trim();
 
         const user_id = getTrimmedValue("#account_settings_user_id");
@@ -110,8 +122,6 @@ $((): void => {
         const current_password = getTrimmedValue("#account_settings_current_password");
         const new_password = getTrimmedValue("#account_settings_new_password");
         const confirm_password = getTrimmedValue("#account_settings_confirm_password");
-
-        clearValidation();
 
         let valid = true;
 
@@ -140,7 +150,6 @@ $((): void => {
 
         showLoading();
 
-        // --- Prepare data for AJAX submission ---
         const formData = {
             user_id,
             full_name,
@@ -178,7 +187,7 @@ $((): void => {
         });
     });
 
-    $("#searchForm").on("submit", (e: JQuery.SubmitEvent) => {
+    $("#searchForm").on("submit", (): void => {
         const search_input = $("#searchUser").val()?.toString().trim();
         const role = $("#filterRole").val()?.toString().trim();
         const status = $("#filterStatus").val()?.toString().trim();
@@ -202,14 +211,151 @@ $((): void => {
             window.location.href = `${baseUrl}?${params.toString()}`;
         }, 250);
     });
+
+    $("#user_account_form").on("submit", (): void => {
+        const full_name = $("#user_account_full_name").val()?.toString().trim();
+        const username = $("#user_account_username").val()?.toString().trim();
+        const role = $("#user_account_role").val()?.toString().trim();
+        const is_active = $("#user_account_is_active").val()?.toString().trim();
+        const password = $("#user_account_password").val()?.toString().trim();
+        const confirm_password = $("#user_account_confirm_password").val()?.toString().trim();
+
+        if (password != confirm_password) {
+            $("#user_account_password, #user_account_confirm_password").addClass("border-danger");
+            $("#user_account_password").parent().after(`<div class="text-danger small password-error">Passwords do not match.</div>`);
+        } else {
+            showLoading();
+
+            const formData = { full_name, username, role, is_active, password };
+
+            $.ajax({
+                url: "add-user-account",
+                method: "POST",
+                data: formData,
+                dataType: "JSON",
+                success: (response) => {
+                    setTimeout(() => {
+                        if (response.success) {
+                            location.href = "user-management";
+                        } else {
+                            hideLoading();
+
+                            $("#user_account_username").addClass("border-danger").parent().after(`<div class="text-danger small username-error">${response.error}</div>`);
+                        }
+                    }, 250);
+                },
+                error: (xhr, status, error) => {
+                    console.error("AJAX Error:", error);
+
+                    console.log(xhr.responseText);
+                }
+            });
+        }
+    });
+
+    $("#user_account_username").on("input", (): void => {
+        clearValidation("#user_account_username", ".username-error");
+    });
+
+    $("#user_account_password, #user_account_confirm_password").on("input", (): void => {
+        clearValidation("#user_account_password, #user_account_confirm_password", ".password-error");
+    });
+
+    $("#logsFilterForm").on("submit", (): void => {
+        const search = $("#search").val()?.toString().trim();
+
+        // Build URL parameters
+        const params = new URLSearchParams();
+
+        if (search) params.set("search", search);
+
+        // Reset page to 1 on new search
+        params.set("page", "1");
+
+        // Reload page with query string
+        const baseUrl = window.location.pathname; // keeps /dashboard or /logs
+
+        showLoading(); // optional overlay function
+
+        setTimeout(() => {
+            window.location.href = `${baseUrl}?${params.toString()}`;
+        }, 250);
+    });
+
+    $("#reset_logs_filter").on("click", (): void => {
+        showLoading();
+
+        setTimeout(() => {
+            location.href = "dashboard";
+        }, 250);
+    });
+
+    $(document).on("click", "#clearLogsBtn", (): void => {
+        Swal.fire({
+            title: "Clear all logs?",
+            text: "This will permanently delete all system logs.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#6c757d",
+            confirmButtonText: "Yes, clear logs",
+            cancelButtonText: "Cancel"
+        }).then((result: any) => {
+            if (result.isConfirmed) {
+                showLoading();
+
+                setTimeout(() => {
+                    $.ajax({
+                        url: "clear-logs",
+                        type: "POST",
+                        dataType: "json",
+                        success: (response: { success: boolean; message: string }) => {
+                            if (response.success) {
+                                location.reload();
+                            } else {
+                                hideLoading();
+
+                                Swal.fire({
+                                    title: "Error",
+                                    text: response.message,
+                                    icon: "error"
+                                });
+                            }
+
+                        },
+                        error: (_jqXHR, _textStatus, errorThrown) => {
+                            console.error(errorThrown);
+                            hideLoading();
+
+                            Swal.fire({
+                                title: "Server Error",
+                                text: "Unable to clear logs.",
+                                icon: "error"
+                            });
+                        }
+                    });
+                }, 250);
+            }
+        });
+    });
+
+    $(document).on("click", "#exportLogsBtn", (): void => {
+        showLoading();
+
+        setTimeout(() => {
+            window.location.href = "export-logs";
+
+            hideLoading();
+        }, 250);
+    });
 });
 
-function clearValidation() {
-    $(".password-error, .username-error").remove();
-    $(".gov-input").removeClass("border-danger");
+function clearValidation(inputSelector: string, errorSelector: string): void {
+    $(errorSelector).remove();
+    $(inputSelector).removeClass("border-danger");
 }
 
-function showFlash(title: string, text: string, icon: "success" | "error" | "warning" = "success") {
+function showFlash(title: string, text: string, icon: "success" | "error" | "warning" = "success"): void {
     Swal.fire({ title, text, icon });
 }
 

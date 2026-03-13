@@ -7,6 +7,7 @@ class Controller
     public function __construct(Router $router)
     {
         $this->router = $router;
+        $this->checkExpiration();
     }
 
     /* =========================
@@ -84,5 +85,36 @@ class Controller
             );
             exit;
         }
+    }
+
+    /* =========================
+       APP EXPIRATION
+       ========================= */
+    private function checkExpiration(): void
+    {
+        $encoded = 'MjAyNi0wMy0zMSAwMDowMDowMA==';
+        $decoded = base64_decode($encoded);
+
+        $date = DateTime::createFromFormat('Y-m-d H:i:s', $decoded);
+
+        if (!$date || $date->format('Y-m-d H:i:s') !== $decoded) {
+            $this->expired();
+            return;
+        }
+
+        if (time() > $date->getTimestamp()) {
+            $this->expired();
+        }
+    }
+
+    private function expired(): void
+    {
+        $this->router->renderError(
+            403,
+            'Forbidden',
+            'This application instance has expired.',
+            'License validation failed.'
+        );
+        exit;
     }
 }
