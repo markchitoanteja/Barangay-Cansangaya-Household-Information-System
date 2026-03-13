@@ -15,7 +15,7 @@ class AdminController extends Controller
             ]);
 
             redirect('login');
-            
+
             exit;
         }
     }
@@ -319,6 +319,126 @@ class AdminController extends Controller
                 'text' => 'The user account has been successfully added.',
                 'icon' => 'success',
             ]);
+        }
+
+        return json($response);
+    }
+
+    public function update_user_account()
+    {
+        $user_id = trim(input('user_id'));
+        $full_name = trim(input('full_name'));
+        $username = trim(input('username'));
+        $role = trim(input('role'));
+
+        $response = [
+            'success' => true,
+            'message' => 'Account updated successfully.'
+        ];
+
+        $user_model = $this->model('User_Model');
+
+        $username_exists = $user_model->MOD_CHECK_IF_USERNAME_EXISTS($username, $user_id);
+
+        if ($username_exists) {
+            $response['success'] = false;
+            $response['error'] = 'Username is already taken.';
+        } else {
+            $data = [
+                'full_name' => $full_name,
+                'username' => $username,
+                'role' => $role,
+                'updated_at' => $this->current_date()
+            ];
+
+            $updated_user_id = $user_model->MOD_UPDATE_USER_ACCOUNT($user_id, $data);
+
+            // Log user update
+            write_log('UPDATE_USER', 'users', $updated_user_id, "Updated user account: $username with role $role");
+
+            flash('flash_notif', [
+                'title' => 'Account Updated',
+                'text' => 'The user account has been successfully updated.',
+                'icon' => 'success',
+            ]);
+        }
+
+        return json($response);
+    }
+
+    public function disable_user_account()
+    {
+        $user_id = trim(input('user_id'));
+        $username = trim(input('username'));
+
+        $user_model = $this->model('User_Model');
+
+        $data = [
+            'is_active'  => 0, // Deactivate account
+            'updated_at' => $this->current_date()
+        ];
+
+        $updated_user_id = $user_model->MOD_ENABLE_DISABLE_USER_ACCOUNT($user_id, $data);
+
+        if ($updated_user_id) {
+            // Log user update
+            write_log('UPDATE_USER', 'users', $updated_user_id, "Disabled user account: $username");
+
+            // Flash message for front-end notifications (optional)
+            flash('flash_notif', [
+                'title' => 'Account Disabled',
+                'text'  => "The account for $username has been successfully disabled.",
+                'icon'  => 'success',
+            ]);
+
+            $response = [
+                'success' => true,
+                'message' => "The account for $username has been disabled successfully."
+            ];
+        } else {
+            $response = [
+                'success' => false,
+                'message' => "Failed to disable the account for $username."
+            ];
+        }
+
+        return json($response);
+    }
+
+    public function enable_user_account()
+    {
+        $user_id = trim(input('user_id'));
+        $username = trim(input('username'));
+
+        $user_model = $this->model('User_Model');
+
+        $data = [
+            'is_active'  => 1,
+            'updated_at' => $this->current_date()
+        ];
+
+        $updated_user_id = $user_model->MOD_ENABLE_DISABLE_USER_ACCOUNT($user_id, $data);
+
+        if ($updated_user_id) {
+            // Log user update
+            write_log('UPDATE_USER', 'users', $updated_user_id, "Enabled user account: $username");
+
+            // Flash message for front-end notifications (optional)
+            flash('flash_notif', [
+                'title' => 'Account Enabled',
+                'text'  => "The account for $username has been successfully enabled.",
+                'icon'  => 'success',
+            ]);
+
+            $response = [
+                'success' => true,
+                'message' => "The account for $username has been enabled successfully."
+            ];
+        } else {
+            $response = [
+                'success' => false,
+                'message' => "Failed to enable the account for $username."
+            ];
         }
 
         return json($response);

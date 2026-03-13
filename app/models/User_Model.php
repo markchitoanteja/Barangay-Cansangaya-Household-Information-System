@@ -166,4 +166,14 @@ class User_Model extends Query
 
         return $last_inserted_id;
     }
+
+    public function MOD_UPDATE_USER_ACCOUNT(int $user_id, array $data): bool
+    {
+        return $this->table('users')->where('id', $user_id)->update($data);
+    }
+    
+    public function MOD_ENABLE_DISABLE_USER_ACCOUNT(int $user_id, array $data): bool
+    {
+        return $this->table('users')->where('id', $user_id)->update($data);
+    }
 }

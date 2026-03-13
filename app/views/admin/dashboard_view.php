@@ -8,7 +8,7 @@
                 <button class="btn btn-success" id="exportLogsBtn">
                     <i class="fa-solid fa-file-export me-1"></i> Export
                 </button>
-                
+
                 <!-- Clear Logs -->
                 <button class="btn btn-danger" id="clearLogsBtn">
                     <i class="fa-solid fa-trash me-1"></i> Clear Logs
@@ -75,19 +75,70 @@
             <nav aria-label="Logs pagination">
                 <ul class="pagination justify-content-center mt-3">
                     <?php $params = $_GET; ?>
+
+                    <!-- Previous button -->
                     <li class="page-item <?= ($current_page <= 1) ? 'disabled' : '' ?>">
                         <?php $params['page'] = $current_page - 1; ?>
-                        <a class="page-link" href="?<?= http_build_query($params) ?>">&laquo; Prev</a>
+                        <a class="page-link loadable" href="?<?= http_build_query($params) ?>">&laquo; Prev</a>
                     </li>
-                    <?php for ($p = 1; $p <= $total_pages; $p++): ?>
-                        <?php $params['page'] = $p; ?>
-                        <li class="page-item <?= ($p == $current_page) ? 'active' : '' ?>">
-                            <a class="page-link" href="?<?= http_build_query($params) ?>"><?= $p ?></a>
+
+                    <?php
+                    $max_visible = 5; // total numbers including current
+                    $side = 1;         // pages shown on either side of current
+
+                    $start = max(2, $current_page - $side);
+                    $end = min($total_pages - 1, $current_page + $side);
+
+                    // adjust if near the start
+                    if ($current_page <= $side + 2) {
+                        $start = 2;
+                        $end = min($total_pages - 1, $max_visible);
+                    }
+
+                    // adjust if near the end
+                    if ($current_page >= $total_pages - ($side + 1)) {
+                        $start = max(2, $total_pages - $max_visible);
+                        $end = $total_pages - 1;
+                    }
+
+                    // First page
+                    $params['page'] = 1;
+                    ?>
+                    <li class="page-item <?= ($current_page == 1) ? 'active' : '' ?>">
+                        <a class="page-link loadable" href="?<?= http_build_query($params) ?>">1</a>
+                    </li>
+
+                    <!-- Ellipsis before start -->
+                    <?php if ($start > 2): ?>
+                        <li class="page-item disabled"><span class="page-link">…</span></li>
+                    <?php endif; ?>
+
+                    <!-- Middle pages -->
+                    <?php for ($p = $start; $p <= $end; $p++):
+                        $params['page'] = $p;
+                    ?>
+                        <li class="page-item <?= ($current_page == $p) ? 'active' : '' ?>">
+                            <a class="page-link loadable" href="?<?= http_build_query($params) ?>"><?= $p ?></a>
                         </li>
                     <?php endfor; ?>
+
+                    <!-- Ellipsis after end -->
+                    <?php if ($end < $total_pages - 1): ?>
+                        <li class="page-item disabled"><span class="page-link">…</span></li>
+                    <?php endif; ?>
+
+                    <!-- Last page -->
+                    <?php if ($total_pages > 1):
+                        $params['page'] = $total_pages; ?>
+                        <li class="page-item <?= ($current_page == $total_pages) ? 'active' : '' ?>">
+                            <a class="page-link loadable" href="?<?= http_build_query($params) ?>"><?= $total_pages ?></a>
+                        </li>
+                    <?php endif; ?>
+
+                    <!-- Next button -->
                     <li class="page-item <?= ($current_page >= $total_pages) ? 'disabled' : '' ?>">
                         <?php $params['page'] = $current_page + 1; ?>
-                        <a class="page-link" href="?<?= http_build_query($params) ?>">Next &raquo;</a>
+                        <a class="page-link loadable" href="?<?= http_build_query($params) ?>">Next &raquo;</a>
                     </li>
                 </ul>
             </nav>

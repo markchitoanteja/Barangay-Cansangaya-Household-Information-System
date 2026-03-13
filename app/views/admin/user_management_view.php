@@ -2,7 +2,7 @@
     <!-- PANEL HEADER -->
     <div class="panel-header d-flex justify-content-between align-items-center mb-3">
         <h5><i class="fa-solid fa-users me-2"></i>List of User Accounts</h5>
-        <button class="btn gov-btn-primary btn-user-management" data-title="ADD USER ACCOUNT" data-bs-toggle="modal" data-bs-target="#userModal">
+        <button class="btn gov-btn-primary btn-user-management" data-title="ADD USER ACCOUNT" data-submit-text="Save User" data-bs-toggle="modal" data-bs-target="#userModal">
             <i class="fa-solid fa-user-plus me-2"></i>Add User Account
         </button>
     </div>
@@ -94,20 +94,19 @@
                                 </td>
                                 <td><?= date("F d, Y", strtotime($user['created_at'])) ?></td>
                                 <td class="text-center">
-                                    <button class="btn btn-sm btn-soft me-1 btn-user-management" data-title="UPDATE USER ACCOUNT" data-bs-toggle="modal" data-bs-target="#userModal"
-                                        data-user-id="<?= $user['id'] ?>" data-full-name="<?= esc($user['full_name']) ?>"
-                                        data-username="<?= esc($user['username']) ?>" data-role="<?= $user['role'] ?>"
-                                        data-status="<?= $user['is_active'] ?>">
+                                    <button class="btn btn-sm btn-soft me-1 btn-user-management btn-edit-user" data-title="UPDATE USER ACCOUNT" data-submit-text="Save Changes" data-bs-toggle="modal" data-bs-target="#userModal" title="Edit User Account"
+                                        data-user_id="<?= $user['id'] ?>" data-full_name="<?= esc($user['full_name']) ?>"
+                                        data-username="<?= esc($user['username']) ?>" data-role="<?= $user['role'] ?>">
                                         <i class="fa-solid fa-pen"></i>
                                     </button>
                                     <?php if ($user['is_active'] == 1): ?>
-                                        <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#disableUserModal"
-                                            data-user-id="<?= $user['id'] ?>">
+                                        <button class="btn btn-sm btn-outline-danger disable-user-account" title="Disable User Account"
+                                            data-user_id="<?= $user['id'] ?>" data-username="<?= esc($user['username']) ?>">
                                             <i class="fa-solid fa-user-slash"></i>
                                         </button>
                                     <?php else: ?>
-                                        <button class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#enableUserModal"
-                                            data-user-id="<?= $user['id'] ?>">
+                                        <button class="btn btn-sm btn-outline-success enable-user-account" title="Enable User Account"
+                                            data-user_id="<?= $user['id'] ?>" data-username="<?= esc($user['username']) ?>">
                                             <i class="fa-solid fa-user-check"></i>
                                         </button>
                                     <?php endif; ?>
@@ -128,20 +127,66 @@
         <?php if ($total_pages > 1): ?>
             <nav aria-label="User pagination">
                 <ul class="pagination justify-content-center mt-3">
-                    <?php
-                    // Keep search filters in pagination links
-                    $query_params = $_GET;
-                    ?>
+                    <?php $query_params = $_GET; ?>
+
+                    <!-- Previous button -->
                     <li class="page-item <?= ($current_page <= 1) ? 'disabled' : '' ?>">
                         <?php $query_params['page'] = $current_page - 1; ?>
                         <a class="loadable page-link" href="?<?= http_build_query($query_params) ?>">&laquo; Prev</a>
                     </li>
-                    <?php for ($p = 1; $p <= $total_pages; $p++): ?>
-                        <?php $query_params['page'] = $p; ?>
-                        <li class="page-item <?= ($p == $current_page) ? 'active' : '' ?>">
+
+                    <?php
+                    $max_visible = 5; // max middle pages
+                    $side = 1;         // pages around current
+
+                    $start = max(2, $current_page - $side);
+                    $end = min($total_pages - 1, $current_page + $side);
+
+                    // adjust near start
+                    if ($current_page <= $side + 2) {
+                        $start = 2;
+                        $end = min($total_pages - 1, $max_visible);
+                    }
+
+                    // adjust near end
+                    if ($current_page >= $total_pages - ($side + 1)) {
+                        $start = max(2, $total_pages - $max_visible);
+                        $end = $total_pages - 1;
+                    }
+
+                    // First page
+                    $query_params['page'] = 1; ?>
+                    <li class="page-item <?= ($current_page == 1) ? 'active' : '' ?>">
+                        <a class="loadable page-link" href="?<?= http_build_query($query_params) ?>">1</a>
+                    </li>
+
+                    <!-- Ellipsis before middle pages -->
+                    <?php if ($start > 2): ?>
+                        <li class="page-item disabled"><span class="page-link">…</span></li>
+                    <?php endif; ?>
+
+                    <!-- Middle pages -->
+                    <?php for ($p = $start; $p <= $end; $p++):
+                        $query_params['page'] = $p; ?>
+                        <li class="page-item <?= ($current_page == $p) ? 'active' : '' ?>">
                             <a class="loadable page-link" href="?<?= http_build_query($query_params) ?>"><?= $p ?></a>
                         </li>
                     <?php endfor; ?>
+
+                    <!-- Ellipsis after middle pages -->
+                    <?php if ($end < $total_pages - 1): ?>
+                        <li class="page-item disabled"><span class="page-link">…</span></li>
+                    <?php endif; ?>
+
+                    <!-- Last page -->
+                    <?php if ($total_pages > 1):
+                        $query_params['page'] = $total_pages; ?>
+                        <li class="page-item <?= ($current_page == $total_pages) ? 'active' : '' ?>">
+                            <a class="loadable page-link" href="?<?= http_build_query($query_params) ?>"><?= $total_pages ?></a>
+                        </li>
+                    <?php endif; ?>
+
+                    <!-- Next button -->
                     <li class="page-item <?= ($current_page >= $total_pages) ? 'disabled' : '' ?>">
                         <?php $query_params['page'] = $current_page + 1; ?>
                         <a class="loadable page-link" href="?<?= http_build_query($query_params) ?>">Next &raquo;</a>

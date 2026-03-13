@@ -12,7 +12,8 @@
                 <button class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <form action="javascript:void(0)" id="user_account_form">
-                <div class="modal-body gov-modal-body">
+                <div class="modal-body gov-modal-body" id="user_account_account_modal_body">
+                    <!-- Account Information Section -->
                     <div class="gov-section">
                         <div class="gov-section__label">Account Information</div>
                         <div class="row g-3">
@@ -48,7 +49,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="gov-section">
+                    <!-- Password Section -->
+                    <div class="gov-section" id="user_account_password_section">
                         <div class="gov-section__label">Password</div>
                         <div class="row g-3">
                             <div class="col-md-6">
@@ -73,9 +75,11 @@
                     </div>
                 </div>
                 <div class="modal-footer gov-modal-footer">
+                    <input type="hidden" id="user_account_user_id">
+
                     <button class="btn btn-secondary px-4" data-bs-dismiss="modal">Close</button>
-                    <button class="btn gov-btn-primary px-4" id="user_account_submit">
-                        <i class="fa-solid fa-floppy-disk me-2"></i> Save User
+                    <button class="btn gov-btn-primary px-4">
+                        <i class="fa-solid fa-floppy-disk me-2"></i> <span id="user_account_submit_text">Save User</span>
                     </button>
                 </div>
             </form>

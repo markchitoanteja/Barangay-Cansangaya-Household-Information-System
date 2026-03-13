@@ -93,8 +93,19 @@ $((): void => {
 
     $(document).on("click", ".btn-user-management", function (): void {
         const title = $(this).data('title');
+        const submit_text = $(this).data('submit-text');
 
         $("#user_management_title").html(title);
+        $("#user_account_submit_text").html(submit_text);
+
+        if (title === "ADD USER ACCOUNT") {
+            $("#user_account_password_section").removeClass("d-none");
+            $("#user_account_account_modal_body").removeClass("pb-0");
+
+            // Use prop instead of attr
+            $("#user_account_password").prop("required", true);
+            $("#user_account_confirm_password").prop("required", true);
+        }
     });
 
     $("#reset_filter_button").on("click", (): void => {
@@ -216,27 +227,59 @@ $((): void => {
         const full_name = $("#user_account_full_name").val()?.toString().trim();
         const username = $("#user_account_username").val()?.toString().trim();
         const role = $("#user_account_role").val()?.toString().trim();
-        const is_active = $("#user_account_is_active").val()?.toString().trim();
-        const password = $("#user_account_password").val()?.toString().trim();
-        const confirm_password = $("#user_account_confirm_password").val()?.toString().trim();
 
-        if (password != confirm_password) {
-            $("#user_account_password, #user_account_confirm_password").addClass("border-danger");
-            $("#user_account_password").parent().after(`<div class="text-danger small password-error">Passwords do not match.</div>`);
+        if ($("#user_management_title").text() == "ADD USER ACCOUNT") {
+            const is_active = $("#user_account_is_active").val()?.toString().trim();
+            const password = $("#user_account_password").val()?.toString().trim();
+            const confirm_password = $("#user_account_confirm_password").val()?.toString().trim();
+
+            if (password != confirm_password) {
+                $("#user_account_password, #user_account_confirm_password").addClass("border-danger");
+                $("#user_account_password").parent().after(`<div class="text-danger small password-error">Passwords do not match.</div>`);
+            } else {
+                showLoading();
+
+                const formData = { full_name, username, role, is_active, password };
+
+                $.ajax({
+                    url: "add-user-account",
+                    method: "POST",
+                    data: formData,
+                    dataType: "JSON",
+                    success: (response) => {
+                        setTimeout(() => {
+                            if (response.success) {
+                                location.href = "user-management";
+                            } else {
+                                hideLoading();
+
+                                $("#user_account_username").addClass("border-danger").parent().after(`<div class="text-danger small username-error">${response.error}</div>`);
+                            }
+                        }, 250);
+                    },
+                    error: (xhr, status, error) => {
+                        console.error("AJAX Error:", error);
+
+                        console.log(xhr.responseText);
+                    }
+                });
+            }
         } else {
+            const user_id = $("#user_account_user_id").val()?.toString().trim();
+
             showLoading();
 
-            const formData = { full_name, username, role, is_active, password };
+            const formData = { user_id, full_name, username, role };
 
             $.ajax({
-                url: "add-user-account",
+                url: "update-user-account",
                 method: "POST",
                 data: formData,
                 dataType: "JSON",
                 success: (response) => {
                     setTimeout(() => {
                         if (response.success) {
-                            location.href = "user-management";
+                            location.reload();
                         } else {
                             hideLoading();
 
@@ -311,7 +354,7 @@ $((): void => {
                         dataType: "json",
                         success: (response: { success: boolean; message: string }) => {
                             if (response.success) {
-                                location.reload();
+                                location.href = "dashboard";
                             } else {
                                 hideLoading();
 
@@ -347,6 +390,127 @@ $((): void => {
 
             hideLoading();
         }, 250);
+    });
+
+    $(document).on("click", ".btn-edit-user", function (): void {
+        const user_id = $(this).data('user_id');
+        const full_name = $(this).data('full_name');
+        const username = $(this).data('username');
+        const role = $(this).data('role');
+
+        $("#user_account_is_active").prop("disabled", true);
+        $("#user_account_password, #user_account_confirm_password").prop("required", false);
+        $("#user_account_password_section").addClass("d-none");
+        $("#user_account_account_modal_body").addClass("pb-0");
+
+        $("#user_account_user_id").val(user_id);
+        $("#user_account_full_name").val(full_name);
+        $("#user_account_username").val(username);
+        $("#user_account_role").val(role);
+    });
+
+    $(document).on("click", ".disable-user-account", function (): void {
+        const user_id = $(this).data('user_id');
+        const username = $(this).data('username');
+
+        Swal.fire({
+            title: "Disable this account?",
+            text: "This action will deactivate the user account. The user will not be able to log in.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#6c757d",
+            confirmButtonText: "Yes, disable",
+            cancelButtonText: "Cancel"
+        }).then((result: any) => {
+            if (result.isConfirmed) {
+                showLoading();
+
+                setTimeout(() => {
+                    $.ajax({
+                        url: "disable-user-account",
+                        type: "POST",
+                        dataType: "json",
+                        data: { user_id, username },
+                        success: (response: { success: boolean; message: string }) => {
+                            hideLoading();
+
+                            if (response.success) {
+                                location.reload();
+                            } else {
+                                Swal.fire({
+                                    title: "Error",
+                                    text: response.message,
+                                    icon: "error"
+                                });
+                            }
+                        },
+                        error: (_jqXHR, _textStatus, errorThrown) => {
+                            console.error(errorThrown);
+                            hideLoading();
+
+                            Swal.fire({
+                                title: "Server Error",
+                                text: "Unable to disable user account.",
+                                icon: "error"
+                            });
+                        }
+                    });
+                }, 250);
+            }
+        });
+    });
+
+    $(document).on("click", ".enable-user-account", function (): void {
+        const user_id = $(this).data('user_id');
+        const username = $(this).data('username');
+
+        Swal.fire({
+            title: "Enable this account?",
+            text: "This action will reactivate the user account. The user will be able to log in.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#28a745", // Green for enabling
+            cancelButtonColor: "#6c757d",
+            confirmButtonText: "Yes, enable",
+            cancelButtonText: "Cancel"
+        }).then((result: any) => {
+            if (result.isConfirmed) {
+                showLoading();
+
+                setTimeout(() => {
+                    $.ajax({
+                        url: "enable-user-account",
+                        type: "POST",
+                        dataType: "json",
+                        data: { user_id, username },
+                        success: (response: { success: boolean; message: string }) => {
+                            hideLoading();
+
+                            if (response.success) {
+                                location.reload();
+                            } else {
+                                Swal.fire({
+                                    title: "Error",
+                                    text: response.message,
+                                    icon: "error"
+                                });
+                            }
+                        },
+                        error: (_jqXHR, _textStatus, errorThrown) => {
+                            console.error(errorThrown);
+                            hideLoading();
+
+                            Swal.fire({
+                                title: "Server Error",
+                                text: "Unable to enable user account.",
+                                icon: "error"
+                            });
+                        }
+                    });
+                }, 250);
+            }
+        });
     });
 });
 
