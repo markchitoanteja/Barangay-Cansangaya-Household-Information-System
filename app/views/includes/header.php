@@ -133,8 +133,18 @@
 
                         <ul class="dropdown-menu dropdown-menu-end shadow user-menu">
                             <li>
-                                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#accountSettingsModal">
+                                <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#accountSettingsModal">
                                     <i class="fa-solid fa-user-gear me-2"></i> Account Settings
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item btn-security-questions" href="javascript:void(0)"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#securityQuestionsModal"
+                                    data-user_id="<?= $user['id'] ?>"
+                                    data-username="<?= esc($user['username']) ?>"
+                                    data-security_questions='<?= json_encode($security_questions, JSON_HEX_APOS | JSON_HEX_QUOT) ?>'>
+                                    <i class="fa-solid fa-shield-halved me-2"></i> Update Security Questions
                                 </a>
                             </li>
                             <li>

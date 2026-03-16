@@ -1,7 +1,5 @@
 <?php
 
-require_once 'app/core/Query.php';
-
 class Log_Model extends Query
 {
     /**

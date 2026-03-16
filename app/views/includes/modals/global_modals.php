@@ -214,6 +214,94 @@
     </div>
 </div>
 
+<!-- Update Security Questions Modal -->
+<div class="modal fade" id="securityQuestionsModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content gov-modal">
+            <!-- Modal Header -->
+            <div class="modal-header gov-modal-header">
+                <div class="d-flex align-items-center gap-3">
+                    <img src="<?= base_url('public/assets/img/logo.png') ?>" class="gov-modal-logo">
+                    <div>
+                        <h5 class="modal-title mb-0" id="security_questions_title">UPDATE SECURITY QUESTIONS</h5>
+                        <small class="gov-modal-subtitle">Barangay Cansangaya Household Information System</small>
+                    </div>
+                </div>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Form -->
+            <form action="javascript:void(0)" id="securityQuestionsForm">
+                <div class="modal-body gov-modal-body">
+                    <input type="hidden" name="user_id" id="security_user_id">
+                    <!-- Security Questions Section -->
+                    <div class="gov-section">
+                        <div class="gov-section__label">Security Questions</div>
+                        <!-- Question 1 -->
+                        <div class="mb-3">
+                            <label class="form-label">Question 1</label>
+                            <select class="form-select gov-input" name="questions[0]">
+                                <option value="" selected disabled>Select Question</option>
+                                <option>What is your favorite color?</option>
+                                <option>What is the name of your first pet?</option>
+                                <option>What city were you born in?</option>
+                                <option>What is your mother's maiden name?</option>
+                                <option>What was the name of your first school?</option>
+                                <option>What is your favorite food?</option>
+                                <option>What was your childhood nickname?</option>
+                                <option>What was your first job?</option>
+                                <option>What is your favorite movie?</option>
+                            </select>
+                            <input type="text" class="form-control mt-2 gov-input" name="answers[0]" placeholder="Answer">
+                        </div>
+                        <!-- Question 2 -->
+                        <div class="mb-3">
+                            <label class="form-label">Question 2</label>
+                            <select class="form-select gov-input" name="questions[1]">
+                                <option value="" selected disabled>Select Question</option>
+                                <option>What is your favorite color?</option>
+                                <option>What is the name of your first pet?</option>
+                                <option>What city were you born in?</option>
+                                <option>What is your mother's maiden name?</option>
+                                <option>What was the name of your first school?</option>
+                                <option>What is your favorite food?</option>
+                                <option>What was your childhood nickname?</option>
+                                <option>What was your first job?</option>
+                                <option>What is your favorite movie?</option>
+                            </select>
+                            <input type="text" class="form-control mt-2 gov-input" name="answers[1]" placeholder="Answer">
+                        </div>
+                        <!-- Question 3 -->
+                        <div class="mb-3">
+                            <label class="form-label">Question 3</label>
+                            <select class="form-select gov-input" name="questions[2]">
+                                <option value="" selected disabled>Select Question</option>
+                                <option>What is your favorite color?</option>
+                                <option>What is the name of your first pet?</option>
+                                <option>What city were you born in?</option>
+                                <option>What is your mother's maiden name?</option>
+                                <option>What was the name of your first school?</option>
+                                <option>What is your favorite food?</option>
+                                <option>What was your childhood nickname?</option>
+                                <option>What was your first job?</option>
+                                <option>What is your favorite movie?</option>
+                            </select>
+                            <input type="text" class="form-control mt-2 gov-input" name="answers[2]" placeholder="Answer">
+                        </div>
+                    </div>
+                </div>
+                <!-- Modal Footer -->
+                <div class="modal-footer gov-modal-footer">
+                    <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Close</button>
+                    <button class="btn gov-btn-primary px-4">
+                        <i class="fa-solid fa-floppy-disk me-2"></i> Save Security Questions
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <!-- CALENDAR MODAL -->
 <div class="modal fade" id="calendarModal" tabindex="-1" aria-labelledby="calendarModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">

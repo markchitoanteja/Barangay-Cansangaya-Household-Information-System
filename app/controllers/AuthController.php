@@ -1,8 +1,5 @@
 <?php
 
-require_once 'app/core/Controller.php';
-require_once 'app/core/Database.php';
-
 class AuthController extends Controller
 {
     public function index()
@@ -24,7 +21,7 @@ class AuthController extends Controller
             redirect('dashboard');
             return;
         }
-        
+
         if (session_get('is_login', false) === true) {
             redirect('dashboard');
             return;
@@ -47,12 +44,19 @@ class AuthController extends Controller
 
         $user = $user_model->MOD_GET_USER_BY_USERNAME_AND_ROLE($username, $role);
 
-        $response['message'] = 'Invalid username or password.';
+        $response = [
+            'success' => false,
+            'message' => 'Invalid username or password.'
+        ];
 
         if (!empty($user) && password_verify($password, $user['password_hash'])) {
             if ($user['is_active']) {
                 session_set('is_login', true);
                 session_set('user', $user);
+
+                // Include security questions in session
+                $security_questions = $user_model->MOD_GET_QUESTIONS_BY_USER_ID((int)$user['id']);
+                session_set('security_questions', $security_questions);
 
                 if ($remember) {
                     session_set('remember_me', true);
@@ -77,6 +81,8 @@ class AuthController extends Controller
 
                 $response['success'] = true;
                 $response['message'] = 'Login successful.';
+                $response['security_questions'] = $security_questions; // send to frontend if needed
+
             } else {
                 // Log attempt on inactive account
                 write_log('LOGIN_FAILED_INACTIVE', 'users', $user['id'], 'Attempted login on inactive account');

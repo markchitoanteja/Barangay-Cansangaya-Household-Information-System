@@ -1,3 +1,4 @@
+<!-- Update User Modal -->
 <div class="modal fade" id="userModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content gov-modal">
@@ -77,7 +78,7 @@
                 <div class="modal-footer gov-modal-footer">
                     <input type="hidden" id="user_account_user_id">
 
-                    <button class="btn btn-secondary px-4" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Close</button>
                     <button class="btn gov-btn-primary px-4">
                         <i class="fa-solid fa-floppy-disk me-2"></i> <span id="user_account_submit_text">Save User</span>
                     </button>

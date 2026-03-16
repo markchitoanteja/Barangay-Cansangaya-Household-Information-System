@@ -1,8 +1,5 @@
 <?php
 
-require_once 'app/core/Controller.php';
-require_once 'app/core/Database.php';
-
 class AdminController extends Controller
 {
     public function __construct()
@@ -53,6 +50,10 @@ class AdminController extends Controller
         // Slice logs for current page
         $logs = array_slice($all_logs, $offset, $per_page);
 
+        $user_model = $this->model('User_Model');
+
+        $security_questions = $user_model->MOD_GET_QUESTIONS_BY_ID($current_user['id']);
+
         // Prepare data for view
         $data = [
             'title' => 'Dashboard',
@@ -60,7 +61,8 @@ class AdminController extends Controller
             'logs' => $logs,
             'current_page' => $current_page,
             'total_pages' => $total_pages,
-            'search' => $search
+            'search' => $search,
+            'security_questions' => $security_questions
         ];
 
         $this->view('includes/header', $data);
@@ -76,9 +78,14 @@ class AdminController extends Controller
 
         write_log('ACCESS_PAGE', 'households', null, 'Accessed households page');
 
+        $user_model = $this->model('User_Model');
+
+        $security_questions = $user_model->MOD_GET_QUESTIONS_BY_ID($current_user['id']);
+
         $data = [
             'title' => 'Households',
-            'user' => $current_user
+            'user' => $current_user,
+            'security_questions' => $security_questions
         ];
 
         $this->view('includes/header', $data);
@@ -94,9 +101,14 @@ class AdminController extends Controller
 
         write_log('ACCESS_PAGE', 'residents', null, 'Accessed residents page');
 
+        $user_model = $this->model('User_Model');
+
+        $security_questions = $user_model->MOD_GET_QUESTIONS_BY_ID($current_user['id']);
+
         $data = [
             'title' => 'Residents',
-            'user' => $current_user
+            'user' => $current_user,
+            'security_questions' => $security_questions
         ];
 
         $this->view('includes/header', $data);
@@ -112,9 +124,14 @@ class AdminController extends Controller
 
         write_log('ACCESS_PAGE', 'demographics', null, 'Accessed demographics page');
 
+        $user_model = $this->model('User_Model');
+
+        $security_questions = $user_model->MOD_GET_QUESTIONS_BY_ID($current_user['id']);
+
         $data = [
             'title' => 'Demographics',
-            'user' => $current_user
+            'user' => $current_user,
+            'security_questions' => $security_questions
         ];
 
         $this->view('includes/header', $data);
@@ -130,9 +147,14 @@ class AdminController extends Controller
 
         write_log('ACCESS_PAGE', 'housing_and_facilities', null, 'Accessed housing & facilities page');
 
+        $user_model = $this->model('User_Model');
+
+        $security_questions = $user_model->MOD_GET_QUESTIONS_BY_ID($current_user['id']);
+
         $data = [
             'title' => 'Housing & Facilities',
-            'user' => $current_user
+            'user' => $current_user,
+            'security_questions' => $security_questions
         ];
 
         $this->view('includes/header', $data);
@@ -148,9 +170,14 @@ class AdminController extends Controller
 
         write_log('ACCESS_PAGE', 'livelihood', null, 'Accessed livelihood page');
 
+        $user_model = $this->model('User_Model');
+
+        $security_questions = $user_model->MOD_GET_QUESTIONS_BY_ID($current_user['id']);
+
         $data = [
             'title' => 'Livelihood',
-            'user' => $current_user
+            'user' => $current_user,
+            'security_questions' => $security_questions
         ];
 
         $this->view('includes/header', $data);
@@ -166,9 +193,14 @@ class AdminController extends Controller
 
         write_log('ACCESS_PAGE', 'social_sectors', null, 'Accessed social sectors page');
 
+        $user_model = $this->model('User_Model');
+
+        $security_questions = $user_model->MOD_GET_QUESTIONS_BY_ID($current_user['id']);
+
         $data = [
             'title' => 'Social Sectors',
-            'user' => $current_user
+            'user' => $current_user,
+            'security_questions' => $security_questions
         ];
 
         $this->view('includes/header', $data);
@@ -184,9 +216,14 @@ class AdminController extends Controller
 
         write_log('ACCESS_PAGE', 'health_monitoring', null, 'Accessed health monitoring page');
 
+        $user_model = $this->model('User_Model');
+
+        $security_questions = $user_model->MOD_GET_QUESTIONS_BY_ID($current_user['id']);
+
         $data = [
             'title' => 'Health Monitoring',
-            'user' => $current_user
+            'user' => $current_user,
+            'security_questions' => $security_questions
         ];
 
         $this->view('includes/header', $data);
@@ -202,9 +239,14 @@ class AdminController extends Controller
 
         write_log('ACCESS_PAGE', 'reports', null, 'Accessed reports page');
 
+        $user_model = $this->model('User_Model');
+
+        $security_questions = $user_model->MOD_GET_QUESTIONS_BY_ID($current_user['id']);
+
         $data = [
             'title' => 'Reports',
-            'user' => $current_user
+            'user' => $current_user,
+            'security_questions' => $security_questions
         ];
 
         $this->view('includes/header', $data);
@@ -246,6 +288,12 @@ class AdminController extends Controller
         // --- Fetch filtered users ---
         $all_users = $user_model->MOD_SEARCH_USERS($search_input, $role, $status, $user_id);
 
+        // --- Fetch security questions for each user ---
+        foreach ($all_users as &$user) {
+            $user['security_questions'] = $user_model->MOD_GET_QUESTIONS_BY_USER_ID($user['id']);
+        }
+        unset($user); // break reference
+
         // Pagination calculations
         $total_users = count($all_users);
         $total_pages = (int)ceil($total_users / $per_page);
@@ -253,6 +301,8 @@ class AdminController extends Controller
 
         // Slice users for current page
         $users = array_slice($all_users, $offset, $per_page);
+
+        $security_questions = $user_model->MOD_GET_QUESTIONS_BY_ID($current_user['id']);
 
         // --- Prepare data for view ---
         $data = [
@@ -263,7 +313,8 @@ class AdminController extends Controller
             'total_pages' => $total_pages,
             'search_input' => $search_input,
             'role' => $role,
-            'status' => $status
+            'status' => $status,
+            'security_questions' => $security_questions
         ];
 
         // --- Load views ---
@@ -276,6 +327,63 @@ class AdminController extends Controller
     }
 
     /*----- End Admin Pages Views -----*/
+
+    public function update_security_questions()
+    {
+        $user_id   = trim(input('user_id'));
+        $questions = input('questions'); // array of 3 questions
+        $answers   = input('answers');   // array of 3 answers
+
+        $response = ['success' => false, 'message' => 'Failed to update security questions.'];
+
+        if (empty($user_id) || count($questions) !== 3 || count($answers) !== 3) {
+            $response['error'] = 'Exactly 3 questions and answers are required.';
+            return json($response);
+        }
+
+        $user_model = $this->model('User_Model');
+
+        try {
+            // Fetch existing questions
+            $existing = $user_model->MOD_GET_QUESTIONS_BY_USER_ID((int)$user_id);
+            if (count($existing) !== 3) {
+                $response['error'] = 'User must already have exactly 3 security questions.';
+                return json($response);
+            }
+
+            // Map old questions to IDs for update
+            $existingMap = array_column($existing, 'id', 'question'); // ['question text' => id]
+
+            // Update each question row with new question and/or answer
+            foreach ($questions as $i => $newQuestion) {
+                $oldId = array_values($existingMap)[$i]; // get ID of the row to update
+                $newAnswer = trim($answers[$i] ?? '');
+
+                $user_model->MOD_UPDATE_SECURITY_QUESTION_BY_ID(
+                    (int)$user_id,
+                    (int)$oldId,
+                    $newQuestion,
+                    $newAnswer
+                );
+            }
+
+            write_log('UPDATE_SECURITY', 'security_questions', (int)$user_id, "Updated security questions for user ID {$user_id}");
+
+            flash('flash_notif', [
+                'title' => 'Security Questions Updated',
+                'text'  => 'The user\'s security questions have been successfully updated.',
+                'icon'  => 'success',
+            ]);
+
+            $response['success'] = true;
+            $response['message'] = 'Security questions updated successfully.';
+        } catch (\Exception $e) {
+            $response['error'] = $e->getMessage();
+            write_log('ERROR', 'security_questions', (int)$user_id, "Failed to update security questions: " . $e->getMessage());
+        }
+
+        return json($response);
+    }
 
     public function add_user_account()
     {
@@ -292,12 +400,15 @@ class AdminController extends Controller
 
         $user_model = $this->model('User_Model');
 
+        // Check if username exists
         $username_exists = $user_model->MOD_CHECK_IF_USERNAME_EXISTS($username);
 
         if ($username_exists) {
             $response['success'] = false;
             $response['error'] = 'Username is already taken.';
         } else {
+
+            // Hash password
             $password_hash = password_hash($password, PASSWORD_BCRYPT);
 
             $data = [
@@ -309,7 +420,12 @@ class AdminController extends Controller
                 'created_at' => $this->current_date()
             ];
 
+            // Add user
             $new_user_id = $user_model->MOD_ADD_USER_ACCOUNT($data);
+
+            // Add random security questions using model
+            $questions = $user_model->MOD_GET_RANDOM_SECURITY_QUESTIONS(3);
+            $user_model->MOD_INSERT_SECURITY_QUESTIONS($new_user_id, $questions);
 
             // Log user creation
             write_log('ADD_USER', 'users', $new_user_id, "Added new user: $username with role $role");

@@ -6,12 +6,12 @@ ob_start();
 date_default_timezone_set('Asia/Manila');
 session_start();
 
-require_once __DIR__ . '/app/core/ErrorHandler.php';
+require_once __DIR__ . '/system/core/ErrorHandler.php';
 ErrorHandler::register(); // early fallback
 
-require_once __DIR__ . '/app/bootstrap/autoload.php';
-require_once __DIR__ . '/app/core/Router.php';
-require_once __DIR__ . '/app/exceptions/DatabaseConnectionException.php';
+require_once __DIR__ . '/system/bootstrap/autoload.php';
+require_once __DIR__ . '/system/core/Router.php';
+require_once __DIR__ . '/system/exceptions/DatabaseConnectionException.php';
 
 helpers();
 

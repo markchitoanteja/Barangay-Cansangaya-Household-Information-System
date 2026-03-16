@@ -397,16 +397,18 @@ $((): void => {
         const full_name = $(this).data('full_name');
         const username = $(this).data('username');
         const role = $(this).data('role');
-
-        $("#user_account_is_active").prop("disabled", true);
-        $("#user_account_password, #user_account_confirm_password").prop("required", false);
-        $("#user_account_password_section").addClass("d-none");
-        $("#user_account_account_modal_body").addClass("pb-0");
+        const is_active = $(this).data('is_active');
 
         $("#user_account_user_id").val(user_id);
         $("#user_account_full_name").val(full_name);
         $("#user_account_username").val(username);
         $("#user_account_role").val(role);
+        $("#user_account_is_active").val(is_active);
+
+        $("#user_account_is_active").prop("disabled", true);
+        $("#user_account_password, #user_account_confirm_password").prop("required", false);
+        $("#user_account_password_section").addClass("d-none");
+        $("#user_account_account_modal_body").addClass("pb-0");
     });
 
     $(document).on("click", ".disable-user-account", function (): void {
@@ -509,6 +511,114 @@ $((): void => {
                         }
                     });
                 }, 250);
+            }
+        });
+    });
+
+    $(document).on('click', '.btn-security-questions', function () {
+        const $btn = $(this);
+        const userId: number = Number($btn.data('user_id'));
+        const username: string = String($btn.data('username'));
+        const questions: Array<{ id: number, question: string, answer?: string }> = $btn.data('security_questions');
+
+        // Set hidden input and modal title
+        $('#security_user_id').val(userId);
+        $('#securityQuestionsModal .modal-title').text(`Update Security Questions for ${username}`);
+
+        const $form = $('#securityQuestionsForm');
+
+        // Reset selects and answers
+        $form.find('select').each(function () {
+            $(this).find('option[value=""]').remove(); // Remove the first placeholder option
+            $(this).val('');
+            $(this).find('option').prop('disabled', false);
+        });
+        $form.find('input[type="text"]').val('');
+
+        // Prefill questions and answers
+        questions.forEach((q, index) => {
+            const $select = $form.find(`select[name="questions[${index}]"]`);
+            $select.val(q.question);
+            if (q.answer) {
+                $form.find(`input[name="answers[${index}]"]`).val(q.answer);
+            }
+        });
+
+        // Function to update disabled options dynamically
+        const updateDisabledOptions = () => {
+            const selectedValues = $form.find('select').map(function () {
+                return $(this).val() as string;
+            }).get();
+
+            $form.find('select').each(function () {
+                const $current = $(this);
+                $current.find('option').each(function () {
+                    const $opt = $(this);
+                    const val = $opt.val() as string;
+                    if (!val) return; // Skip empty values
+                    // Disable if selected in another select
+                    $opt.prop('disabled', selectedValues.includes(val) && $current.val() !== val);
+                });
+            });
+        };
+
+        // Initialize disabled options on load
+        updateDisabledOptions();
+
+        // Update on change
+        $form.find('select').off('change').on('change', updateDisabledOptions);
+    });
+
+    $('#securityQuestionsForm').on('submit', function (e) {
+        e.preventDefault();
+
+        const user_id = $('#security_user_id').val()?.toString().trim();
+        const questions: string[] = [];
+        const answers: (string | null)[] = [];
+
+        $('#securityQuestionsForm select').each(function (i) {
+            const question = $(this).val()?.toString().trim();
+            const answer = $(`#securityQuestionsForm input[name="answers[${i}]"]`).val()?.toString().trim();
+
+            if (question) {
+                questions.push(question);
+                // push answer only if not empty, otherwise null to indicate "keep old"
+                answers.push(answer ? answer : null);
+            }
+
+            // remove error styling
+            $(this).removeClass('border-danger');
+            $(`#securityQuestionsForm input[name="answers[${i}]"]`).removeClass('border-danger');
+        });
+
+        if (!questions.length) {
+            // No question selected, do nothing
+            return;
+        }
+
+        showLoading();
+
+        const formData = { user_id, questions, answers };
+
+        $.ajax({
+            url: 'update-security-questions', // your endpoint
+            method: 'POST',
+            data: formData,
+            dataType: 'JSON',
+            success: (response) => {
+                setTimeout(() => {
+                    if (response.success) {
+                        location.reload(); // or show a success notification
+                    } else {
+                        hideLoading();
+                        alert(response.error || 'Failed to update security questions.');
+                    }
+                }, 250);
+            },
+            error: (xhr, status, error) => {
+                hideLoading();
+                console.error('AJAX Error:', error);
+                console.log(xhr.responseText);
             }
         });
     });

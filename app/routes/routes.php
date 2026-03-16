@@ -27,10 +27,11 @@ return function (Router $router) {
     $router->get('/reports', 'AdminController@reports');
     $router->get('/user-management', 'AdminController@user_management');
     $router->post('/add-user-account', 'AdminController@add_user_account');
+    $router->post('/update-security-questions', 'AdminController@update_security_questions');
     $router->post('/update-user-account', 'AdminController@update_user_account');
     $router->post('/disable-user-account', 'AdminController@disable_user_account');
     $router->post('/enable-user-account', 'AdminController@enable_user_account');
-    $router->post('/update-account', 'AdminController@update_account');
+    $router->post('/update-account', 'AdminController@update_account'); 
     $router->post('/search-user', 'AdminController@search_user');
     $router->post('/clear-logs', 'AdminController@clear_logs');
     $router->get('/export-logs', 'AdminController@export_logs');

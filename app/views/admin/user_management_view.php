@@ -94,19 +94,45 @@
                                 </td>
                                 <td><?= date("F d, Y", strtotime($user['created_at'])) ?></td>
                                 <td class="text-center">
-                                    <button class="btn btn-sm btn-soft me-1 btn-user-management btn-edit-user" data-title="UPDATE USER ACCOUNT" data-submit-text="Save Changes" data-bs-toggle="modal" data-bs-target="#userModal" title="Edit User Account"
-                                        data-user_id="<?= $user['id'] ?>" data-full_name="<?= esc($user['full_name']) ?>"
-                                        data-username="<?= esc($user['username']) ?>" data-role="<?= $user['role'] ?>">
+                                    <!-- SECURITY QUESTIONS -->
+                                    <button
+                                        class="btn btn-sm btn-outline-warning me-1 btn-security-questions"
+                                        title="Update Security Questions"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#securityQuestionsModal"
+                                        data-user_id="<?= $user['id'] ?>"
+                                        data-username="<?= esc($user['username']) ?>"
+                                        data-security_questions='<?= json_encode($user['security_questions'], JSON_HEX_APOS | JSON_HEX_QUOT) ?>'>
+                                        <i class="fa-solid fa-shield-halved"></i>
+                                    </button>
+
+                                    <!-- EDIT USER -->
+                                    <button class="btn btn-sm btn-soft me-1 btn-user-management btn-edit-user"
+                                        data-title="UPDATE USER ACCOUNT"
+                                        data-submit-text="Save Changes"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#userModal"
+                                        title="Edit User Account"
+                                        data-user_id="<?= $user['id'] ?>"
+                                        data-full_name="<?= esc($user['full_name']) ?>"
+                                        data-username="<?= esc($user['username']) ?>"
+                                        data-role="<?= $user['role'] ?>"
+                                        data-is_active="<?= $user['is_active'] ?>">
                                         <i class="fa-solid fa-pen"></i>
                                     </button>
+
                                     <?php if ($user['is_active'] == 1): ?>
-                                        <button class="btn btn-sm btn-outline-danger disable-user-account" title="Disable User Account"
-                                            data-user_id="<?= $user['id'] ?>" data-username="<?= esc($user['username']) ?>">
+                                        <button class="btn btn-sm btn-outline-danger disable-user-account"
+                                            title="Disable User Account"
+                                            data-user_id="<?= $user['id'] ?>"
+                                            data-username="<?= esc($user['username']) ?>">
                                             <i class="fa-solid fa-user-slash"></i>
                                         </button>
                                     <?php else: ?>
-                                        <button class="btn btn-sm btn-outline-success enable-user-account" title="Enable User Account"
-                                            data-user_id="<?= $user['id'] ?>" data-username="<?= esc($user['username']) ?>">
+                                        <button class="btn btn-sm btn-outline-success enable-user-account"
+                                            title="Enable User Account"
+                                            data-user_id="<?= $user['id'] ?>"
+                                            data-username="<?= esc($user['username']) ?>">
                                             <i class="fa-solid fa-user-check"></i>
                                         </button>
                                     <?php endif; ?>
