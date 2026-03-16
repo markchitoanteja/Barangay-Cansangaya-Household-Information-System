@@ -197,7 +197,7 @@
                             </div>
                         </div>
                         <div class="settings-note mt-3">
-                            Password updates should only be performed by the authorized account holder.
+                            Leave the password fields blank if you do not want to change your password.
                         </div>
                     </div>
                 </div>
@@ -287,6 +287,9 @@
                                 <option>What is your favorite movie?</option>
                             </select>
                             <input type="text" class="form-control mt-2 gov-input" name="answers[2]" placeholder="Answer">
+                        </div>
+                        <div class="settings-note mb-3">
+                            Leave the answer field empty if you do not want to change your current answers.
                         </div>
                     </div>
                 </div>

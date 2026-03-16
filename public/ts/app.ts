@@ -523,7 +523,6 @@ $((): void => {
 
         // Set hidden input and modal title
         $('#security_user_id').val(userId);
-        $('#securityQuestionsModal .modal-title').text(`Update Security Questions for ${username}`);
 
         const $form = $('#securityQuestionsForm');
 
