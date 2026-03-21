@@ -137,6 +137,10 @@ $((): void => {
 
         let valid = true;
 
+        clearValidation("#account_settings_username", ".username-error");
+        clearValidation("#account_settings_current_password", ".password-error");
+        clearValidation("#account_settings_new_password", ".password-error");
+
         // --- Password mutual requirement ---
         if (current_password && (!new_password || !confirm_password)) {
             valid = false;
@@ -233,6 +237,10 @@ $((): void => {
             const is_active = $("#user_account_is_active").val()?.toString().trim();
             const password = $("#user_account_password").val()?.toString().trim();
             const confirm_password = $("#user_account_confirm_password").val()?.toString().trim();
+
+            clearValidation("#user_account_username", ".username-error");
+            clearValidation("#user_account_password", ".password-error");
+            clearValidation("#user_account_confirm_password", ".password-error");
 
             if (password != confirm_password) {
                 $("#user_account_password, #user_account_confirm_password").addClass("border-danger");
