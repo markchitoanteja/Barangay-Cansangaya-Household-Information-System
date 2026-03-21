@@ -920,21 +920,15 @@ body {
     color: #dc3545;
 }
 
-/* Update button badge */
 .update-badge {
-    font-size: 0.65rem;
-    font-weight: 700;
-    min-width: 18px;
-    height: 18px;
-    line-height: 18px;
-    padding: 0 4px;
-    top: -6px;
-    right: -6px;
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    background: #dc3545;
     color: #fff;
-    background-color: #dc3545;
-    border: 1px solid #fff;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 2px 6px;
     border-radius: 999px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+    line-height: 1;
 }

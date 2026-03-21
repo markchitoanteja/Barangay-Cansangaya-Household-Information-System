@@ -629,7 +629,7 @@ $((): void => {
             text: "This will download the latest system changes and reload the application.",
             icon: "warning",
             showCancelButton: true,
-            confirmButtonColor: "#1f4e79",
+            confirmButtonColor: "#1f4e79", // Official blue
             cancelButtonColor: "#6c757d",
             confirmButtonText: "Yes, update now",
             cancelButtonText: "Cancel",
@@ -681,25 +681,36 @@ $((): void => {
 
 function checkUpdates() {
     $.ajax({
-        url: "check-updates",
-        type: "GET",
-        dataType: "json",
-        success: (response: { updates: number; upToDate: boolean }) => {
-            if (!response.upToDate && response.updates > 0) {
-                // Insert button dynamically
-                $('#updateSystemWrapper').html(`
-                    <button id="btnUpdateSystem" class="pill pill-btn position-relative">
-                        <i class="fa-solid fa-rotate"></i>
-                        <span>Apply Updates</span>
-                        <span class="update-badge position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                            ${response.updates}
-                        </span>
-                    </button>
+        url: 'check-updates',
+        method: 'GET',
+        dataType: 'JSON',
+        success: (res) => {
+            if (!res.success) return;
+
+            const badge = $('#updateBadge');
+            const status = $('#updateStatus');
+            const drpdwn_updates = $('#drpdwn_updates');
+
+            if (res.count > 0) {
+                badge.removeClass('d-none').text(res.count);
+                drpdwn_updates.removeClass('d-none');
+
+                status.html(`
+                    <div class="text-warning fw-bold mb-1">
+                        ${res.count} update(s) available
+                    </div>
+                    <small>Click "Apply Updates" to sync system.</small>
+                `);
+            } else {
+                drpdwn_updates.addClass('d-none');
+                badge.addClass('d-none');
+
+                status.html(`
+                    <div class="text-success fw-bold">
+                        System is up to date
+                    </div>
                 `);
             }
-        },
-        error: (_jqXHR, _textStatus, errorThrown) => {
-            console.error("Failed to check updates:", errorThrown);
         }
     });
 }
