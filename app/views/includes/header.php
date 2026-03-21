@@ -27,7 +27,7 @@
                     <img src="<?= base_url('public/assets/img/logo.png') ?>" alt="Barangay Logo">
                 </div>
                 <div>
-                    <h6>Barangay HIS Test</h6>
+                    <h6>Barangay HIS Shit</h6>
                     <small>Brgy. Cansangaya</small>
                 </div>
             </div>
