@@ -623,31 +623,57 @@ $((): void => {
         });
     });
 
-    $(document).on('click', '#btnUpdateSystem', function (e) {
-        e.preventDefault();
+    $(document).on("click", "#btnUpdateSystem", function (): void {
+        Swal.fire({
+            title: "Apply Updates?",
+            text: "This will download the latest system changes and reload the application.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#1f4e79",
+            cancelButtonColor: "#6c757d",
+            confirmButtonText: "Yes, update now",
+            cancelButtonText: "Cancel",
+            reverseButtons: true
+        }).then((result: any) => {
+            if (result.isConfirmed) {
+                showLoading();
 
-        if (!confirm('Download latest updates and reload system?')) return;
-
-        showLoading();
-
-        $.ajax({
-            url: 'update-system',
-            method: 'POST',
-            dataType: 'JSON',
-            success: (response) => {
                 setTimeout(() => {
-                    if (response.success) {
-                        location.reload(); // consistent with your pattern
-                    } else {
-                        hideLoading();
-                        alert(response.message || 'Update failed.');
-                    }
+                    $.ajax({
+                        url: "update-system",
+                        type: "POST",
+                        dataType: "json",
+                        success: (response: { success: boolean; message?: string; updates?: number }) => {
+                            hideLoading();
+
+                            if (response.success) {
+                                Swal.fire({
+                                    title: "System Updated",
+                                    text: `Downloaded ${response.updates ?? "all"} updates. Reloading...`,
+                                    icon: "success",
+                                    timer: 1500,
+                                    showConfirmButton: false
+                                });
+                                setTimeout(() => location.reload(), 1500);
+                            } else {
+                                Swal.fire({
+                                    title: "Update Failed",
+                                    text: response.message || "Something went wrong.",
+                                    icon: "error"
+                                });
+                            }
+                        },
+                        error: (_jqXHR, _textStatus, errorThrown) => {
+                            console.error(errorThrown);
+                            hideLoading();
+                            Swal.fire({
+                                title: "Server Error",
+                                text: "Failed to process update request.",
+                                icon: "error"
+                            });
+                        }
+                    });
                 }, 250);
-            },
-            error: (xhr, status, error) => {
-                hideLoading();
-                console.error('AJAX Error:', error);
-                console.log(xhr.responseText);
             }
         });
     });
@@ -655,33 +681,25 @@ $((): void => {
 
 function checkUpdates() {
     $.ajax({
-        url: 'check-updates',
-        method: 'GET',
-        dataType: 'JSON',
-        success: (res) => {
-            if (!res.success) return;
-
-            const badge = $('#updateBadge');
-            const status = $('#updateStatus');
-
-            if (res.count > 0) {
-                badge.removeClass('d-none').text(res.count);
-
-                status.html(`
-                    <div class="text-warning fw-bold mb-1">
-                        ${res.count} update(s) available
-                    </div>
-                    <small>Click "Apply Updates" to sync system.</small>
-                `);
-            } else {
-                badge.addClass('d-none');
-
-                status.html(`
-                    <div class="text-success fw-bold">
-                        System is up to date
-                    </div>
+        url: "check-updates",
+        type: "GET",
+        dataType: "json",
+        success: (response: { updates: number; upToDate: boolean }) => {
+            if (!response.upToDate && response.updates > 0) {
+                // Insert button dynamically
+                $('#updateSystemWrapper').html(`
+                    <button id="btnUpdateSystem" class="pill pill-btn position-relative">
+                        <i class="fa-solid fa-rotate"></i>
+                        <span>Apply Updates</span>
+                        <span class="update-badge position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                            ${response.updates}
+                        </span>
+                    </button>
                 `);
             }
+        },
+        error: (_jqXHR, _textStatus, errorThrown) => {
+            console.error("Failed to check updates:", errorThrown);
         }
     });
 }
