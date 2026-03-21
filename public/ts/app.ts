@@ -647,14 +647,7 @@ $((): void => {
                             hideLoading();
 
                             if (response.success) {
-                                Swal.fire({
-                                    title: "System Updated",
-                                    text: `Downloaded ${response.updates ?? "all"} updates. Reloading...`,
-                                    icon: "success",
-                                    timer: 1500,
-                                    showConfirmButton: false
-                                });
-                                setTimeout(() => location.reload(), 1500);
+                                location.reload();
                             } else {
                                 Swal.fire({
                                     title: "Update Failed",

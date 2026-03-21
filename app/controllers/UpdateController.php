@@ -21,14 +21,18 @@ class UpdateController extends Controller
         $output = shell_exec('git pull origin main 2>&1');
 
         if ($output) {
-            // Optional: update version file for cache busting
-            file_put_contents('.version', time());
-
             write_log('SYSTEM_UPDATE', 'system', $user['id'], 'System updated via button');
 
             $response['success'] = true;
             $response['message'] = 'System updated successfully.';
             $response['output'] = $output;
+
+            // Updated flash message for system update
+            flash('flash_notif', [
+                'title' => 'System Update Successful',
+                'text' => 'The system has been successfully updated.',
+                'icon' => 'success',
+            ]);
         } else {
             write_log('SYSTEM_UPDATE_FAILED', 'system', $user['id'], 'Update failed or no changes');
             $response['message'] = 'No updates found or update failed.';
