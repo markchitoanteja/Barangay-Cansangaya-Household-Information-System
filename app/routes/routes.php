@@ -38,4 +38,5 @@ return function (Router $router) {
 
     // Update Routes
     $router->post('/update-system', 'UpdateController@run');
+    $router->get('/check-updates', 'UpdateController@check');
 };

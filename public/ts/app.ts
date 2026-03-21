@@ -7,6 +7,7 @@ $((): void => {
     updateTopbarDate();
     updateCalendarReferenceDate();
     enableDevOptions(APP_DEBUG);
+    checkUpdates();
 
     if (typeof flashData !== 'undefined' && flashData) {
         showFlash(flashData.title, flashData.text, flashData.icon as "success" | "error" | "warning");
@@ -651,6 +652,39 @@ $((): void => {
         });
     });
 });
+
+function checkUpdates() {
+    $.ajax({
+        url: 'check-updates',
+        method: 'GET',
+        dataType: 'JSON',
+        success: (res) => {
+            if (!res.success) return;
+
+            const badge = $('#updateBadge');
+            const status = $('#updateStatus');
+
+            if (res.count > 0) {
+                badge.removeClass('d-none').text(res.count);
+
+                status.html(`
+                    <div class="text-warning fw-bold mb-1">
+                        ${res.count} update(s) available
+                    </div>
+                    <small>Click "Apply Updates" to sync system.</small>
+                `);
+            } else {
+                badge.addClass('d-none');
+
+                status.html(`
+                    <div class="text-success fw-bold">
+                        System is up to date
+                    </div>
+                `);
+            }
+        }
+    });
+}
 
 function clearValidation(inputSelector: string, errorSelector: string): void {
     $(errorSelector).remove();

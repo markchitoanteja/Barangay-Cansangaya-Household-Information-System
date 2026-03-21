@@ -36,4 +36,25 @@ class UpdateController extends Controller
 
         return json($response);
     }
+
+    public function check()
+    {
+        $user = session_get('user');
+
+        if (empty($user) || $user['role'] !== 'ADMIN') {
+            return json(['success' => false]);
+        }
+
+        // Fetch remote changes without merging
+        shell_exec('git fetch origin main 2>&1');
+
+        $output = shell_exec('git rev-list HEAD...origin/main --count');
+
+        $count = (int)$output;
+
+        return json([
+            'success' => true,
+            'count' => $count
+        ]);
+    }
 }

@@ -117,11 +117,33 @@
 
                 <div class="d-flex gap-2 align-items-center">
                     <?php if (isset($user) && $user['role'] === 'ADMIN'): ?>
-                        <button id="btnUpdateSystem" class="pill pill-btn">
-                            <i class="fa-solid fa-rotate"></i>
-                            <span class="d-none d-md-inline">Update</span>
-                        </button>
+                        <div class="dropdown">
+                            <button id="btnCheckUpdates" class="pill pill-btn position-relative" data-bs-toggle="dropdown">
+                                <i class="fa-solid fa-rotate"></i>
+
+                                <!-- Badge -->
+                                <span id="updateBadge" class="update-badge d-none">0</span>
+                            </button>
+
+                            <ul class="dropdown-menu dropdown-menu-end shadow notification-dropdown">
+                                <li class="p-3 border-bottom fw-bold">
+                                    System Updates
+                                </li>
+
+                                <li id="updateStatus" class="p-3 text-muted">
+                                    Checking for updates...
+                                </li>
+
+                                <li class="p-2 border-top text-center">
+                                    <button id="btnUpdateSystem" class="btn btn-sm btn-primary w-100">
+                                        Apply Updates
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
                     <?php endif; ?>
+
+                    <!-- Calendar -->
                     <button type="button" id="openCalendarModal" class="pill pill-btn" data-bs-toggle="modal" data-bs-target="#calendarModal">
                         <i class="fa-solid fa-calendar-days"></i>
                         <span id="todayText">Today</span>

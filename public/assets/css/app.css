@@ -919,3 +919,16 @@ body {
     font-size: 0.85rem;
     color: #dc3545;
 }
+
+.update-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    background: #dc3545;
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 999px;
+    line-height: 1;
+}
