@@ -1,0 +1,39 @@
+<?php
+
+class UpdateController extends Controller
+{
+    public function run()
+    {
+        $user = session_get('user');
+
+        $response = [
+            'success' => false,
+            'message' => 'Update failed.'
+        ];
+
+        // 🔒 Restrict to ADMIN
+        if (empty($user) || $user['role'] !== 'ADMIN') {
+            $response['message'] = 'Unauthorized access.';
+            return json($response);
+        }
+
+        // Execute git pull
+        $output = shell_exec('git pull origin main 2>&1');
+
+        if ($output) {
+            // Optional: update version file for cache busting
+            file_put_contents('.version', time());
+
+            write_log('SYSTEM_UPDATE', 'system', $user['id'], 'System updated via button');
+
+            $response['success'] = true;
+            $response['message'] = 'System updated successfully.';
+            $response['output'] = $output;
+        } else {
+            write_log('SYSTEM_UPDATE_FAILED', 'system', $user['id'], 'Update failed or no changes');
+            $response['message'] = 'No updates found or update failed.';
+        }
+
+        return json($response);
+    }
+}

@@ -35,4 +35,7 @@ return function (Router $router) {
     $router->post('/search-user', 'AdminController@search_user');
     $router->post('/clear-logs', 'AdminController@clear_logs');
     $router->get('/export-logs', 'AdminController@export_logs');
+
+    // Update Routes
+    $router->post('/update-system', 'UpdateController@run');
 };

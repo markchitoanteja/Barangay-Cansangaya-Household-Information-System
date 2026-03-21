@@ -116,6 +116,12 @@
                 </div>
 
                 <div class="d-flex gap-2 align-items-center">
+                    <?php if (isset($user) && $user['role'] === 'ADMIN'): ?>
+                        <button id="btnUpdateSystem" class="pill pill-btn">
+                            <i class="fa-solid fa-rotate"></i>
+                            <span class="d-none d-md-inline">Update</span>
+                        </button>
+                    <?php endif; ?>
                     <button type="button" id="openCalendarModal" class="pill pill-btn" data-bs-toggle="modal" data-bs-target="#calendarModal">
                         <i class="fa-solid fa-calendar-days"></i>
                         <span id="todayText">Today</span>

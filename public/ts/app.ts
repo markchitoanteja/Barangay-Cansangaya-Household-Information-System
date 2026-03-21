@@ -621,6 +621,35 @@ $((): void => {
             }
         });
     });
+
+    $(document).on('click', '#btnUpdateSystem', function (e) {
+        e.preventDefault();
+
+        if (!confirm('Download latest updates and reload system?')) return;
+
+        showLoading();
+
+        $.ajax({
+            url: 'update-system',
+            method: 'POST',
+            dataType: 'JSON',
+            success: (response) => {
+                setTimeout(() => {
+                    if (response.success) {
+                        location.reload(); // consistent with your pattern
+                    } else {
+                        hideLoading();
+                        alert(response.message || 'Update failed.');
+                    }
+                }, 250);
+            },
+            error: (xhr, status, error) => {
+                hideLoading();
+                console.error('AJAX Error:', error);
+                console.log(xhr.responseText);
+            }
+        });
+    });
 });
 
 function clearValidation(inputSelector: string, errorSelector: string): void {
