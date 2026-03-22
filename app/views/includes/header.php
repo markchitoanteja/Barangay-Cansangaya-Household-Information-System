@@ -90,7 +90,7 @@
                 </a>
 
                 <!-- ADMIN ONLY -->
-                <?php if (isset($user) && $user['role'] === 'ADMIN'): ?>
+                <?php if (isset($user) && ($user['role'] === 'ADMIN' || $user['role'] === 'SUPER_ADMIN')): ?>
                     <a class="nav-link loadable <?= ($title == 'User Management') ? 'active' : '' ?>" href="user-management">
                         <div class="d-flex justify-content-between align-items-center w-100">
                             <span><i class="fa-solid fa-id-badge"></i> User Management</span>
@@ -116,7 +116,7 @@
                 </div>
 
                 <div class="d-flex gap-2 align-items-center">
-                    <?php if (isset($user) && $user['role'] === 'ADMIN'): ?>
+                    <?php if (isset($user) && ($user['role'] === 'ADMIN' || $user['role'] === 'SUPER_ADMIN')): ?>
                         <div class="dropdown d-none" id="drpdwn_updates">
                             <button id="btnCheckUpdates" class="pill pill-btn position-relative" data-bs-toggle="dropdown">
                                 <i class="fa-solid fa-rotate"></i>

@@ -96,6 +96,20 @@ $((): void => {
         const title = $(this).data('title');
         const submit_text = $(this).data('submit-text');
 
+        const clearInputs = (ids: string[]) => {
+            ids.forEach(id => {
+                const input = document.getElementById(id) as HTMLInputElement | null;
+                if (input) input.value = '';
+            });
+        };
+
+        clearInputs([
+            'user_account_full_name',
+            'user_account_username',
+            'user_account_password',
+            'user_account_confirm_password'
+        ]);
+
         $("#user_management_title").html(title);
         $("#user_account_submit_text").html(submit_text);
 
@@ -106,6 +120,7 @@ $((): void => {
             // Use prop instead of attr
             $("#user_account_password").prop("required", true);
             $("#user_account_confirm_password").prop("required", true);
+            $("#user_account_is_active").prop("disabled", false);
         }
     });
 
@@ -199,6 +214,7 @@ $((): void => {
             },
             error: (xhr, status, error) => {
                 console.error("AJAX Error:", error);
+                console.log(xhr.responseText);
             }
         });
     });

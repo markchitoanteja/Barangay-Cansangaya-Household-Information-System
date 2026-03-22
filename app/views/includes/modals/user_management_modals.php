@@ -32,9 +32,12 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-floating">
-                                    <select class="form-select gov-input" id="user_account_role">
+                                    <select class="form-select gov-input" id="user_account_role" <?= (session_get('user')['role'] !== 'SUPER_ADMIN') ? 'disabled' : '' ?>>
                                         <option value="STAFF">STAFF</option>
-                                        <option value="ADMIN">ADMIN</option>
+
+                                        <?php if (session_get('user')['role'] === 'SUPER_ADMIN'): ?>
+                                            <option value="ADMIN">ADMIN</option>
+                                        <?php endif; ?>
                                     </select>
                                     <label><i class="fa-solid fa-id-badge me-1"></i> User Role</label>
                                 </div>

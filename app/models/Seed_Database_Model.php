@@ -127,6 +127,11 @@ class Seed_Database_Model extends Query
                     'What is your mother\'s maiden name?',
                     'What was the name of your first school?',
                     'What is your favorite food?'
+                ],
+                3 => [
+                    'What was your childhood nickname?',
+                    'What was your first job?',
+                    'What is your favorite movie?'
                 ]
             ];
 

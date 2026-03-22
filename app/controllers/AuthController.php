@@ -37,12 +37,13 @@ class AuthController extends Controller
     {
         $username = input('username');
         $password = input('password');
-        $role = input('role');
+        $role     = input('role');
         $remember = input('remember');
 
         $user_model = $this->model('User_Model');
 
-        $user = $user_model->MOD_GET_USER_BY_USERNAME_AND_ROLE($username, $role);
+        // 🔄 Fetch user by username ONLY (no role restriction here)
+        $user = $user_model->MOD_GET_USER_BY_USERNAME($username);
 
         $response = [
             'success' => false,
@@ -50,47 +51,61 @@ class AuthController extends Controller
         ];
 
         if (!empty($user) && password_verify($password, $user['password_hash'])) {
+
+            // 🔐 Role validation (SUPER_ADMIN bypass)
+            if ($user['role'] !== 'SUPER_ADMIN' && $user['role'] !== $role) {
+                write_log('LOGIN_FAILED_ROLE_MISMATCH', 'users', $user['id'], 'Role mismatch during login');
+
+                $response['message'] = 'Invalid role selected for this account.';
+                return json($response);
+            }
+
             if ($user['is_active']) {
+
+                // ✅ Set session
                 session_set('is_login', true);
                 session_set('user', $user);
 
-                // Include security questions in session
+                // ✅ Load security questions
                 $security_questions = $user_model->MOD_GET_QUESTIONS_BY_USER_ID((int)$user['id']);
                 session_set('security_questions', $security_questions);
 
+                // ✅ Secure remember me (NO PASSWORD STORAGE)
                 if ($remember) {
+                    $token = bin2hex(random_bytes(32));
+
                     session_set('remember_me', true);
+                    session_set('remember_token', $token);
                     session_set('remember_username', $username);
-                    session_set('remember_password', $password);
-                    session_set('remember_role', $role);
+
+                    // OPTIONAL (recommended): store token in DB for persistent login
+                    // $user_model->STORE_REMEMBER_TOKEN($user['id'], $token);
                 } else {
                     session_remove('remember_me');
+                    session_remove('remember_token');
                     session_remove('remember_username');
-                    session_remove('remember_password');
-                    session_remove('remember_role');
                 }
 
-                // Log successful login
+                // ✅ Log success
                 write_log('LOGIN_SUCCESS', 'users', $user['id'], 'User logged in successfully');
 
                 flash('flash_notif', [
                     'title' => 'Login Successful',
-                    'text' => 'You have successfully logged in.',
-                    'icon' => 'success',
+                    'text'  => 'You have successfully logged in.',
+                    'icon'  => 'success',
                 ]);
 
                 $response['success'] = true;
                 $response['message'] = 'Login successful.';
-                $response['security_questions'] = $security_questions; // send to frontend if needed
-
+                $response['security_questions'] = $security_questions;
             } else {
-                // Log attempt on inactive account
+                // 🚫 Inactive account
                 write_log('LOGIN_FAILED_INACTIVE', 'users', $user['id'], 'Attempted login on inactive account');
 
                 $response['message'] = 'This account is currently inactive. Please contact the system administrator.';
             }
         } elseif (!empty($user)) {
-            // Log wrong password attempt
+            // ❌ Wrong password
             write_log('LOGIN_FAILED_WRONG_PASSWORD', 'users', $user['id'], 'Incorrect password attempt');
         }
 

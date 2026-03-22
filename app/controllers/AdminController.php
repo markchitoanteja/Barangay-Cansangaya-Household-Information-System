@@ -258,7 +258,7 @@ class AdminController extends Controller
 
     public function user_management()
     {
-        if (session_get('user')['role'] != 'ADMIN') {
+        if (session_get('user')['role'] != 'ADMIN' && session_get('user')['role'] != 'SUPER_ADMIN') {
             flash('flash_notif', [
                 'title' => 'Unauthorized',
                 'text'  => 'You are not authorized to access this page.',
