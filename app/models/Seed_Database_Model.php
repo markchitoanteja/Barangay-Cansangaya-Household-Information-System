@@ -39,7 +39,7 @@ class Seed_Database_Model extends Query
             full_name VARCHAR(120) NOT NULL,
             username VARCHAR(60) NOT NULL UNIQUE,
             password_hash VARCHAR(255) NOT NULL,
-            role ENUM('ADMIN', 'STAFF') NOT NULL DEFAULT 'STAFF',
+            role ENUM('SUPER_ADMIN', 'ADMIN', 'STAFF') NOT NULL DEFAULT 'STAFF',
             is_active TINYINT(1) NOT NULL DEFAULT 1,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -82,11 +82,18 @@ class Seed_Database_Model extends Query
     private function seedUsers(): void
     {
         if (!self::table('users')->exists()) {
+            self::table('users')->insert([
+                'full_name'     => 'System Super Administrator',
+                'username'      => 'superadmin',
+                'password_hash' => password_hash('superadmin123', PASSWORD_BCRYPT),
+                'role'          => 'SUPER_ADMIN',
+                'is_active'     => 1
+            ]);
 
             self::table('users')->insert([
                 'full_name'     => 'System Administrator',
                 'username'      => 'admin',
-                'password_hash' => '$2y$10$avell4wi0IzOscScWW8HW.ozWZnL.pkcpUnVpaSGlEd1f2B/OT27y',
+                'password_hash' =>  password_hash('admin123', PASSWORD_BCRYPT),
                 'role'          => 'ADMIN',
                 'is_active'     => 1
             ]);
@@ -94,7 +101,7 @@ class Seed_Database_Model extends Query
             self::table('users')->insert([
                 'full_name'     => 'Barangay Staff',
                 'username'      => 'staff',
-                'password_hash' => '$2y$10$cRLnC4R97XVT9A7Whi8HB.I2IgOr3BCTFCFr7o4DWXEjPQB1WcMee',
+                'password_hash' =>  password_hash('staff123', PASSWORD_BCRYPT),
                 'role'          => 'STAFF',
                 'is_active'     => 1
             ]);
