@@ -292,32 +292,69 @@ $((): void => {
         } else {
             const user_id = $("#user_account_user_id").val()?.toString().trim();
 
-            showLoading();
+            if (ROLE != 'SUPER_ADMIN') {
+                showLoading();
 
-            const formData = { user_id, full_name, username, role };
+                const formData = { user_id, full_name, username, role };
 
-            $.ajax({
-                url: "update-user-account",
-                method: "POST",
-                data: formData,
-                dataType: "JSON",
-                success: (response) => {
-                    setTimeout(() => {
-                        if (response.success) {
-                            location.reload();
-                        } else {
-                            hideLoading();
+                $.ajax({
+                    url: "update-user-account",
+                    method: "POST",
+                    data: formData,
+                    dataType: "JSON",
+                    success: (response) => {
+                        setTimeout(() => {
+                            if (response.success) {
+                                location.reload();
+                            } else {
+                                hideLoading();
 
-                            $("#user_account_username").addClass("border-danger").parent().after(`<div class="text-danger small username-error">${response.error}</div>`);
+                                $("#user_account_username").addClass("border-danger").parent().after(`<div class="text-danger small username-error">${response.error}</div>`);
+                            }
+                        }, 250);
+                    },
+                    error: (xhr, status, error) => {
+                        console.error("AJAX Error:", error);
+
+                        console.log(xhr.responseText);
+                    }
+                });
+            } else {
+                const password = $("#user_account_password").val()?.toString().trim();
+                const confirm_password = $("#user_account_confirm_password").val()?.toString().trim();
+
+                if (password != confirm_password) {
+                    $("#user_account_password, #user_account_confirm_password").addClass("border-danger");
+                    $("#user_account_password").parent().after(`<div class="text-danger small password-error">Passwords do not match.</div>`);
+                } else {
+                    showLoading();
+
+                    const formData = { user_id, full_name, username, role, password };
+
+                    $.ajax({
+                        url: "update-user-account-super-admin-mode",
+                        method: "POST",
+                        data: formData,
+                        dataType: "JSON",
+                        success: (response) => {
+                            setTimeout(() => {
+                                if (response.success) {
+                                    location.reload();
+                                } else {
+                                    hideLoading();
+
+                                    $("#user_account_username").addClass("border-danger").parent().after(`<div class="text-danger small username-error">${response.error}</div>`);
+                                }
+                            }, 250);
+                        },
+                        error: (xhr, status, error) => {
+                            console.error("AJAX Error:", error);
+
+                            console.log(xhr.responseText);
                         }
-                    }, 250);
-                },
-                error: (xhr, status, error) => {
-                    console.error("AJAX Error:", error);
-
-                    console.log(xhr.responseText);
+                    });
                 }
-            });
+            }
         }
     });
 
@@ -432,8 +469,11 @@ $((): void => {
 
         $("#user_account_is_active").prop("disabled", true);
         $("#user_account_password, #user_account_confirm_password").prop("required", false);
-        $("#user_account_password_section").addClass("d-none");
-        $("#user_account_account_modal_body").addClass("pb-0");
+
+        if (ROLE != 'SUPER_ADMIN') {
+            $("#user_account_password_section").addClass("d-none");
+            $("#user_account_account_modal_body").addClass("pb-0");
+        }
     });
 
     $(document).on("click", ".disable-user-account", function (): void {
@@ -474,13 +514,7 @@ $((): void => {
                         },
                         error: (_jqXHR, _textStatus, errorThrown) => {
                             console.error(errorThrown);
-                            hideLoading();
-
-                            Swal.fire({
-                                title: "Server Error",
-                                text: "Unable to disable user account.",
-                                icon: "error"
-                            });
+                            console.log(_jqXHR.responseText);
                         }
                     });
                 }, 250);

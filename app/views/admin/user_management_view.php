@@ -138,12 +138,14 @@
 
                                         <?php if ($user['is_active']): ?>
                                             <button class="btn btn-sm btn-outline-danger disable-user-account"
-                                                data-user_id="<?= $user['id'] ?>">
+                                                data-user_id="<?= $user['id'] ?>"
+                                                data-username="<?= $user['username'] ?>">
                                                 <i class="fa-solid fa-user-slash"></i>
                                             </button>
                                         <?php else: ?>
                                             <button class="btn btn-sm btn-outline-success enable-user-account"
-                                                data-user_id="<?= $user['id'] ?>">
+                                                data-user_id="<?= $user['id'] ?>"
+                                                data-username="<?= $user['username'] ?>">
                                                 <i class="fa-solid fa-user-check"></i>
                                             </button>
                                         <?php endif; ?>

@@ -1,0 +1,4 @@
+[2026-03-22 18:29:51] E_DEPRECATED: trim(): Passing null to parameter #1 ($string) of type string is deprecated | File: C:\xampp\htdocs\Barangay-Cansangaya-Household-Information-System\app\controllers\AdminController.php | Line: 532
+[2026-03-22 18:32:06] E_DEPRECATED: trim(): Passing null to parameter #1 ($string) of type string is deprecated | File: C:\xampp\htdocs\Barangay-Cansangaya-Household-Information-System\app\controllers\AdminController.php | Line: 532
+[2026-03-22 18:32:20] E_DEPRECATED: trim(): Passing null to parameter #1 ($string) of type string is deprecated | File: C:\xampp\htdocs\Barangay-Cansangaya-Household-Information-System\app\controllers\AdminController.php | Line: 532
+[2026-03-22 18:37:13] E_DEPRECATED: trim(): Passing null to parameter #1 ($string) of type string is deprecated | File: C:\xampp\htdocs\Barangay-Cansangaya-Household-Information-System\app\controllers\AdminController.php | Line: 532

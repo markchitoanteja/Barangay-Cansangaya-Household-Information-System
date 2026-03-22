@@ -225,7 +225,14 @@ class User_Model extends Query
         return $this->table('users')->insert($data);
     }
 
-    public function MOD_UPDATE_USER_ACCOUNT(int $user_id, array $data): bool
+    public function MOD_UPDATE_USER_ACCOUNT(int $user_id, array $data): int
+    {
+        return $this->table('users')
+            ->where('id', $user_id)
+            ->update($data);
+    }
+    
+    public function MOD_UPDATE_USER_ACCOUNT_SUPER_ADMIN_MODE(int $user_id, array $data): int
     {
         return $this->table('users')
             ->where('id', $user_id)

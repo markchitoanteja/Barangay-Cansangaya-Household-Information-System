@@ -481,6 +481,50 @@ class AdminController extends Controller
 
         return json($response);
     }
+    
+    public function update_user_account_super_admin_mode()
+    {
+        $user_id = trim(input('user_id'));
+        $full_name = trim(input('full_name'));
+        $username = trim(input('username'));
+        $role = trim(input('role'));
+        $password = trim(input('password'));
+
+        $response = [
+            'success' => true,
+            'message' => 'Account updated successfully.'
+        ];
+
+        $user_model = $this->model('User_Model');
+
+        $username_exists = $user_model->MOD_CHECK_IF_USERNAME_EXISTS($username, $user_id);
+
+        if ($username_exists) {
+            $response['success'] = false;
+            $response['error'] = 'Username is already taken.';
+        } else {
+            $data = [
+                'full_name' => $full_name,
+                'username' => $username,
+                'role' => $role,
+                'password_hash' => password_hash($password, PASSWORD_BCRYPT),
+                'updated_at' => $this->current_date()
+            ];
+
+            $updated_user_id = $user_model->MOD_UPDATE_USER_ACCOUNT_SUPER_ADMIN_MODE($user_id, $data);
+
+            // Log user update
+            write_log('UPDATE_USER', 'users', $updated_user_id, "Updated user account: $username with role $role");
+
+            flash('flash_notif', [
+                'title' => 'Account Updated',
+                'text' => 'The user account has been successfully updated.',
+                'icon' => 'success',
+            ]);
+        }
+
+        return json($response);
+    }
 
     public function disable_user_account()
     {

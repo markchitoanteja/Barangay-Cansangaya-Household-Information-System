@@ -2,7 +2,7 @@
     <div class="panel-header d-flex justify-content-between align-items-center mb-3">
         <h5><i class="fa-solid fa-file-lines me-2"></i>System Logs</h5>
 
-        <?php if (session_get('user')['role'] === 'ADMIN'): ?>
+        <?php if (session_get('user')['role'] === 'ADMIN' || session_get('user')['role'] === 'SUPER_ADMIN'): ?>
             <div class="d-flex gap-2">
                 <!-- Export Logs -->
                 <button class="btn btn-success" id="exportLogsBtn">

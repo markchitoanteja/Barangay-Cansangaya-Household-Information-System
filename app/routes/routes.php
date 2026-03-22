@@ -29,14 +29,17 @@ return function (Router $router) {
     $router->post('/add-user-account', 'AdminController@add_user_account');
     $router->post('/update-security-questions', 'AdminController@update_security_questions');
     $router->post('/update-user-account', 'AdminController@update_user_account');
+    $router->post('/update-user-account-super-admin-mode', 'AdminController@update_user_account_super_admin_mode');
     $router->post('/disable-user-account', 'AdminController@disable_user_account');
     $router->post('/enable-user-account', 'AdminController@enable_user_account');
     $router->post('/update-account', 'AdminController@update_account'); 
     $router->post('/search-user', 'AdminController@search_user');
-    $router->post('/clear-logs', 'AdminController@clear_logs');
+
+    // Logs Routes
     $router->get('/export-logs', 'AdminController@export_logs');
+    $router->post('/clear-logs', 'AdminController@clear_logs');
 
     // Update Routes
-    $router->post('/update-system', 'UpdateController@run');
     $router->get('/check-updates', 'UpdateController@check');
+    $router->post('/update-system', 'UpdateController@run');
 };
