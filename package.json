@@ -8,7 +8,8 @@
     "build-patch": "npm run version:patch && npm run compile && npm run minify",
     "build-minor": "npm run version:minor && npm run compile && npm run minify",
     "build-major": "npm run version:major && npm run compile && npm run minify",
-    "watch": "tsc -w"
+    "watch": "tsc -w",
+    "git:push": "git add . && node -e \"const d=new Date();const pad=n=>n.toString().padStart(2,'0');let h=d.getHours();const ampm=h>=12?'PM':'AM';h=h%12||12;const msg=`${pad(d.getMonth()+1)}-${pad(d.getDate())}-${d.getFullYear()} ${pad(h)}:${pad(d.getMinutes())} ${ampm}`;require('child_process').execSync(`git commit -m \\\"${msg}\\\"`,{stdio:'inherit'});\" && git push origin main"
   },
   "devDependencies": {
     "@types/bootstrap": "^5.2.10",
