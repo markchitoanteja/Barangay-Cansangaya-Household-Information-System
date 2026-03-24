@@ -865,7 +865,7 @@ class AdminController extends Controller
             return;
         }
 
-        if (session_get('user')['role'] !== 'ADMIN') {
+        if (session_get('user')['role'] !== 'ADMIN' && session_get('user')['role'] !== 'SUPER_ADMIN') {
             redirect('dashboard');
             return;
         }
@@ -875,12 +875,7 @@ class AdminController extends Controller
         $logs = $log_model->MOD_GET_LOGS_FOR_EXPORT();
 
         // Log export action
-        write_log(
-            'EXPORT_LOGS',
-            'logs',
-            null,
-            'System logs were exported by an administrator.'
-        );
+        write_log('EXPORT_LOGS', 'logs', null, 'System logs were exported by an administrator.');
 
         $filename = 'system_logs_' . date('Y-m-d_H-i-s') . '.csv';
 
