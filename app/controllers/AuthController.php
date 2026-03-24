@@ -12,7 +12,15 @@ class AuthController extends Controller
         // Log page visit
         write_log('ACCESS_PAGE', 'auth', null, 'Accessed login page');
 
-        $this->view('auth/login_view');
+        $system_information_model = $this->model('System_Information_Model');
+
+        $system_information = $system_information_model->MOD_GET_SYSTEM_INFORMATION();
+
+        $data = [
+            'system_information' => $system_information
+        ];
+
+        $this->view('auth/login_view', $data);
     }
 
     public function forgot_password()
@@ -22,15 +30,18 @@ class AuthController extends Controller
             return;
         }
 
-        if (session_get('is_login', false) === true) {
-            redirect('dashboard');
-            return;
-        }
-
         // Log page visit
         write_log('ACCESS_PAGE', 'auth', null, 'Accessed forgot password page');
 
-        $this->view('auth/forgot_password_view');
+        $system_information_model = $this->model('System_Information_Model');
+
+        $system_information = $system_information_model->MOD_GET_SYSTEM_INFORMATION();
+
+        $data = [
+            'system_information' => $system_information
+        ];
+
+        $this->view('auth/forgot_password_view', $data);
     }
 
     public function authenticate()

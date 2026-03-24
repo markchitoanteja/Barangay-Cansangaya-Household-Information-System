@@ -5,7 +5,7 @@
 
         <div class="loading-body">
             <div class="loading-seal" aria-hidden="true">
-                <img src="<?= base_url('public/assets/img/logo.png') ?>" alt="Barangay Cansangaya Logo">
+                <img src="<?= base_url('public/assets/img/') . $system_information['official_logo'] . '?v=' . env('APP_VERSION') ?>" alt="Barangay Cansangaya Logo">
             </div>
 
             <div class="loading-text">
@@ -17,7 +17,7 @@
                 </div>
 
                 <div class="loading-note">
-                    Barangay Cansangaya Household Information System
+                    Barangay <?= ucfirst($system_information['barangay_name']) ?> Household Information System
                 </div>
             </div>
         </div>

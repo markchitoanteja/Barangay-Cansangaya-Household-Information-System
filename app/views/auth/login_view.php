@@ -5,10 +5,10 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title><?= env('APP_NAME') ?></title>
+    <title>Barangay <?= ucfirst($system_information['barangay_name']) ?> Household Information System</title>
 
     <!-- Favicon -->
-    <link rel="shortcut icon" href="<?= base_url('public/assets/img/favicon.ico') ?>" type="image/x-icon">
+    <link rel="shortcut icon" href="<?= base_url('public/assets/img/') . $system_information['official_logo'] . "?v=" . env('APP_VERSION', '1.0.0') ?>" type="image/x-icon">
     <!-- Bootstrap -->
     <link rel="stylesheet" href="<?= base_url('public/plugins/bootstrap/css/bootstrap.min.css') ?>">
     <!-- Font Awesome -->
@@ -22,10 +22,10 @@
         <!-- LEFT PANEL -->
         <aside class="left-panel">
             <div class="logo">
-                <img src="<?= base_url('public/assets/img/logo.png') ?>" alt="Barangay Logo">
+                <img src="<?= base_url('public/assets/img/') . $system_information['official_logo'] . "?v=" . env('APP_VERSION', '1.0.0') ?>" alt="Barangay Logo">
             </div>
             <h1 class="system-title">
-                Barangay Cansangaya<br>
+                Barangay <?= ucfirst($system_information['barangay_name']) ?><br>
                 <span>Household Information System</span>
             </h1>
             <p class="system-desc">
@@ -65,7 +65,7 @@
                 <section class="login-card">
                     <header class="login-header mb-4 text-center">
                         <h4 class="fw-semibold mb-1">Authorized Personnel Login</h4>
-                        <p class="text-muted small mb-0">Access the Barangay Cansangaya Household System</p>
+                        <p class="text-muted small mb-0">Access the Barangay <?= ucfirst($system_information['barangay_name']) ?> Household System</p>
                     </header>
                     <form action="javascript:void(0)" autocomplete="on" id="login_form">
                         <!-- ROLE SELECTOR -->
@@ -119,7 +119,7 @@
                         </button>
 
                         <footer class="text-center mt-4 small text-muted">
-                            © <span id="year"></span> Barangay Cansangaya
+                            © <span id="year"></span> Barangay <?= ucfirst($system_information['barangay_name']) ?>
                         </footer>
                     </form>
                 </section>
@@ -134,7 +134,7 @@
 
             <div class="loading-body">
                 <div class="loading-seal" aria-hidden="true">
-                    <img src="<?= base_url('public/assets/img/logo.png') ?>" alt="Barangay Cansangaya Logo">
+                    <img src="<?= base_url('public/assets/img/logo.png') ?>" alt="Barangay Logo">
                 </div>
 
                 <div class="loading-text">
@@ -146,7 +146,7 @@
                     </div>
 
                     <div class="loading-note">
-                        Barangay Cansangaya Household Information System
+                        Barangay <?= ucfirst($system_information['barangay_name']) ?> Household Information System
                     </div>
                 </div>
             </div>

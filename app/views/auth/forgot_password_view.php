@@ -5,9 +5,9 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Forgot Password | <?= env('APP_NAME') ?></title>
+    <title>Forgot Password | Barangay <?= ucfirst($system_information['barangay_name']) ?> Household Information System</title>
 
-    <link rel="shortcut icon" href="<?= base_url('public/assets/img/favicon.ico') ?>" type="image/x-icon">
+    <link rel="shortcut icon" href="<?= base_url('public/assets/img/') . $system_information['official_logo'] . "?v=" . env('APP_VERSION', '1.0.0') ?>" type="image/x-icon">
     <link rel="stylesheet" href="<?= base_url('public/plugins/bootstrap/css/bootstrap.min.css') ?>">
     <link rel="stylesheet" href="<?= base_url('public/plugins/fontawesome/css/all.min.css?v=') . env('APP_VERSION', '1.0.0') ?>">
     <link rel="stylesheet" href="<?= base_url('public/assets/css/login.css?v=') . env('APP_VERSION', '1.0.0') ?>">
@@ -19,10 +19,10 @@
         <!-- LEFT PANEL -->
         <aside class="left-panel">
             <div class="logo">
-                <img src="<?= base_url('public/assets/img/logo.png') ?>" alt="Barangay Logo">
+                <img src="<?= base_url('public/assets/img/') . $system_information['official_logo'] . '?v=' . env('APP_VERSION', '1.0.0') ?>" alt="Barangay Logo">
             </div>
             <h1 class="system-title">
-                Barangay Cansangaya<br>
+                Barangay <?= ucfirst($system_information['barangay_name']) ?><br>
                 <span>Household Information System</span>
             </h1>
             <p class="system-desc">
@@ -164,7 +164,7 @@
                     </form>
 
                     <footer class="text-center mt-4 small text-muted">
-                        © <span id="year"></span> Barangay Cansangaya
+                        © <span id="year"></span> Barangay <?= ucfirst($system_information['barangay_name']) ?>
                     </footer>
                 </section>
             </div>

@@ -4,6 +4,8 @@ $((): void => {
     const today: Date = new Date();
     let currentDate: Date = new Date(today.getFullYear(), today.getMonth(), 1);
 
+    let originalContent = $('#systemInfoForm .bg-white').html();
+
     updateTopbarDate();
     updateCalendarReferenceDate();
     enableDevOptions(APP_DEBUG);
@@ -124,11 +126,13 @@ $((): void => {
         }
     });
 
-    $("#reset_filter_button").on("click", (): void => {
+    $("#reset_filter_button").on("click", function (): void {
+        const url = $(this).data('url') as string;
+
         showLoading();
 
         setTimeout(() => {
-            location.href = "user-management";
+            location.href = url;
         }, 250);
     });
 
@@ -725,6 +729,118 @@ $((): void => {
                         }
                     });
                 }, 250);
+            }
+        });
+    });
+
+    $('.info-text').each(function () {
+        const $el = $(this);
+        const tooltipText = $el.data('tooltip') as string || '';
+        const $tooltip = $('<div>')
+            .addClass('tooltip-custom')
+            .text(tooltipText)
+            .appendTo('body');
+
+        // Mouse enter: show tooltip
+        $el.on('mouseenter', () => {
+            const offset = $el.offset();
+            if (offset) {
+                $tooltip.css({
+                    top: offset.top + $el.outerHeight()! + 6,
+                    left: offset.left,
+                    display: 'block'
+                });
+            }
+        });
+
+        // Mouse leave: hide tooltip
+        $el.on('mouseleave', () => {
+            $tooltip.css('display', 'none');
+        });
+
+        // Click: toggle tooltip
+        $el.on('click', () => {
+            $tooltip.css('display', $tooltip.css('display') === 'block' ? 'none' : 'block');
+        });
+    });
+
+    $('#system_info_official_logo').on('change', function () {
+        const previewContainer = $('#systemInfoForm .bg-white');
+        const input = this as HTMLInputElement; // ✅ fix here
+        const files = input.files;
+
+        if (!files || files.length === 0) {
+            previewContainer.html(originalContent);
+            return;
+        }
+
+        const file = files[0];
+
+        if (!file.type.startsWith('image/')) {
+            alert('Please select a valid image file.');
+            $(this).val('');
+            previewContainer.html(originalContent);
+            return;
+        }
+
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+            previewContainer.html(
+                '<img src="' + e.target?.result + '" ' +
+                'style="max-height: 100%; max-width: 100%; border-radius: 8px; object-fit: contain;">'
+            );
+        };
+
+        reader.readAsDataURL(file);
+    });
+
+    $('#systemInfoForm').on('submit', function (e) {
+        e.preventDefault();
+
+        const id = $('#system_info_id').val()?.toString().trim();
+        const barangay_name = $('#system_info_barangay_name').val()?.toString().trim();
+
+        // File handling
+        const fileInput = $('#system_info_official_logo')[0] as HTMLInputElement;
+        const official_logo = fileInput.files && fileInput.files.length > 0 ? fileInput.files[0] : null;
+
+        // Remove error states (if you plan to validate later)
+        $('#system_info_barangay_name').removeClass('border-danger');
+
+        showLoading();
+
+        // Since there's a file, use FormData for AJAX
+        const ajaxData = new FormData();
+
+        ajaxData.append('id', id || '');
+        ajaxData.append('barangay_name', barangay_name || '');
+
+        if (official_logo) {
+            ajaxData.append('official_logo', official_logo);
+        }
+
+        $.ajax({
+            url: 'update-system-info',
+            method: 'POST',
+            data: ajaxData,
+            processData: false,
+            contentType: false,
+            dataType: 'JSON',
+            success: (response) => {
+                setTimeout(() => {
+                    if (response.success) {
+                        location.reload();
+                    } else {
+                        hideLoading();
+                        alert(response.error || 'Failed to update system information.');
+                    }
+                }, 250);
+            },
+            error: (xhr, status, error) => {
+                hideLoading();
+                console.error('AJAX Error:', error);
+                console.log(xhr.responseText);
             }
         });
     });

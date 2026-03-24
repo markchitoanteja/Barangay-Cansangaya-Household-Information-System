@@ -932,3 +932,143 @@ body {
     border-radius: 999px;
     line-height: 1;
 }
+
+/* =========================
+   GOVERNMENT STAT CARDS
+========================= */
+
+.gov-stat-card {
+    border-radius: 12px;
+    border: 1px solid #d6dde6;
+    background: #ffffff;
+    transition: 0.2s ease;
+    height: 100%;
+    overflow: hidden;
+}
+
+.gov-stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.08);
+}
+
+/* Header (formal tone) */
+.gov-stat-header {
+    background: #f1f5f9;
+    border-bottom: 2px solid var(--main-blue);
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #1f4e79;
+    letter-spacing: 0.6px;
+}
+
+.gov-stat-header i {
+    font-size: 1rem;
+}
+
+/* Body */
+.gov-stat-body {
+    padding: 14px;
+}
+
+.gov-stat-body h3 {
+    margin: 0;
+    font-weight: 800;
+    font-size: 1.8rem;
+    color: #0f172a;
+}
+
+.gov-stat-body small {
+    color: #64748b;
+    font-size: 0.8rem;
+}
+
+/* Make card clickable without breaking design */
+.gov-stat-link {
+    text-decoration: none;
+    display: block;
+    color: inherit;
+}
+
+/* Arrow styling */
+.gov-arrow {
+    font-size: 0.8rem;
+    opacity: 0.6;
+    transition: 0.2s ease;
+}
+
+/* Hover effect (government subtle) */
+.gov-stat-link:hover .gov-arrow {
+    transform: translateX(4px);
+    opacity: 1;
+}
+
+.gov-stat-link:hover .gov-stat-card {
+    border-color: var(--main-blue);
+}
+
+/* Custom tooltip style */
+.info-text {
+    display: block;
+    font-size: 0.8rem;
+    color: #1f4e79;
+    /* Government dark-blue */
+    cursor: pointer;
+    text-decoration: underline dotted;
+    margin-top: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Tooltip bubble */
+.tooltip-custom {
+    position: absolute;
+    background: #f8fafc;
+    color: #1f4e79;
+    border: 1px solid #1f4e79;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    max-width: 250px;
+    z-index: 1055;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    display: none;
+}
+
+/* Small arrow under the tooltip */
+.tooltip-custom::after {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    /* arrow at the top of tooltip */
+    left: 10px;
+    border-width: 6px;
+    border-style: solid;
+    border-color: transparent transparent #1f4e79 transparent;
+}
+
+input[type="password"]::-ms-reveal {
+    display: none;
+}
+
+input[type="password"]::-ms-clear {
+    display: none;
+}
+
+input[type="password"]::-webkit-credentials-auto-fill-button {
+    visibility: hidden;
+    display: none !important;
+    pointer-events: none;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+    transition: background-color 9999s ease-in-out 0s;
+}

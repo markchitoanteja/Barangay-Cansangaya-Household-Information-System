@@ -1,4 +1,80 @@
 <section class="panel">
+    <div class="panel-body">
+        <div class="row">
+            <!-- Residents -->
+            <div class="col-md-3">
+                <a href="residents" class="gov-stat-link loadable">
+                    <div class="card gov-stat-card">
+                        <div class="gov-stat-header">
+                            <i class="fa-solid fa-users"></i>
+                            <span>Total Residents</span>
+
+                            <!-- Arrow -->
+                            <i class="fa-solid fa-arrow-right ms-auto gov-arrow"></i>
+                        </div>
+                        <div class="gov-stat-body">
+                            <h3><?= number_format($total_residents ?? 0) ?></h3>
+                            <small>Registered individuals</small>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Households -->
+            <div class="col-md-3">
+                <a href="households" class="gov-stat-link loadable">
+                    <div class="card gov-stat-card">
+                        <div class="gov-stat-header">
+                            <i class="fa-solid fa-house"></i>
+                            <span>Households</span>
+                            <i class="fa-solid fa-arrow-right ms-auto gov-arrow"></i>
+                        </div>
+                        <div class="gov-stat-body">
+                            <h3><?= number_format($total_households ?? 0) ?></h3>
+                            <small>Family units recorded</small>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Health Monitoring -->
+            <div class="col-md-3">
+                <a href="health-monitoring" class="gov-stat-link loadable">
+                    <div class="card gov-stat-card">
+                        <div class="gov-stat-header">
+                            <i class="fa-solid fa-heart-pulse"></i>
+                            <span>Health Records</span>
+                            <i class="fa-solid fa-arrow-right ms-auto gov-arrow"></i>
+                        </div>
+                        <div class="gov-stat-body">
+                            <h3><?= number_format($total_health ?? 0) ?></h3>
+                            <small>Monitored cases</small>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Reports -->
+            <div class="col-md-3">
+                <a href="reports" class="gov-stat-link loadable">
+                    <div class="card gov-stat-card">
+                        <div class="gov-stat-header">
+                            <i class="fa-solid fa-file-lines"></i>
+                            <span>Reports Generated</span>
+                            <i class="fa-solid fa-arrow-right ms-auto gov-arrow"></i>
+                        </div>
+                        <div class="gov-stat-body">
+                            <h3><?= number_format($total_reports ?? 0) ?></h3>
+                            <small>System outputs</small>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="panel">
     <div class="panel-header d-flex justify-content-between align-items-center mb-3">
         <h5><i class="fa-solid fa-file-lines me-2"></i>System Logs</h5>
 

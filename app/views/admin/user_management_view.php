@@ -3,7 +3,7 @@
     <div class="panel-header d-flex justify-content-between align-items-center mb-3">
         <h5><i class="fa-solid fa-users me-2"></i>List of User Accounts</h5>
         <button class="btn gov-btn-primary btn-user-management" data-title="ADD USER ACCOUNT" data-submit-text="Save User" data-bs-toggle="modal" data-bs-target="#userModal">
-            <i class="fa-solid fa-user-plus me-2"></i>Add User Account
+            <i class="fa-solid fa-plus me-2"></i>Add User Account
         </button>
     </div>
 
@@ -48,7 +48,7 @@
                         </button>
                     </div>
                     <div class="col-6 d-flex">
-                        <button type="button" class="btn btn-outline-secondary flex-grow-1" id="reset_filter_button">
+                        <button type="button" class="btn btn-outline-secondary flex-grow-1" data-url="user-management" id="reset_filter_button">
                             <i class="fa-solid fa-arrows-rotate me-2"></i>Reset
                         </button>
                     </div>
@@ -113,7 +113,7 @@
                                     <?php if ($canManage): ?>
 
                                         <!-- SECURITY -->
-                                        <button class="btn btn-sm btn-outline-warning me-1 btn-security-questions"
+                                        <button class="btn btn-sm btn-outline-warning me-1 btn-security-questions" title="Update Security Questions"
                                             data-bs-toggle="modal"
                                             data-bs-target="#securityQuestionsModal"
                                             data-user_id="<?= $user['id'] ?>"
@@ -123,7 +123,7 @@
                                         </button>
 
                                         <!-- EDIT -->
-                                        <button class="btn btn-sm btn-soft me-1 btn-user-management btn-edit-user"
+                                        <button class="btn btn-sm btn-soft me-1 btn-user-management btn-edit-user" title="Update User Account"
                                             data-title="UPDATE USER ACCOUNT"
                                             data-submit-text="Save Changes"
                                             data-bs-toggle="modal"
@@ -137,13 +137,13 @@
                                         </button>
 
                                         <?php if ($user['is_active']): ?>
-                                            <button class="btn btn-sm btn-outline-danger disable-user-account"
+                                            <button class="btn btn-sm btn-outline-danger disable-user-account" title="Disable User Account"
                                                 data-user_id="<?= $user['id'] ?>"
                                                 data-username="<?= $user['username'] ?>">
                                                 <i class="fa-solid fa-user-slash"></i>
                                             </button>
                                         <?php else: ?>
-                                            <button class="btn btn-sm btn-outline-success enable-user-account"
+                                            <button class="btn btn-sm btn-outline-success enable-user-account" title="Enable User Account"
                                                 data-user_id="<?= $user['id'] ?>"
                                                 data-username="<?= $user['username'] ?>">
                                                 <i class="fa-solid fa-user-check"></i>

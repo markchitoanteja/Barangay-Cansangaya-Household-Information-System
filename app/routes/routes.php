@@ -39,7 +39,10 @@ return function (Router $router) {
     $router->get('/export-logs', 'AdminController@export_logs');
     $router->post('/clear-logs', 'AdminController@clear_logs');
 
-    // Update Routes
+    // System Update Routes
     $router->get('/check-updates', 'UpdateController@check');
     $router->post('/update-system', 'UpdateController@run');
+
+    // System Information Routes
+    $router->post('/update-system-info', 'SystemInformationController@update_system_info');
 };

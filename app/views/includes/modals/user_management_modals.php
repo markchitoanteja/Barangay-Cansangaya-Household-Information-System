@@ -4,10 +4,10 @@
         <div class="modal-content gov-modal">
             <div class="modal-header gov-modal-header">
                 <div class="d-flex align-items-center gap-3">
-                    <img src="<?= base_url('public/assets/img/logo.png') ?>" class="gov-modal-logo">
+                    <img src="<?= base_url('public/assets/img/') . $system_information['official_logo'] . '?v=' . env('APP_VERSION') ?>" class="gov-modal-logo">
                     <div>
                         <h5 class="modal-title mb-0" id="user_management_title">USER ACCOUNT</h5>
-                        <small class="gov-modal-subtitle">Barangay Cansangaya Household Information System</small>
+                        <small class="gov-modal-subtitle">Barangay <?= ucfirst($system_information['barangay_name']) ?> Household Information System</small>
                     </div>
                 </div>
                 <button class="btn-close" data-bs-dismiss="modal"></button>

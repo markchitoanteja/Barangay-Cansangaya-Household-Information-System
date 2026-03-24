@@ -10,6 +10,7 @@ class Seed_Database_Model extends Query
         $this->createTables();
         $this->seedUsers();
         $this->seedSecurityQuestions();
+        $this->seedSystemInformation();
 
         return true;
     }
@@ -74,6 +75,74 @@ class Seed_Database_Model extends Query
                 ON DELETE CASCADE ON UPDATE CASCADE
         ";
         self::table('logs')->createTableIfNotExists($logsColumns);
+
+        // HOUSEHOLDS TABLE
+        $householdsColumns = "
+            id INT AUTO_INCREMENT PRIMARY KEY,
+
+            household_code VARCHAR(20) NOT NULL UNIQUE,
+            purok VARCHAR(50) NOT NULL,
+            address TEXT,
+
+            housing_type ENUM('Concrete','Semi-concrete','Wood') NOT NULL,
+            comfort_room ENUM('Owned','Shared','None') NOT NULL,
+            water_access ENUM('Level 1','Level 2','Level 3') NOT NULL,
+
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        ";
+        self::table('households')->createTableIfNotExists($householdsColumns);
+
+
+        // RESIDENTS TABLE
+        $residentsColumns = "
+            id INT AUTO_INCREMENT PRIMARY KEY,
+
+            household_id INT NOT NULL,
+
+            first_name VARCHAR(100) NOT NULL,
+            middle_name VARCHAR(100),
+            last_name VARCHAR(100) NOT NULL,
+
+            sex ENUM('Male','Female') NOT NULL,
+            birthdate DATE NOT NULL,
+
+            civil_status ENUM('Single','Married','Widowed','Separated'),
+
+            relationship ENUM('Head','Spouse','Child','Relative'),
+
+            -- LIVELIHOOD
+            is_farmer TINYINT(1) DEFAULT 0,
+            is_fisherfolk TINYINT(1) DEFAULT 0,
+            has_sari_sari TINYINT(1) DEFAULT 0,
+
+            -- SOCIAL SECTORS
+            is_pwd TINYINT(1) DEFAULT 0,
+            is_solo_parent TINYINT(1) DEFAULT 0,
+            is_4ps TINYINT(1) DEFAULT 0,
+
+            -- HEALTH
+            teen_pregnancy TINYINT(1) DEFAULT 0,
+
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+            CONSTRAINT fk_residents_household
+                FOREIGN KEY (household_id)
+                REFERENCES households(id)
+                ON DELETE CASCADE ON UPDATE CASCADE
+        ";
+        self::table('residents')->createTableIfNotExists($residentsColumns);
+
+        // SYSTEM INFORMATION TABLE
+        $systemInfoColumns = "
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            barangay_name VARCHAR(150) NOT NULL,
+            official_logo VARCHAR(255) DEFAULT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        ";
+        self::table('system_information')->createTableIfNotExists($systemInfoColumns);
     }
 
     /**
@@ -144,6 +213,19 @@ class Seed_Database_Model extends Query
                     ]);
                 }
             }
+        }
+    }
+
+    /**
+     * Seed default system information if table is empty.
+     */
+    private function seedSystemInformation(): void
+    {
+        if (!self::table('system_information')->exists()) {
+            self::table('system_information')->insert([
+                'barangay_name'   => 'Sample',
+                'official_logo'   => 'default_logo.png'
+            ]);
         }
     }
 }

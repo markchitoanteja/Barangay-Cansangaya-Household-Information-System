@@ -77,6 +77,8 @@ $(function () {
         });
     });
 
+    
+
     function enableDevOptions(enable: boolean): void {
         if (!enable) {
             $(document).on(

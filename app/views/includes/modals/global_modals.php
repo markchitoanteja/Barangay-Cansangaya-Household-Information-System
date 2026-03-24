@@ -5,10 +5,10 @@
 
             <div class="modal-header gov-modal-header">
                 <div class="d-flex align-items-center gap-3">
-                    <img src="<?= base_url('public/assets/img/logo.png') ?>" alt="Barangay Logo" class="gov-modal-logo">
+                    <img src="<?= base_url('public/assets/img/') . $system_information['official_logo'] . '?v=' . env('APP_VERSION') ?>" alt="Barangay Logo" class="gov-modal-logo">
                     <div>
                         <h5 class="modal-title mb-0" id="aboutUsModalLabel">OFFICE INFORMATION</h5>
-                        <small class="gov-modal-subtitle">Barangay Cansangaya Household Information System</small>
+                        <small class="gov-modal-subtitle">Barangay <?= ucfirst($system_information['barangay_name']) ?> Household Information System</small>
                     </div>
                 </div>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -16,7 +16,7 @@
 
             <div class="modal-body gov-modal-body">
                 <div class="text-center mb-4">
-                    <h4 class="mb-1">BARANGAY CANSANGAYA</h4>
+                    <h4 class="mb-1">BARANGAY <?= strtoupper($system_information['barangay_name']) ?></h4>
                     <p class="mb-0 text-muted">Household Information System (HIS)</p>
                 </div>
 
@@ -25,7 +25,7 @@
                     <p class="mb-0">
                         The Barangay Household Information System (HIS) is an official information management platform
                         developed to facilitate the recording, maintenance, and retrieval of household and resident data
-                        of Barangay Cansangaya.
+                        of Barangay <?= ucfirst($system_information['barangay_name']) ?>.
                     </p>
                 </div>
 
@@ -80,7 +80,7 @@
                 <div class="gov-meta">
                     <div class="row">
                         <div class="col-md-6 mb-2 mb-md-0">
-                            <strong>Office:</strong> Barangay Cansangaya
+                            <strong>Office:</strong> Barangay <?= ucfirst($system_information['barangay_name']) ?>
                         </div>
                         <div class="col-md-6 text-md-end">
                             <strong>System Version:</strong> <?= env('APP_VERSION', '1.0.0') ?>
@@ -103,10 +103,10 @@
 
             <div class="modal-header gov-modal-header">
                 <div class="d-flex align-items-center gap-3">
-                    <img src="<?= base_url('public/assets/img/logo.png') ?>" alt="Barangay Logo" class="gov-modal-logo">
+                    <img src="<?= base_url('public/assets/img/') . $system_information['official_logo'] . '?v=' . env('APP_VERSION') ?>" alt="Barangay Logo" class="gov-modal-logo">
                     <div>
                         <h5 class="modal-title mb-0" id="accountSettingsModalLabel">ACCOUNT SETTINGS</h5>
-                        <small class="gov-modal-subtitle">Barangay Cansangaya Household Information System</small>
+                        <small class="gov-modal-subtitle">Barangay <?= ucfirst($system_information['barangay_name']) ?> Household Information System</small>
                     </div>
                 </div>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -221,10 +221,10 @@
             <!-- Modal Header -->
             <div class="modal-header gov-modal-header">
                 <div class="d-flex align-items-center gap-3">
-                    <img src="<?= base_url('public/assets/img/logo.png') ?>" class="gov-modal-logo">
+                    <img src="<?= base_url('public/assets/img/') . $system_information['official_logo'] . '?v=' . env('APP_VERSION')  ?>" class="gov-modal-logo">
                     <div>
                         <h5 class="modal-title mb-0" id="security_questions_title">UPDATE SECURITY QUESTIONS</h5>
-                        <small class="gov-modal-subtitle">Barangay Cansangaya Household Information System</small>
+                        <small class="gov-modal-subtitle">Barangay <?= ucfirst($system_information['barangay_name']) ?> Household Information System</small>
                     </div>
                 </div>
                 <button class="btn-close" data-bs-dismiss="modal"></button>
@@ -312,10 +312,10 @@
 
             <div class="modal-header gov-modal-header">
                 <div class="d-flex align-items-center gap-3">
-                    <img src="<?= base_url('public/assets/img/logo.png') ?>" alt="Barangay Logo" class="gov-modal-logo">
+                    <img src="<?= base_url('public/assets/img/') . $system_information['official_logo'] . '?v=' . env('APP_VERSION') ?>" alt="Barangay Logo" class="gov-modal-logo">
                     <div>
                         <h5 class="modal-title mb-0" id="calendarModalLabel">OFFICIAL CALENDAR</h5>
-                        <small class="gov-modal-subtitle">Barangay Cansangaya Household Information System</small>
+                        <small class="gov-modal-subtitle">Barangay <?= ucfirst($system_information['barangay_name']) ?> Household Information System</small>
                     </div>
                 </div>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -359,6 +359,86 @@
             <div class="modal-footer gov-modal-footer">
                 <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Close</button>
             </div>
+        </div>
+    </div>
+</div>
+
+<!-- SYSTEM INFORMATION MODAL -->
+<div class="modal fade" id="systemInfoModal" tabindex="-1" aria-labelledby="systemInfoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content gov-modal">
+            <div class="modal-header gov-modal-header">
+                <div class="d-flex align-items-center gap-3">
+                    <img src="<?= base_url('public/assets/img/') . ($system_information['official_logo'] ?? 'default_logo.png') . '?v=' . env('APP_VERSION') ?>" alt="Barangay Logo" class="gov-modal-logo">
+                    <div>
+                        <h5 class="modal-title mb-0" id="systemInfoModalLabel">SYSTEM INFORMATION</h5>
+                        <small class="gov-modal-subtitle">Barangay <?= ucfirst($system_information['barangay_name'] ?? 'Name') ?> Household Information System</small>
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <form action="javascript:void(0)" id="systemInfoForm" enctype="multipart/form-data">
+                <div class="modal-body gov-modal-body">
+                    <!-- System Info Form Sections -->
+                    <div class="gov-section">
+                        <div class="d-flex flex-wrap gap-4">
+                            <!-- Logo Panel -->
+                            <div class="d-flex flex-column w-100 align-items-center text-center">
+                                <div class="bg-white border rounded p-2 shadow-sm" style="width: 120px; height: 120px; display: grid; place-items: center;">
+                                    <?php if (!empty($system_information['official_logo'])): ?>
+                                        <img src="<?= base_url('public/assets/img/' . $system_information['official_logo'] . '?v=' . env('APP_VERSION')) ?>" alt="Logo Preview" style="max-height: 100%; max-width: 100%; border-radius: 8px; object-fit: contain;">
+                                    <?php else: ?>
+                                        <div class="text-muted small">No Logo</div>
+                                    <?php endif; ?>
+                                </div>
+                                <label for="system_info_official_logo" class="mt-2 fw-semibold text-primary" style="cursor: pointer;">
+                                    <i class="fa-solid fa-upload me-1"></i> Upload Logo
+                                </label>
+                                <input type="file" class="d-none" id="system_info_official_logo" accept="image/*">
+                            </div>
+
+                            <!-- Info Panel -->
+                            <div class="flex-grow-1 d-flex flex-column gap-3">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control gov-input" id="system_info_barangay_name" value="<?= esc($system_information['barangay_name'] ?? '') ?>" placeholder="Barangay Name" required>
+                                    <label for="system_info_barangay_name">
+                                        <i class="fa-solid fa-city me-1"></i> Barangay Name
+                                    </label>
+                                </div>
+
+                                <div class="d-flex gap-3 flex-wrap">
+                                    <div class="form-floating flex-grow-1">
+                                        <input type="text" class="form-control gov-input" value="<?= isset($system_information['created_at']) ? esc(date('F d, Y h:i A', strtotime($system_information['created_at']))) : '' ?>" placeholder="Created At" readonly>
+                                        <label>
+                                            <i class="fa-regular fa-calendar me-1"></i> Created At
+                                        </label>
+                                    </div>
+                                    <div class="form-floating flex-grow-1">
+                                        <input type="text" class="form-control gov-input" value="<?= isset($system_information['updated_at']) ? esc(date('F d, Y h:i A', strtotime($system_information['updated_at']))) : '' ?>" placeholder="Last Updated" readonly>
+                                        <label>
+                                            <i class="fa-regular fa-calendar me-1"></i> Last Updated
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="settings-note mt-3">
+                            Updating the Barangay Name or Logo will reflect system-wide. Accepted formats: PNG, JPG, JPEG.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer gov-modal-footer">
+                    <input type="hidden" id="system_info_id" value="<?= $system_information['id'] ?? '' ?>">
+
+                    <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn gov-btn-primary px-4">
+                        <i class="fa-solid fa-floppy-disk me-2"></i> Save Changes
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>

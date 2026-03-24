@@ -49,41 +49,49 @@ class Controller
     /* =========================
        VIEWS
        ========================= */
-    protected function view(string $view, array $data = []): void
+    protected function view(string|array $views, array $data = []): void
     {
-        $viewFile = "app/views/{$view}.php";
-
-        if (!file_exists($viewFile)) {
-            $this->router->renderError(404, 'Not Found', 'The requested resource could not be found.', "View not found: {$viewFile}");
-            exit;
-        }
-
+        $views = (array) $views; // normalize to array
         extract($data, EXTR_SKIP);
 
-        ob_start();
+        foreach ($views as $view) {
+            $viewFile = "app/views/{$view}.php";
 
-        $prevHandler = set_error_handler(function ($severity, $msg, $file, $line) {
-            if (!(error_reporting() & $severity)) {
-                return false;
+            if (!file_exists($viewFile)) {
+                $this->router->renderError(
+                    404,
+                    'Not Found',
+                    'The requested resource could not be found.',
+                    "View not found: {$viewFile}"
+                );
+                exit;
             }
-            throw new ErrorException($msg, 0, $severity, $file, $line);
-        });
 
-        try {
-            require $viewFile;
-            restore_error_handler();
-            ob_end_flush();
-        } catch (Throwable $e) {
-            restore_error_handler();
-            ob_end_clean();
+            ob_start();
 
-            $this->router->renderError(
-                500,
-                'Server Error',
-                'A view rendering error occurred.',
-                $e->getMessage() . " in {$e->getFile()}:{$e->getLine()}"
-            );
-            exit;
+            $prevHandler = set_error_handler(function ($severity, $msg, $file, $line) {
+                if (!(error_reporting() & $severity)) {
+                    return false;
+                }
+                throw new ErrorException($msg, 0, $severity, $file, $line);
+            });
+
+            try {
+                require $viewFile;
+                restore_error_handler();
+                ob_end_flush();
+            } catch (Throwable $e) {
+                restore_error_handler();
+                ob_end_clean();
+
+                $this->router->renderError(
+                    500,
+                    'Server Error',
+                    'A view rendering error occurred.',
+                    $e->getMessage() . " in {$e->getFile()}:{$e->getLine()}"
+                );
+                exit;
+            }
         }
     }
 

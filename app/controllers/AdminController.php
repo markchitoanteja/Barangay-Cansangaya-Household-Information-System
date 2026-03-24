@@ -54,6 +54,10 @@ class AdminController extends Controller
 
         $security_questions = $user_model->MOD_GET_QUESTIONS_BY_ID($current_user['id']);
 
+        $system_information_model = $this->model('System_Information_Model');
+
+        $system_information = $system_information_model->MOD_GET_SYSTEM_INFORMATION();
+
         // Prepare data for view
         $data = [
             'title' => 'Dashboard',
@@ -62,14 +66,21 @@ class AdminController extends Controller
             'current_page' => $current_page,
             'total_pages' => $total_pages,
             'search' => $search,
-            'security_questions' => $security_questions
+            'security_questions' => $security_questions,
+            'total_residents' => 109,
+            'total_households' => 23,
+            'total_health' => 69,
+            'total_reports' => 10,
+            'system_information' => $system_information
         ];
 
-        $this->view('includes/header', $data);
-        $this->view('admin/dashboard_view', $data);
-        $this->view('includes/modals/global_modals', $data);
-        $this->view('includes/overlays/loading_overlay');
-        $this->view('includes/footer', $data);
+        $this->view([
+            'includes/header',
+            'admin/dashboard_view',
+            'includes/modals/global_modals',
+            'includes/overlays/loading_overlay',
+            'includes/footer'
+        ], $data);
     }
 
     public function households()
@@ -80,19 +91,79 @@ class AdminController extends Controller
 
         $user_model = $this->model('User_Model');
 
+        // --- Sample data (mocked) ---
+        $all_households = [
+            ['id' => 1, 'purok' => 'Purok 1', 'housing_type' => 'Single Family', 'comfort_room' => 'Yes', 'water_system' => 'Piped'],
+            ['id' => 2, 'purok' => 'Purok 2', 'housing_type' => 'Apartment', 'comfort_room' => 'No', 'water_system' => 'Well'],
+            ['id' => 3, 'purok' => 'Purok 3', 'housing_type' => 'Duplex', 'comfort_room' => 'Yes', 'water_system' => 'River'],
+            ['id' => 4, 'purok' => 'Purok 1', 'housing_type' => 'Single Family', 'comfort_room' => 'No', 'water_system' => 'Piped'],
+            ['id' => 5, 'purok' => 'Purok 2', 'housing_type' => 'Apartment', 'comfort_room' => 'Yes', 'water_system' => 'Well'],
+            ['id' => 6, 'purok' => 'Purok 3', 'housing_type' => 'Duplex', 'comfort_room' => 'No', 'water_system' => 'River'],
+            ['id' => 7, 'purok' => 'Purok 4', 'housing_type' => 'Single Family', 'comfort_room' => 'Yes', 'water_system' => 'Piped'],
+            ['id' => 8, 'purok' => 'Purok 5', 'housing_type' => 'Apartment', 'comfort_room' => 'No', 'water_system' => 'Well'],
+            ['id' => 9, 'purok' => 'Purok 1', 'housing_type' => 'Duplex', 'comfort_room' => 'Yes', 'water_system' => 'River'],
+            ['id' => 10, 'purok' => 'Purok 2', 'housing_type' => 'Single Family', 'comfort_room' => 'No', 'water_system' => 'Piped'],
+            ['id' => 11, 'purok' => 'Purok 3', 'housing_type' => 'Apartment', 'comfort_room' => 'Yes', 'water_system' => 'Well'],
+            ['id' => 12, 'purok' => 'Purok 4', 'housing_type' => 'Duplex', 'comfort_room' => 'No', 'water_system' => 'River'],
+        ];
+
+        // --- Get search filters ---
+        $search_input = trim((string) input('search_input'));
+        $housing_type = trim((string) input('housing_type'));
+        $comfort_room = trim((string) input('comfort_room'));
+        $water_system = trim((string) input('water_system'));
+
+        // --- Filter data based on input ---
+        $filtered_households = array_filter($all_households, function ($h) use ($search_input, $housing_type, $comfort_room, $water_system) {
+            $matches_search = empty($search_input) || stripos($h['purok'], $search_input) !== false || stripos($h['housing_type'], $search_input) !== false;
+            $matches_housing = empty($housing_type) || $h['housing_type'] === $housing_type;
+            $matches_comfort = empty($comfort_room) || $h['comfort_room'] === $comfort_room;
+            $matches_water = empty($water_system) || $h['water_system'] === $water_system;
+
+            return $matches_search && $matches_housing && $matches_comfort && $matches_water;
+        });
+
+        // --- Pagination setup ---
+        $per_page = 10;
+        $current_page = (int)(input('page') ?? 1);
+        if ($current_page < 1) $current_page = 1;
+
+        $total_households = count($filtered_households);
+        $total_pages = (int)ceil($total_households / $per_page);
+        $offset = ($current_page - 1) * $per_page;
+
+        // Slice for current page
+        $households = array_slice($filtered_households, $offset, $per_page);
+
         $security_questions = $user_model->MOD_GET_QUESTIONS_BY_ID($current_user['id']);
 
+        $system_information_model = $this->model('System_Information_Model');
+
+        $system_information = $system_information_model->MOD_GET_SYSTEM_INFORMATION();
+
+        // --- Prepare data for view ---
         $data = [
             'title' => 'Households',
             'user' => $current_user,
-            'security_questions' => $security_questions
+            'households' => $households,
+            'security_questions' => $security_questions,
+            'current_page' => $current_page,
+            'total_pages' => $total_pages,
+            'search_input' => $search_input,
+            'housing_type' => $housing_type,
+            'comfort_room' => $comfort_room,
+            'water_system' => $water_system,
+            'system_information' => $system_information
         ];
 
-        $this->view('includes/header', $data);
-        $this->view('admin/households_view');
-        $this->view('includes/modals/global_modals', $data);
-        $this->view('includes/overlays/loading_overlay');
-        $this->view('includes/footer', $data);
+        $this->view([
+            'includes/header',
+            'admin/households_view',
+            'includes/modals/household_modals',
+            'includes/modals/global_modals',
+            'includes/overlays/loading_overlay',
+            'includes/footer'
+        ], $data);
     }
 
     public function residents()
@@ -103,19 +174,80 @@ class AdminController extends Controller
 
         $user_model = $this->model('User_Model');
 
+        // --- Sample data (mocked) ---
+        $all_residents = [
+            ['id' => 1, 'purok' => 'Purok 1', 'housing_type' => 'Single Family', 'comfort_room' => 'Yes', 'water_system' => 'Piped'],
+            ['id' => 2, 'purok' => 'Purok 2', 'housing_type' => 'Apartment', 'comfort_room' => 'No', 'water_system' => 'Well'],
+            ['id' => 3, 'purok' => 'Purok 3', 'housing_type' => 'Duplex', 'comfort_room' => 'Yes', 'water_system' => 'River'],
+            ['id' => 4, 'purok' => 'Purok 1', 'housing_type' => 'Single Family', 'comfort_room' => 'No', 'water_system' => 'Piped'],
+            ['id' => 5, 'purok' => 'Purok 2', 'housing_type' => 'Apartment', 'comfort_room' => 'Yes', 'water_system' => 'Well'],
+            ['id' => 6, 'purok' => 'Purok 3', 'housing_type' => 'Duplex', 'comfort_room' => 'No', 'water_system' => 'River'],
+            ['id' => 7, 'purok' => 'Purok 4', 'housing_type' => 'Single Family', 'comfort_room' => 'Yes', 'water_system' => 'Piped'],
+            ['id' => 8, 'purok' => 'Purok 5', 'housing_type' => 'Apartment', 'comfort_room' => 'No', 'water_system' => 'Well'],
+            ['id' => 9, 'purok' => 'Purok 1', 'housing_type' => 'Duplex', 'comfort_room' => 'Yes', 'water_system' => 'River'],
+            ['id' => 10, 'purok' => 'Purok 2', 'housing_type' => 'Single Family', 'comfort_room' => 'No', 'water_system' => 'Piped'],
+            ['id' => 11, 'purok' => 'Purok 3', 'housing_type' => 'Apartment', 'comfort_room' => 'Yes', 'water_system' => 'Well'],
+            ['id' => 12, 'purok' => 'Purok 4', 'housing_type' => 'Duplex', 'comfort_room' => 'No', 'water_system' => 'River'],
+        ];
+
+        // --- Get search filters ---
+        $search_input = trim((string) input('search_input'));
+        $housing_type = trim((string) input('housing_type'));
+        $comfort_room = trim((string) input('comfort_room'));
+        $water_system = trim((string) input('water_system'));
+
+        // --- Filter data based on input ---
+        $filtered_households = array_filter($all_residents, function ($h) use ($search_input, $housing_type, $comfort_room, $water_system) {
+            $matches_search = empty($search_input) || stripos($h['purok'], $search_input) !== false || stripos($h['housing_type'], $search_input) !== false;
+            $matches_housing = empty($housing_type) || $h['housing_type'] === $housing_type;
+            $matches_comfort = empty($comfort_room) || $h['comfort_room'] === $comfort_room;
+            $matches_water = empty($water_system) || $h['water_system'] === $water_system;
+
+            return $matches_search && $matches_housing && $matches_comfort && $matches_water;
+        });
+
+        // --- Pagination setup ---
+        $per_page = 10;
+        $current_page = (int)(input('page') ?? 1);
+        if ($current_page < 1) $current_page = 1;
+
+        $total_households = count($filtered_households);
+        $total_pages = (int)ceil($total_households / $per_page);
+        $offset = ($current_page - 1) * $per_page;
+
+        // Slice for current page
+        $households = array_slice($filtered_households, $offset, $per_page);
+
         $security_questions = $user_model->MOD_GET_QUESTIONS_BY_ID($current_user['id']);
 
+        $system_information_model = $this->model('System_Information_Model');
+
+        $system_information = $system_information_model->MOD_GET_SYSTEM_INFORMATION();
+
+        // --- Prepare data for view ---
         $data = [
             'title' => 'Residents',
             'user' => $current_user,
-            'security_questions' => $security_questions
+            'households' => $households,
+            'security_questions' => $security_questions,
+            'current_page' => $current_page,
+            'total_pages' => $total_pages,
+            'search_input' => $search_input,
+            'housing_type' => $housing_type,
+            'comfort_room' => $comfort_room,
+            'water_system' => $water_system,
+            'system_information' => $system_information
         ];
 
-        $this->view('includes/header', $data);
-        $this->view('admin/residents_view');
-        $this->view('includes/modals/global_modals', $data);
-        $this->view('includes/overlays/loading_overlay');
-        $this->view('includes/footer', $data);
+        // --- Load views ---
+        $this->view([
+            'includes/header',
+            'admin/residents_view',
+            'includes/modals/residents_modals',
+            'includes/modals/global_modals',
+            'includes/overlays/loading_overlay',
+            'includes/footer'
+        ], $data);
     }
 
     public function demographics()
@@ -128,17 +260,24 @@ class AdminController extends Controller
 
         $security_questions = $user_model->MOD_GET_QUESTIONS_BY_ID($current_user['id']);
 
+        $system_information_model = $this->model('System_Information_Model');
+
+        $system_information = $system_information_model->MOD_GET_SYSTEM_INFORMATION();
+
         $data = [
             'title' => 'Demographics',
             'user' => $current_user,
-            'security_questions' => $security_questions
+            'security_questions' => $security_questions,
+            'system_information' => $system_information,
         ];
 
-        $this->view('includes/header', $data);
-        $this->view('admin/demographics_view');
-        $this->view('includes/modals/global_modals', $data);
-        $this->view('includes/overlays/loading_overlay');
-        $this->view('includes/footer', $data);
+        $this->view([
+            'includes/header',
+            'admin/demographics_view',
+            'includes/modals/global_modals',
+            'includes/overlays/loading_overlay',
+            'includes/footer'
+        ], $data);
     }
 
     public function housing_and_facilities()
@@ -151,17 +290,24 @@ class AdminController extends Controller
 
         $security_questions = $user_model->MOD_GET_QUESTIONS_BY_ID($current_user['id']);
 
+        $system_information_model = $this->model('System_Information_Model');
+
+        $system_information = $system_information_model->MOD_GET_SYSTEM_INFORMATION();
+
         $data = [
             'title' => 'Housing & Facilities',
             'user' => $current_user,
-            'security_questions' => $security_questions
+            'security_questions' => $security_questions,
+            'system_information' => $system_information
         ];
 
-        $this->view('includes/header', $data);
-        $this->view('admin/housing_and_facilities_view');
-        $this->view('includes/modals/global_modals', $data);
-        $this->view('includes/overlays/loading_overlay');
-        $this->view('includes/footer', $data);
+        $this->view([
+            'includes/header',
+            'admin/housing_and_facilities_view',
+            'includes/modals/global_modals',
+            'includes/overlays/loading_overlay',
+            'includes/footer'
+        ], $data);
     }
 
     public function livelihood()
@@ -174,17 +320,24 @@ class AdminController extends Controller
 
         $security_questions = $user_model->MOD_GET_QUESTIONS_BY_ID($current_user['id']);
 
+        $system_information_model = $this->model('System_Information_Model');
+
+        $system_information = $system_information_model->MOD_GET_SYSTEM_INFORMATION();
+
         $data = [
             'title' => 'Livelihood',
             'user' => $current_user,
-            'security_questions' => $security_questions
+            'security_questions' => $security_questions,
+            'system_information' => $system_information
         ];
 
-        $this->view('includes/header', $data);
-        $this->view('admin/livelihood_view');
-        $this->view('includes/modals/global_modals', $data);
-        $this->view('includes/overlays/loading_overlay');
-        $this->view('includes/footer', $data);
+        $this->view([
+            'includes/header',
+            'admin/livelihood_view',
+            'includes/modals/global_modals',
+            'includes/overlays/loading_overlay',
+            'includes/footer'
+        ], $data);
     }
 
     public function social_sectors()
@@ -197,17 +350,24 @@ class AdminController extends Controller
 
         $security_questions = $user_model->MOD_GET_QUESTIONS_BY_ID($current_user['id']);
 
+        $system_information_model = $this->model('System_Information_Model');
+
+        $system_information = $system_information_model->MOD_GET_SYSTEM_INFORMATION();
+
         $data = [
             'title' => 'Social Sectors',
             'user' => $current_user,
-            'security_questions' => $security_questions
+            'security_questions' => $security_questions,
+            'system_information' => $system_information
         ];
 
-        $this->view('includes/header', $data);
-        $this->view('admin/social_sectors_view');
-        $this->view('includes/modals/global_modals', $data);
-        $this->view('includes/overlays/loading_overlay');
-        $this->view('includes/footer', $data);
+        $this->view([
+            'includes/header',
+            'admin/social_sectors_view',
+            'includes/modals/global_modals',
+            'includes/overlays/loading_overlay',
+            'includes/footer'
+        ], $data);
     }
 
     public function health_monitoring()
@@ -220,17 +380,24 @@ class AdminController extends Controller
 
         $security_questions = $user_model->MOD_GET_QUESTIONS_BY_ID($current_user['id']);
 
+        $system_information_model = $this->model('System_Information_Model');
+
+        $system_information = $system_information_model->MOD_GET_SYSTEM_INFORMATION();
+
         $data = [
             'title' => 'Health Monitoring',
             'user' => $current_user,
-            'security_questions' => $security_questions
+            'security_questions' => $security_questions,
+            'system_information' => $system_information
         ];
 
-        $this->view('includes/header', $data);
-        $this->view('admin/health_monitoring_view');
-        $this->view('includes/modals/global_modals', $data);
-        $this->view('includes/overlays/loading_overlay');
-        $this->view('includes/footer', $data);
+        $this->view([
+            'includes/header',
+            'admin/health_monitoring_view',
+            'includes/modals/global_modals',
+            'includes/overlays/loading_overlay',
+            'includes/footer'
+        ], $data);
     }
 
     public function reports()
@@ -243,17 +410,24 @@ class AdminController extends Controller
 
         $security_questions = $user_model->MOD_GET_QUESTIONS_BY_ID($current_user['id']);
 
+        $system_information_model = $this->model('System_Information_Model');
+
+        $system_information = $system_information_model->MOD_GET_SYSTEM_INFORMATION();
+
         $data = [
             'title' => 'Reports',
             'user' => $current_user,
-            'security_questions' => $security_questions
+            'security_questions' => $security_questions,
+            'system_information' => $system_information
         ];
 
-        $this->view('includes/header', $data);
-        $this->view('admin/reports_view');
-        $this->view('includes/modals/global_modals', $data);
-        $this->view('includes/overlays/loading_overlay');
-        $this->view('includes/footer', $data);
+        $this->view([
+            'includes/header',
+            'admin/reports_view',
+            'includes/modals/global_modals',
+            'includes/overlays/loading_overlay',
+            'includes/footer'
+        ], $data);
     }
 
     public function user_management()
@@ -304,6 +478,10 @@ class AdminController extends Controller
 
         $security_questions = $user_model->MOD_GET_QUESTIONS_BY_ID($current_user['id']);
 
+        $system_information_model = $this->model('System_Information_Model');
+
+        $system_information = $system_information_model->MOD_GET_SYSTEM_INFORMATION();
+
         // --- Prepare data for view ---
         $data = [
             'title' => 'User Management',
@@ -314,16 +492,19 @@ class AdminController extends Controller
             'search_input' => $search_input,
             'role' => $role,
             'status' => $status,
-            'security_questions' => $security_questions
+            'security_questions' => $security_questions,
+            'system_information' => $system_information
         ];
 
         // --- Load views ---
-        $this->view('includes/header', $data);
-        $this->view('admin/user_management_view', $data);
-        $this->view('includes/modals/user_management_modals');
-        $this->view('includes/modals/global_modals', $data);
-        $this->view('includes/overlays/loading_overlay');
-        $this->view('includes/footer', $data);
+        $this->view([
+            'includes/header',
+            'admin/user_management_view',
+            'includes/modals/user_management_modals',
+            'includes/modals/global_modals',
+            'includes/overlays/loading_overlay',
+            'includes/footer'
+        ], $data);
     }
 
     /*----- End Admin Pages Views -----*/
@@ -481,7 +662,7 @@ class AdminController extends Controller
 
         return json($response);
     }
-    
+
     public function update_user_account_super_admin_mode()
     {
         $user_id = trim(input('user_id'));

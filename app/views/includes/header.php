@@ -5,10 +5,10 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title><?= isset($title) ? $title : 'Unknown Page' ?> | <?= env('APP_NAME') ?></title>
+    <title><?= isset($title) ? $title : 'Unknown Page' ?> | Barangay <?= ucfirst($system_information['barangay_name']) ?> Household Information System</title>
 
     <!-- Favicon -->
-    <link rel="shortcut icon" href="<?= base_url('public/assets/img/favicon.ico') ?>" type="image/x-icon">
+    <link rel="shortcut icon" href="<?= base_url('public/assets/img/') . $system_information['official_logo'] . "?v=" . env('APP_VERSION', '1.0.0') ?>" type="image/x-icon">
     <!-- Bootstrap -->
     <link rel="stylesheet" href="<?= base_url('public/plugins/bootstrap/css/bootstrap.min.css') ?>">
     <!-- Font Awesome -->
@@ -24,11 +24,11 @@
             <div class="brand">
                 <div class="brand-badge">
                     <!-- Replace with your logo -->
-                    <img src="<?= base_url('public/assets/img/logo.png') ?>" alt="Barangay Logo">
+                    <img src="<?= base_url('public/assets/img/') . $system_information['official_logo'] . "?v=" . env('APP_VERSION', '1.0.0') ?>" alt="Barangay Logo">
                 </div>
                 <div>
                     <h6>Barangay HIS</h6>
-                    <small>Brgy. Cansangaya</small>
+                    <small>Brgy. <?= ucfirst($system_information['barangay_name']) ?></small>
                 </div>
             </div>
 
@@ -43,13 +43,11 @@
                 <a class="nav-link loadable <?= ($title == 'Households') ? 'active' : '' ?>" href="households">
                     <div class="d-flex justify-content-between align-items-center w-100">
                         <span><i class="fa-solid fa-house"></i> Households</span>
-                        <i class="fa-solid fa-exclamation-triangle text-danger" title="Page in development"></i>
                     </div>
                 </a>
                 <a class="nav-link loadable <?= ($title == 'Residents') ? 'active' : '' ?>" href="residents">
                     <div class="d-flex justify-content-between align-items-center w-100">
                         <span><i class="fa-solid fa-users"></i> Residents</span>
-                        <i class="fa-solid fa-exclamation-triangle text-danger" title="Page in development"></i>
                     </div>
                 </a>
                 <a class="nav-link loadable <?= ($title == 'Demographics') ? 'active' : '' ?>" href="demographics">
@@ -111,11 +109,12 @@
             <!-- TOP BAR -->
             <div class="topbar">
                 <div>
-                    <p class="subtitle">Barangay Cansangaya Household Information System</p>
+                    <p class="subtitle">Barangay <?= ucfirst($system_information['barangay_name']) ?> Household Information System</p>
                     <h4 class="title"><?= isset($title) ? strtoupper($title) : 'UNKNOWN PAGE' ?></h4>
                 </div>
 
                 <div class="d-flex gap-2 align-items-center">
+                    <!-- System Update -->
                     <?php if (isset($user) && ($user['role'] === 'ADMIN' || $user['role'] === 'SUPER_ADMIN')): ?>
                         <div class="dropdown d-none" id="drpdwn_updates">
                             <button id="btnCheckUpdates" class="pill pill-btn position-relative" data-bs-toggle="dropdown">
@@ -180,6 +179,13 @@
                                     <i class="fa-solid fa-circle-info me-2"></i> About Us
                                 </a>
                             </li>
+                            <?php if ($user['role'] === 'SUPER_ADMIN'): ?>
+                                <li>
+                                    <a class="dropdown-item" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#systemInfoModal">
+                                        <i class="fa-solid fa-server me-2"></i> Update System Information
+                                    </a>
+                                </li>
+                            <?php endif ?>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
