@@ -3,6 +3,61 @@
 class User_Model extends Query
 {
     // =========================================
+// REMEMBER ME TOKEN MANAGEMENT
+// =========================================
+
+    /**
+     * Store a remember token for a user
+     *
+     * @param int $user_id
+     * @param string $token
+     * @param int $expiry_seconds Optional expiration time in seconds (default 30 days)
+     * @return bool
+     */
+    public function MOD_STORE_REMEMBER_TOKEN(int $user_id, string $token, int $expiry_seconds = 2592000): bool
+    {
+        $expires_at = date('Y-m-d H:i:s', time() + $expiry_seconds);
+
+        // Store in dedicated table
+        return $this->table('user_remember_tokens')->insert([
+            'user_id'    => $user_id,
+            'token'      => $token,
+            'expires_at' => $expires_at,
+            'created_at' => date('Y-m-d H:i:s')
+        ]);
+    }
+
+    /**
+     * Validate a remember token
+     *
+     * @param int $user_id
+     * @param string $token
+     * @return bool
+     */
+    public function VALIDATE_REMEMBER_TOKEN(int $user_id, string $token): bool
+    {
+        $row = $this->table('user_remember_tokens')
+            ->where('user_id', '=', $user_id)
+            ->where('token', '=', $token)
+            ->where('expires_at', '>', date('Y-m-d H:i:s')) // Not expired
+            ->first();
+
+        return !empty($row);
+    }
+
+    /**
+     * Clear all remember tokens for a user
+     *
+     * @param int $user_id
+     * @return bool
+     */
+    public function MOD_CLEAR_REMEMBER_TOKENS(int $user_id): bool
+    {
+        return $this->table('user_remember_tokens')
+            ->where('user_id', '=', $user_id)
+            ->delete();
+    }
+    // =========================================
     // AUTH METHODS
     // =========================================
 
@@ -25,7 +80,6 @@ class User_Model extends Query
     // =========================================
     // SECURITY QUESTIONS
     // =========================================
-
     public function MOD_GET_QUESTIONS_BY_USER_ID($user_id): array
     {
         return $this->table('security_questions')
@@ -117,7 +171,7 @@ class User_Model extends Query
     // =========================================
     // PASSWORD MANAGEMENT
     // =========================================
-
+    
     public function MOD_RESET_PASSWORD(int $user_id, string $password): bool
     {
         $password_hash = password_hash($password, PASSWORD_BCRYPT);
@@ -231,7 +285,7 @@ class User_Model extends Query
             ->where('id', $user_id)
             ->update($data);
     }
-    
+
     public function MOD_UPDATE_USER_ACCOUNT_SUPER_ADMIN_MODE(int $user_id, array $data): int
     {
         return $this->table('users')

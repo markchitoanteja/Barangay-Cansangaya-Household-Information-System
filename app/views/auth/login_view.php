@@ -84,7 +84,7 @@
 
                         <!-- USERNAME -->
                         <div class="form-floating mb-3">
-                            <input type="text" class="form-control" id="login_username" value="<?= session_get('remember_me') ? session_get('remember_username') : '' ?>" placeholder="Username" required>
+                            <input type="text" class="form-control" id="login_username" placeholder="Username" required>
                             <label for="login_username">
                                 <i class="fa-regular fa-user me-1"></i> Username
                             </label>
@@ -92,11 +92,12 @@
 
                         <!-- PASSWORD -->
                         <div class="form-floating mb-3 position-relative">
-                            <input type="password" class="form-control" id="login_password" value="<?= session_get('remember_me') ? session_get('remember_password') : '' ?>" placeholder="Password" required>
+                            <input type="password" class="form-control" id="login_password" placeholder="Password" required>
                             <label for="login_password">
                                 <i class="fa-solid fa-lock me-1"></i> Password
                             </label>
-                            <button type="button" class="btn btn-sm position-absolute top-50 end-0 translate-middle-y me-2 text-secondary border-0" id="togglePassword" aria-label="Toggle password visibility">
+                            <button type="button" class="btn btn-sm position-absolute top-50 end-0 translate-middle-y me-2 text-secondary border-0"
+                                id="togglePassword" aria-label="Toggle password visibility">
                                 <i class="fa-regular fa-eye"></i>
                             </button>
                         </div>
@@ -104,7 +105,7 @@
                         <!-- OPTIONS -->
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="login_remember" <?= session_get('remember_me') ? 'checked' : '' ?>>
+                                <input class="form-check-input" type="checkbox" id="login_remember">
                                 <label class="form-check-label small" for="login_remember">Remember me</label>
                             </div>
 

@@ -4,22 +4,53 @@ class AuthController extends Controller
 {
     public function index()
     {
+        $user_model = $this->model('User_Model');
+
+        // 1️⃣ Check if already logged in
         if (session_get('is_login', false) === true) {
             redirect('dashboard');
             return;
         }
 
-        // Log page visit
+        // 2️⃣ Attempt auto-login via remember token
+        $remember_me = session_get('remember_me', false);
+        $remember_username = session_get('remember_username');
+        $remember_token = session_get('remember_token');
+
+        if ($remember_me && $remember_username && $remember_token) {
+            $user = $user_model->MOD_GET_USER_BY_USERNAME($remember_username);
+
+            if (!empty($user) && $user_model->VALIDATE_REMEMBER_TOKEN($user['id'], $remember_token)) {
+                // ✅ Token is valid, log the user in
+                session_set('is_login', true);
+                session_set('user', $user);
+
+                $security_questions = $user_model->MOD_GET_QUESTIONS_BY_USER_ID((int)$user['id']);
+                session_set('security_questions', $security_questions);
+
+                write_log('LOGIN_SUCCESS', 'users', $user['id'], 'User auto-logged in via remember token');
+
+                redirect('dashboard');
+                return;
+            } else {
+                // 🚨 Token invalid or expired, clear remember me session
+                session_remove('remember_me');
+                session_remove('remember_username');
+                session_remove('remember_token');
+            }
+        }
+
+        // 3️⃣ Log page visit
         write_log('ACCESS_PAGE', 'auth', null, 'Accessed login page');
 
         $system_information_model = $this->model('System_Information_Model');
-
         $system_information = $system_information_model->MOD_GET_SYSTEM_INFORMATION();
 
         $data = [
             'system_information' => $system_information
         ];
 
+        // 4️⃣ Load login view
         $this->view('auth/login_view', $data);
     }
 
@@ -62,7 +93,6 @@ class AuthController extends Controller
         ];
 
         if (!empty($user) && password_verify($password, $user['password_hash'])) {
-
             // 🔐 Role validation (SUPER_ADMIN bypass)
             if ($user['role'] !== 'SUPER_ADMIN' && $user['role'] !== $role) {
                 write_log('LOGIN_FAILED_ROLE_MISMATCH', 'users', $user['id'], 'Role mismatch during login');
@@ -89,8 +119,8 @@ class AuthController extends Controller
                     session_set('remember_token', $token);
                     session_set('remember_username', $username);
 
-                    // OPTIONAL (recommended): store token in DB for persistent login
-                    // $user_model->STORE_REMEMBER_TOKEN($user['id'], $token);
+                    // ✅ Store token in database
+                    $user_model->MOD_STORE_REMEMBER_TOKEN($user['id'], $token);
                 } else {
                     session_remove('remember_me');
                     session_remove('remember_token');
@@ -286,20 +316,28 @@ class AuthController extends Controller
 
     public function logout()
     {
+        $user_model = $this->model('User_Model');
         $current_user = session_get('user', null);
 
         // Log logout
         if ($current_user) {
             write_log('LOGOUT', 'users', $current_user['id'], 'User logged out successfully');
+
+            // ✅ Clear remember tokens from DB for this user
+            $user_model->MOD_CLEAR_REMEMBER_TOKENS($current_user['id']);
         }
 
+        // Clear all login and remember me session data
         session_remove('is_login');
         session_remove('user');
+        session_remove('remember_me');
+        session_remove('remember_username');
+        session_remove('remember_token');
 
         flash('login_notif', [
             'title' => 'Logged out',
-            'text' => 'Logged out successfully.',
-            'icon' => 'success',
+            'text'  => 'Logged out successfully.',
+            'icon'  => 'success',
         ]);
 
         return json([

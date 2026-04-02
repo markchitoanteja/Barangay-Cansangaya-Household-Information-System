@@ -844,6 +844,106 @@ $((): void => {
             }
         });
     });
+
+    $("#householSearchForm").on("submit", (): void => {
+        const search_input = $("#search_input").val()?.toString().trim();
+        const comfort_room = $("#comfort_room").val()?.toString().trim();
+        const water_system = $("#water_system").val()?.toString().trim();
+
+        // Build URL parameters
+        const params = new URLSearchParams();
+
+        if (search_input) params.set("search_input", search_input);
+        if (comfort_room) params.set("comfort_room", comfort_room);
+        if (water_system) params.set("water_system", water_system);
+
+        // Reset page to 1 on new search
+        params.set("page", "1");
+
+        // Reload page with query string
+        const baseUrl = window.location.pathname; // keeps /user-management
+
+        showLoading();
+
+        setTimeout(() => {
+            window.location.href = `${baseUrl}?${params.toString()}`;
+        }, 250);
+    });
+
+    $('#household_purok').on('change', function () {
+        const purok = $(this).val()?.toString().trim();
+
+        const formData = { purok };
+
+        $.ajax({
+            url: 'generate-household-code',
+            method: 'POST',
+            data: formData,
+            dataType: 'JSON',
+            success: (response) => {
+                $('#household_household_code').val(response.household_code);
+            },
+            error: (xhr, status, error) => {
+                hideLoading();
+                console.error('AJAX Error:', error);
+                console.log(xhr.responseText);
+            }
+        });
+    });
+
+    $('#household_form').on('submit', function (e) {
+        e.preventDefault();
+
+        const household_code = $('#household_household_code').val()?.toString().trim();
+        const purok = $('#household_purok').val()?.toString().trim();
+        const address = $('#household_address').val()?.toString().trim();
+        const housing_type = $('#household_housing_type').val()?.toString().trim();
+        const comfort_room = $('#household_comfort_room').val()?.toString().trim();
+        const water_system = $('#household_water_system').val()?.toString().trim();
+
+        showLoading();
+
+        const formData = { household_code, purok, address, housing_type, comfort_room, water_system };
+
+        $.ajax({
+            url: 'add-household',
+            method: 'POST',
+            data: formData,
+            dataType: 'JSON',
+            success: (response) => {
+                setTimeout(() => {
+                    if (response.success) {
+                        location.reload();
+                    } else {
+                        hideLoading();
+                        alert(response.error || 'Failed to update security questions.');
+                    }
+                }, 250);
+            },
+            error: (xhr, status, error) => {
+                hideLoading();
+                console.error('AJAX Error:', error);
+                console.log(xhr.responseText);
+            }
+        });
+    });
+
+    $(document).on('click', '.btn-edit-household', function () {
+        const id = $(this).data('id');
+        const household_code = $(this).data('household_code');
+        const purok = $(this).data('purok');
+        const current_purok = $(this).data('current_purok');
+        const housing_type = $(this).data('housing_type');
+        const comfort_room = $(this).data('comfort_room');
+        const water_system = $(this).data('water_system');
+
+        $('#edit_household_id').val(id);
+        $('#edit_household_household_code').val(household_code);
+        $('#edit_household_purok').val(purok);
+        $('#edit_household_housing_type').val(housing_type);
+        $('#edit_household_comfort_room').val(comfort_room);
+        $('#edit_household_water_system').val(water_system);
+    });
 });
 
 function checkUpdates() {

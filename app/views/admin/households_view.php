@@ -13,13 +13,13 @@
         <form id="householSearchForm" action="javascript:void(0)" class="row g-2 mb-3">
             <div class="col-md-5 d-flex flex-column">
                 <div class="form-floating flex-grow-1">
-                    <input type="text" name="search_input" class="form-control gov-input" id="searchUser" placeholder="Search User" value="<?= esc($search_input ?? '') ?>">
+                    <input type="text" name="search_input" class="form-control gov-input" id="search_input" placeholder="Search User" value="<?= esc($search_input ?? '') ?>">
                     <label><i class="fa-solid fa-magnifying-glass me-1"></i>Search Purok / Housing Type</label>
                 </div>
             </div>
             <div class="col-md-2 d-flex flex-column">
                 <div class="form-floating flex-grow-1">
-                    <select class="form-select gov-input" name="role" id="filterRole">
+                    <select class="form-select gov-input" name="comfort_room" id="comfort_room">
                         <option value="">All Comfort Rooms</option>
                         <option value="Owned" <?= ($comfort_room ?? '') === 'Owned' ? 'selected' : '' ?>>Owned</option>
                         <option value="Shared" <?= ($comfort_room ?? '') === 'Shared' ? 'selected' : '' ?>>Shared</option>
@@ -30,7 +30,7 @@
             </div>
             <div class="col-md-2 d-flex flex-column">
                 <div class="form-floating flex-grow-1">
-                    <select class="form-select gov-input" name="status" id="filterStatus">
+                    <select class="form-select gov-input" name="water_system" id="water_system">
                         <option value="">All Water Systems</option>
                         <option value="Level 1" <?= ($status ?? '') === 'Level 1' ? 'selected' : '' ?>>Level 1</option>
                         <option value="Level 2" <?= ($status ?? '') === 'Level 2' ? 'selected' : '' ?>>Level 2</option>
@@ -61,6 +61,7 @@
                 <thead class="table-light">
                     <tr>
                         <th class="text-center">#</th>
+                        <th>Household Code</th>
                         <th>Purok</th>
                         <th>Housing Type</th>
                         <th>Comfort Room</th>
@@ -74,26 +75,24 @@
                         <?php foreach ($households as $household): ?>
                             <tr>
                                 <td class="text-center"><?= $counter ?></td>
+                                <td><?= esc($household['household_code']) ?></td>
                                 <td><?= esc($household['purok']) ?></td>
                                 <td><?= esc($household['housing_type']) ?></td>
                                 <td><?= esc($household['comfort_room']) ?></td>
                                 <td><?= esc($household['water_system']) ?></td>
                                 <td class="text-center">
-                                    <button class="btn btn-sm btn-soft btn-household-management btn-edit-household" title="Edit Household"
-                                        data-title="UPDATE HOUSEHOLD"
-                                        data-submit-text="Save Changes"
+                                    <button class="btn btn-sm btn-soft btn-edit-household"
+                                        title="Edit Household"
                                         data-bs-toggle="modal"
-                                        data-bs-target="#householdModal"
+                                        data-bs-target="#editHouseholdModal"
                                         data-id="<?= $household['id'] ?>"
+                                        data-household_code="<?= esc($household['household_code']) ?>"
                                         data-purok="<?= esc($household['purok']) ?>"
+                                        data-current_purok="<?= esc($household['purok']) ?>"
                                         data-housing_type="<?= esc($household['housing_type']) ?>"
                                         data-comfort_room="<?= esc($household['comfort_room']) ?>"
                                         data-water_system="<?= esc($household['water_system']) ?>">
                                         <i class="fa-solid fa-pen"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-danger btn-delete-household" title="Delete Household"
-                                        data-id="<?= $household['id'] ?>">
-                                        <i class="fa-solid fa-trash"></i>
                                     </button>
                                 </td>
                             </tr>
@@ -101,7 +100,7 @@
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr class="text-center">
-                            <td colspan="6">No Data Available</td>
+                            <td colspan="7">No Data Available</td>
                         </tr>
                     <?php endif; ?>
                 </tbody>

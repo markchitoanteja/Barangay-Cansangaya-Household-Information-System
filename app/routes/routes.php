@@ -34,10 +34,10 @@ return function (Router $router) {
     $router->post('/enable-user-account', 'AdminController@enable_user_account');
     $router->post('/update-account', 'AdminController@update_account'); 
     $router->post('/search-user', 'AdminController@search_user');
-
-    // Logs Routes
     $router->get('/export-logs', 'AdminController@export_logs');
     $router->post('/clear-logs', 'AdminController@clear_logs');
+    $router->post('/generate-household-code', 'AdminController@generate_household_code');
+    $router->post('/add-household', 'AdminController@add_household');
 
     // System Update Routes
     $router->get('/check-updates', 'UpdateController@check');

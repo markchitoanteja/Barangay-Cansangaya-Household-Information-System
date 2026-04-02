@@ -1,13 +1,13 @@
-<!-- Add Household Modal with Examples -->
+<!-- Add Household Modal -->
 <div class="modal fade" id="householdModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content gov-modal">
             <!-- HEADER -->
             <div class="modal-header gov-modal-header">
                 <div class="d-flex align-items-center gap-3">
-                    <img src="<?= base_url('public/assets/img/') . ($system_information['official_logo'] ?? 'default_logo.png') . '?v=' . env('APP_VERSION') ?>" alt="Barangay Logo" class="gov-modal-logo">
+                    <img src="<?= base_url('public/assets/img/') . ($system_information['official_logo'] ?? 'default_logo.png') . '?v=' . env('APP_VERSION') ?>" class="gov-modal-logo">
                     <div>
-                        <h5 class="modal-title mb-0">HOUSEHOLD RECORD</h5>
+                        <h5 class="modal-title mb-0">ADD HOUSEHOLD RECORD</h5>
                         <small class="gov-modal-subtitle">
                             Barangay <?= ucfirst($system_information['barangay_name']) ?> Household Information System
                         </small>
@@ -23,40 +23,53 @@
                     <div class="gov-section">
                         <div class="gov-section__label">Household Details</div>
                         <div class="row g-3">
+
+                            <!-- HOUSEHOLD CODE -->
                             <div class="col-md-4">
                                 <div class="form-floating">
-                                    <input type="text" class="form-control gov-input" id="household_id" placeholder="Household ID" required>
-                                    <label for="household_id">Household ID</label>
+                                    <input type="text"
+                                        class="form-control gov-input"
+                                        id="household_household_code"
+                                        name="household_household_code"
+                                        placeholder="Household Code"
+                                        readonly required>
+                                    <label>Household Code</label>
                                 </div>
-                                <small class="info-text text-truncate" data-tooltip="Unique ID, e.g., #001, #002, used to track each household.">
-                                    Unique identifier (e.g., #001)
+                                <small class="info-text"
+                                    data-tooltip="System-generated unique code per household. Format: PRK##-#### (Purok + sequence number).">
+                                    Auto-generated (e.g., PRK01-0001)
                                 </small>
                             </div>
 
+                            <!-- PUROK -->
                             <div class="col-md-4">
                                 <div class="form-floating">
-                                    <select class="form-select gov-input" id="household_purok" required>
-                                        <option value="" selected disabled>-- Select One --</option>
-                                        <option>Purok 1</option>
-                                        <option>Purok 2</option>
+                                    <select class="form-select gov-input"
+                                        id="household_purok"
+                                        name="household_purok" required>
+                                        <option value="" disabled selected>-- Select One --</option>
+                                        <option value="Purok 1">Purok 1</option>
+                                        <option value="Purok 2">Purok 2</option>
+                                        <option value="Purok 3">Purok 3</option>
+                                        <option value="Purok 4">Purok 4</option>
+                                        <option value="Purok 5">Purok 5</option>
+                                        <option value="Purok 6">Purok 6</option>
                                     </select>
-                                    <label for="household_purok">Purok / Zone</label>
+                                    <label>Purok / Zone</label>
                                 </div>
-                                <small class="info-text text-truncate" data-tooltip="The administrative area of the household. Example: Purok 1, Purok 2.">
-                                    Area of household (e.g., Purok 1)
-                                </small>
                             </div>
 
+                            <!-- ADDRESS -->
                             <div class="col-md-4">
                                 <div class="form-floating">
-                                    <input type="text" class="form-control gov-input" id="household_address" placeholder="Address">
-                                    <label for="household_address">Address (Optional)</label>
+                                    <input type="text"
+                                        class="form-control gov-input"
+                                        id="household_address"
+                                        name="household_address"
+                                        placeholder="Address">
+                                    <label>Address (Optional)</label>
                                 </div>
-                                <small class="info-text text-truncate" data-tooltip="Full address: street, barangay, or landmark. Example: 123 Rizal St., Barangay Cansangaya.">
-                                    Full address (e.g., 123 Rizal St.)
-                                </small>
                             </div>
-
                         </div>
                     </div>
 
@@ -64,73 +77,218 @@
                     <div class="gov-section">
                         <div class="gov-section__label">Housing & Facilities</div>
                         <div class="row g-3">
+                            <!-- HOUSING TYPE -->
                             <div class="col-md-4">
                                 <div class="form-floating">
-                                    <select class="form-select gov-input" id="housing_type" required>
+                                    <select class="form-select gov-input"
+                                        id="household_housing_type"
+                                        name="household_housing_type" required>
                                         <option value="" disabled selected>-- Select One --</option>
-                                        <option>Concrete</option>
-                                        <option>Semi-concrete</option>
-                                        <option>Wood</option>
+                                        <option value="Concrete">Concrete</option>
+                                        <option value="Semi-concrete">Semi-concrete</option>
+                                        <option value="Wood">Wood</option>
                                     </select>
-                                    <label for="housing_type">Housing Type</label>
+                                    <label>Housing Type</label>
                                 </div>
-                                <small class="info-text text-truncate" data-tooltip="Material of the house. Example: Concrete, Semi-concrete, Wood.">
-                                    Material type (e.g., Concrete)
-                                </small>
                             </div>
 
+                            <!-- COMFORT ROOM -->
                             <div class="col-md-4">
                                 <div class="form-floating">
-                                    <select class="form-select gov-input" id="comfort_room" required>
+                                    <select class="form-select gov-input"
+                                        id="household_comfort_room"
+                                        name="household_comfort_room" required>
                                         <option value="" disabled selected>-- Select One --</option>
-                                        <option>Owned</option>
-                                        <option>Shared</option>
-                                        <option>None</option>
+                                        <option value="Owned">Owned</option>
+                                        <option value="Shared">Shared</option>
+                                        <option value="None">None</option>
                                     </select>
-                                    <label for="comfort_room">Comfort Room</label>
+                                    <label>Comfort Room</label>
                                 </div>
-                                <small class="info-text text-truncate" data-tooltip="Type of toilet facility. Example: Owned, Shared with neighbors, None.">
-                                    Toilet facility (e.g., Owned)
-                                </small>
                             </div>
 
+                            <!-- WATER System -->
                             <div class="col-md-4">
                                 <div class="form-floating">
-                                    <select class="form-select gov-input" id="water_access" required>
+                                    <select class="form-select gov-input"
+                                        id="household_water_system"
+                                        name="household_water_system" required>
                                         <option value="" disabled selected>-- Select One --</option>
-                                        <option>Level 1</option>
-                                        <option>Level 2</option>
-                                        <option>Level 3</option>
+                                        <option value="Level 1">Level 1</option>
+                                        <option value="Level 2">Level 2</option>
+                                        <option value="Level 3">Level 3</option>
                                     </select>
-                                    <label for="water_access">Water System</label>
+                                    <label>Water System</label>
                                 </div>
-                                <small class="info-text text-truncate" data-tooltip="Water service level. Example: Level 1 (point source), Level 2 (shared faucet), Level 3 (private household).">
+                                <small class="info-text"
+                                    data-tooltip="• Level 1: Point source (well/spring) • Level 2: Communal faucet • Level 3: Household connection">
                                     Water service (e.g., Level 2)
                                 </small>
                             </div>
-
                         </div>
                     </div>
 
-                    <!-- SYSTEM NOTE -->
+                    <!-- NOTE -->
                     <div class="gov-meta">
                         <i class="fa-solid fa-circle-info me-2"></i>
-                        Household members and socio-economic classifications (e.g., PWD, 4Ps, livelihood)
-                        will be managed under the <strong>Residents</strong> and related modules.
+                        Household members are managed under <strong>Residents</strong>.
                     </div>
-
                 </div>
 
                 <!-- FOOTER -->
                 <div class="modal-footer gov-modal-footer">
-                    <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Close</button>
-                    <button class="btn gov-btn-primary px-4">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn gov-btn-primary">
                         <i class="fa-solid fa-floppy-disk me-2"></i> Save Household
                     </button>
                 </div>
-
             </form>
+        </div>
+    </div>
+</div>
 
+<!-- Edit Household Modal -->
+<div class="modal fade" id="editHouseholdModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content gov-modal">
+            <!-- HEADER -->
+            <div class="modal-header gov-modal-header">
+                <div class="d-flex align-items-center gap-3">
+                    <img src="<?= base_url('public/assets/img/') . ($system_information['official_logo'] ?? 'default_logo.png') . '?v=' . env('APP_VERSION') ?>" class="gov-modal-logo">
+                    <div>
+                        <h5 class="modal-title mb-0">UPDATE HOUSEHOLD RECORD</h5>
+                        <small class="gov-modal-subtitle">
+                            Barangay <?= ucfirst($system_information['barangay_name']) ?> Household Information System
+                        </small>
+                    </div>
+                </div>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- FORM -->
+            <form id="edit_household_form">
+                <div class="modal-body gov-modal-body">
+                    <input type="hidden" id="edit_household_id">
+                    <!-- HOUSEHOLD DETAILS -->
+                    <div class="gov-section">
+                        <div class="gov-section__label">Household Details</div>
+                        <div class="row g-3">
+
+                            <!-- HOUSEHOLD CODE -->
+                            <div class="col-md-4">
+                                <div class="form-floating">
+                                    <input type="text"
+                                        class="form-control gov-input"
+                                        id="edit_household_household_code"
+                                        name="edit_household_household_code"
+                                        placeholder="Household Code"
+                                        readonly required>
+                                    <label>Household Code</label>
+                                </div>
+                                <small class="info-text"
+                                    data-tooltip="System-generated unique code per household. Format: PRK##-#### (Purok + sequence number).">
+                                    Auto-generated (e.g., PRK01-0001)
+                                </small>
+                            </div>
+
+                            <!-- PUROK -->
+                            <div class="col-md-4">
+                                <div class="form-floating">
+                                    <select class="form-select gov-input"
+                                        id="edit_household_purok"
+                                        name="edit_household_purok" required>
+                                        <option value="Purok 1">Purok 1</option>
+                                        <option value="Purok 2">Purok 2</option>
+                                        <option value="Purok 3">Purok 3</option>
+                                        <option value="Purok 4">Purok 4</option>
+                                        <option value="Purok 5">Purok 5</option>
+                                        <option value="Purok 6">Purok 6</option>
+                                    </select>
+                                    <label>Purok / Zone</label>
+                                </div>
+                            </div>
+
+                            <!-- ADDRESS -->
+                            <div class="col-md-4">
+                                <div class="form-floating">
+                                    <input type="text"
+                                        class="form-control gov-input"
+                                        id="edit_household_address"
+                                        name="edit_household_address"
+                                        placeholder="Address">
+                                    <label>Address (Optional)</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- HOUSING & FACILITIES -->
+                    <div class="gov-section">
+                        <div class="gov-section__label">Housing & Facilities</div>
+                        <div class="row g-3">
+                            <!-- HOUSING TYPE -->
+                            <div class="col-md-4">
+                                <div class="form-floating">
+                                    <select class="form-select gov-input"
+                                        id="edit_household_housing_type"
+                                        name="edit_household_housing_type" required>
+                                        <option value="Concrete">Concrete</option>
+                                        <option value="Semi-concrete">Semi-concrete</option>
+                                        <option value="Wood">Wood</option>
+                                    </select>
+                                    <label>Housing Type</label>
+                                </div>
+                            </div>
+
+                            <!-- COMFORT ROOM -->
+                            <div class="col-md-4">
+                                <div class="form-floating">
+                                    <select class="form-select gov-input"
+                                        id="edit_household_comfort_room"
+                                        name="edit_household_comfort_room" required>
+                                        <option value="Owned">Owned</option>
+                                        <option value="Shared">Shared</option>
+                                        <option value="None">None</option>
+                                    </select>
+                                    <label>Comfort Room</label>
+                                </div>
+                            </div>
+
+                            <!-- WATER System -->
+                            <div class="col-md-4">
+                                <div class="form-floating">
+                                    <select class="form-select gov-input"
+                                        id="edit_household_water_system"
+                                        name="edit_household_water_system" required>
+                                        <option value="Level 1">Level 1</option>
+                                        <option value="Level 2">Level 2</option>
+                                        <option value="Level 3">Level 3</option>
+                                    </select>
+                                    <label>Water System</label>
+                                </div>
+                                <small class="info-text"
+                                    data-tooltip="• Level 1: Point source (well/spring) • Level 2: Communal faucet • Level 3: Household connection">
+                                    Water service (e.g., Level 2)
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- NOTE -->
+                    <div class="gov-meta">
+                        <i class="fa-solid fa-circle-info me-2"></i>
+                        Household members are managed under <strong>Residents</strong>.
+                    </div>
+                </div>
+
+                <!-- FOOTER -->
+                <div class="modal-footer gov-modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn gov-btn-primary">
+                        <i class="fa-solid fa-floppy-disk me-2"></i> Save Household
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>

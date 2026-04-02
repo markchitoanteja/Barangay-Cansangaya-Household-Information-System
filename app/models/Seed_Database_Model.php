@@ -79,15 +79,12 @@ class Seed_Database_Model extends Query
         // HOUSEHOLDS TABLE
         $householdsColumns = "
             id INT AUTO_INCREMENT PRIMARY KEY,
-
             household_code VARCHAR(20) NOT NULL UNIQUE,
             purok VARCHAR(50) NOT NULL,
             address TEXT,
-
             housing_type ENUM('Concrete','Semi-concrete','Wood') NOT NULL,
             comfort_room ENUM('Owned','Shared','None') NOT NULL,
-            water_access ENUM('Level 1','Level 2','Level 3') NOT NULL,
-
+            water_system ENUM('Level 1','Level 2','Level 3') NOT NULL,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
         ";
@@ -143,6 +140,21 @@ class Seed_Database_Model extends Query
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
         ";
         self::table('system_information')->createTableIfNotExists($systemInfoColumns);
+
+        // REMEMBER TOKENS TABLE
+        $rememberTokensColumns = "
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            user_id INT NOT NULL,
+            token VARCHAR(128) NOT NULL,
+            expires_at DATETIME NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            CONSTRAINT fk_remember_tokens_user
+                FOREIGN KEY (user_id) REFERENCES users(id)
+                ON DELETE CASCADE ON UPDATE CASCADE,
+            INDEX(user_id),
+            INDEX(token)
+        ";
+        self::table('user_remember_tokens')->createTableIfNotExists($rememberTokensColumns);
     }
 
     /**

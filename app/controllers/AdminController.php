@@ -4,17 +4,49 @@ class AdminController extends Controller
 {
     public function __construct()
     {
-        if (session_get('is_login', false) !== true) {
-            flash('login_notif', [
-                'title' => 'Login Required',
-                'text'  => 'You must be logged in to access this page.',
-                'icon'  => 'warning',
-            ]);
+        $user_model = $this->model('User_Model');
 
-            redirect('login');
-
-            exit;
+        // 1️⃣ Check if session exists
+        if (session_get('is_login', false) === true) {
+            return; // user already logged in
         }
+
+        // 2️⃣ Check for remember token
+        $remember_me       = session_get('remember_me', false);
+        $remember_username = session_get('remember_username');
+        $remember_token    = session_get('remember_token');
+
+        if ($remember_me && $remember_username && $remember_token) {
+            $user = $user_model->MOD_GET_USER_BY_USERNAME($remember_username);
+
+            if (!empty($user) && $user_model->VALIDATE_REMEMBER_TOKEN($user['id'], $remember_token)) {
+                // ✅ Auto-login user
+                session_set('is_login', true);
+                session_set('user', $user);
+
+                // Load security questions
+                $security_questions = $user_model->MOD_GET_QUESTIONS_BY_USER_ID((int)$user['id']);
+                session_set('security_questions', $security_questions);
+
+                write_log('LOGIN_SUCCESS', 'users', $user['id'], 'User auto-logged in via remember token');
+                return;
+            } else {
+                // 🚨 Token invalid or expired
+                session_remove('remember_me');
+                session_remove('remember_username');
+                session_remove('remember_token');
+            }
+        }
+
+        // 3️⃣ If not logged in and no valid token, redirect to login
+        flash('login_notif', [
+            'title' => 'Login Required',
+            'text'  => 'You must be logged in to access this page.',
+            'icon'  => 'warning',
+        ]);
+
+        redirect('login');
+        exit;
     }
 
     private function current_date(): string
@@ -90,22 +122,9 @@ class AdminController extends Controller
         write_log('ACCESS_PAGE', 'households', null, 'Accessed households page');
 
         $user_model = $this->model('User_Model');
+        $household_model = $this->model('Household_Model');
 
-        // --- Sample data (mocked) ---
-        $all_households = [
-            ['id' => 1, 'purok' => 'Purok 1', 'housing_type' => 'Single Family', 'comfort_room' => 'Yes', 'water_system' => 'Piped'],
-            ['id' => 2, 'purok' => 'Purok 2', 'housing_type' => 'Apartment', 'comfort_room' => 'No', 'water_system' => 'Well'],
-            ['id' => 3, 'purok' => 'Purok 3', 'housing_type' => 'Duplex', 'comfort_room' => 'Yes', 'water_system' => 'River'],
-            ['id' => 4, 'purok' => 'Purok 1', 'housing_type' => 'Single Family', 'comfort_room' => 'No', 'water_system' => 'Piped'],
-            ['id' => 5, 'purok' => 'Purok 2', 'housing_type' => 'Apartment', 'comfort_room' => 'Yes', 'water_system' => 'Well'],
-            ['id' => 6, 'purok' => 'Purok 3', 'housing_type' => 'Duplex', 'comfort_room' => 'No', 'water_system' => 'River'],
-            ['id' => 7, 'purok' => 'Purok 4', 'housing_type' => 'Single Family', 'comfort_room' => 'Yes', 'water_system' => 'Piped'],
-            ['id' => 8, 'purok' => 'Purok 5', 'housing_type' => 'Apartment', 'comfort_room' => 'No', 'water_system' => 'Well'],
-            ['id' => 9, 'purok' => 'Purok 1', 'housing_type' => 'Duplex', 'comfort_room' => 'Yes', 'water_system' => 'River'],
-            ['id' => 10, 'purok' => 'Purok 2', 'housing_type' => 'Single Family', 'comfort_room' => 'No', 'water_system' => 'Piped'],
-            ['id' => 11, 'purok' => 'Purok 3', 'housing_type' => 'Apartment', 'comfort_room' => 'Yes', 'water_system' => 'Well'],
-            ['id' => 12, 'purok' => 'Purok 4', 'housing_type' => 'Duplex', 'comfort_room' => 'No', 'water_system' => 'River'],
-        ];
+        $all_households = $household_model->MOD_GET_HOUSEHOLDS();
 
         // --- Get search filters ---
         $search_input = trim((string) input('search_input'));
@@ -931,5 +950,77 @@ class AdminController extends Controller
         }
 
         return json($response);
+    }
+
+    public function generate_household_code()
+    {
+        $purok = input('purok', null); // e.g., "Purok 1"
+
+        // Extract purok number
+        preg_match('/\d+/', $purok, $matches);
+        $purok_number = str_pad($matches[0], 2, '0', STR_PAD_LEFT); // e.g., "01"
+
+        $household_model = $this->model('Household_Model');
+
+        $last_record = $household_model->MOD_GET_LAST_PUROK($purok);
+
+        // Default new number
+        $new_number = 1;
+
+        if ($last_record && !empty($last_record['household_code'])) {
+            // Extract the numeric part after the dash
+            $parts = explode('-', $last_record['household_code']);
+            if (isset($parts[1])) {
+                $last_number = (int)$parts[1];
+                $new_number = $last_number + 1;
+            }
+        }
+
+        $new_code = "PRK{$purok_number}-" . str_pad($new_number, 4, '0', STR_PAD_LEFT);
+
+        $response = [
+            'household_code' => $new_code
+        ];
+
+        json($response);
+    }
+
+    public function add_household()
+    {
+        $household_code = input('household_code', null);
+        $purok = input('purok', null);
+        $address = input('address', null);
+        $housing_type = input('housing_type', null);
+        $comfort_room = input('comfort_room', null);
+        $water_system = input('water_system', null);
+
+        $response = [
+            'success' => true,
+            'message' => 'Household added successfully.'
+        ];
+
+        $data = [
+            'household_code' => $household_code,
+            'purok' => $purok,
+            'address' => $address,
+            'housing_type' => $housing_type,
+            'comfort_room' => $comfort_room,
+            'water_system' => $water_system,
+        ];
+
+        $household_model = $this->model('Household_Model');
+
+        $new_household_id = $household_model->MOD_INSERT_HOUSEHOLD($data);
+
+        // Log household creation
+        write_log('ADD_HOUSEHOLD', 'households', $new_household_id, "Added new household: $household_code in $purok", session_get('user')['id']);
+
+        flash('flash_notif', [
+            'title' => 'Household Added',
+            'text' => 'The household has been successfully added.',
+            'icon' => 'success',
+        ]);
+
+        json($response);
     }
 }
