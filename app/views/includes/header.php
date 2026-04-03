@@ -48,6 +48,7 @@
                 <a class="nav-link loadable <?= ($title == 'Residents') ? 'active' : '' ?>" href="residents">
                     <div class="d-flex justify-content-between align-items-center w-100">
                         <span><i class="fa-solid fa-users"></i> Residents</span>
+                        <i class="fa-solid fa-exclamation-triangle text-danger" title="Page in development"></i>
                     </div>
                 </a>
                 <a class="nav-link loadable <?= ($title == 'Demographics') ? 'active' : '' ?>" href="demographics">

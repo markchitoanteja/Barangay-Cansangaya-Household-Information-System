@@ -32,9 +32,9 @@
                 <div class="form-floating flex-grow-1">
                     <select class="form-select gov-input" name="water_system" id="water_system">
                         <option value="">All Water Systems</option>
-                        <option value="Level 1" <?= ($status ?? '') === 'Level 1' ? 'selected' : '' ?>>Level 1</option>
-                        <option value="Level 2" <?= ($status ?? '') === 'Level 2' ? 'selected' : '' ?>>Level 2</option>
-                        <option value="Level 3" <?= ($status ?? '') === 'Level 3' ? 'selected' : '' ?>>Level 3</option>
+                        <option value="Level 1" <?= ($water_system ?? '') === 'Level 1' ? 'selected' : '' ?>>Level 1</option>
+                        <option value="Level 2" <?= ($water_system ?? '') === 'Level 2' ? 'selected' : '' ?>>Level 2</option>
+                        <option value="Level 3" <?= ($water_system ?? '') === 'Level 3' ? 'selected' : '' ?>>Level 3</option>
                     </select>
                     <label><i class="fa-solid fa-water me-1"></i>Water System</label>
                 </div>

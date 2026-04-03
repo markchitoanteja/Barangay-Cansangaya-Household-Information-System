@@ -177,7 +177,7 @@
             <div class="loading-bar"></div>
             <div class="loading-body">
                 <div class="loading-seal" aria-hidden="true">
-                    <img src="<?= base_url('public/assets/img/logo.png') ?>" alt="Barangay Cansangaya Logo">
+                    <img src="<?= base_url('public/assets/img/') . $system_information['official_logo'] . '?v=' . env('APP_VERSION', '1.0.0') ?>" alt="Barangay Logo">
                 </div>
                 <div class="loading-text">
                     <div class="loading-title">Please wait</div>
@@ -186,7 +186,7 @@
                         <span></span>
                     </div>
                     <div class="loading-note">
-                        Barangay Cansangaya Household Information System
+                        Barangay <?= ucfirst($system_information['barangay_name']) ?> Household Information System
                     </div>
                 </div>
             </div>
