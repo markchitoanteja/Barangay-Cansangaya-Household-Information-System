@@ -5,7 +5,7 @@
 
         <div class="loading-body">
             <div class="loading-seal" aria-hidden="true">
-                <img src="<?= base_url('public/assets/img/') . $system_information['official_logo'] . '?v=' . env('APP_VERSION') ?>" alt="Barangay Cansangaya Logo">
+                <img src="<?= base_url('public/assets/img/') . $system_information['official_logo'] . '?v=' . env('APP_VERSION') ?>" alt="Barangay Logo">
             </div>
 
             <div class="loading-text">

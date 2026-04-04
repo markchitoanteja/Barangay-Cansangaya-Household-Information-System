@@ -27,80 +27,92 @@
                     <img src="<?= base_url('public/assets/img/') . $system_information['official_logo'] . "?v=" . env('APP_VERSION', '1.0.0') ?>" alt="Barangay Logo">
                 </div>
                 <div>
-                    <h6>Pogi Dizon</h6>
+                    <h6>Barangay HIS</h6>
                     <small>Brgy. <?= ucfirst($system_information['barangay_name']) ?></small>
                 </div>
             </div>
 
             <div class="nav-section">System Navigation</div>
             <nav class="nav flex-column side-nav">
-                <!-- Accessible by ADMIN and STAFF -->
-                <a class="nav-link loadable <?= ($title == 'Dashboard') ? 'active' : '' ?>" href="dashboard">
-                    <div class="d-flex justify-content-between align-items-center w-100">
-                        <span><i class="fa-solid fa-gauge"></i> Dashboard</span>
-                    </div>
+
+                <!-- ADMIN + STAFF -->
+                <a class="nav-link loadable <?= ($title == 'Dashboard') ? 'active' : '' ?>" href="dashboard" title="Dashboard">
+                    <i class="fa-solid fa-gauge"></i>
+                    <span class="nav-text">Dashboard</span>
                 </a>
-                <a class="nav-link loadable <?= ($title == 'Households') ? 'active' : '' ?>" href="households">
-                    <div class="d-flex justify-content-between align-items-center w-100">
-                        <span><i class="fa-solid fa-house"></i> Households</span>
-                    </div>
+
+                <a class="nav-link loadable <?= ($title == 'Households') ? 'active' : '' ?>" href="households" title="Households">
+                    <i class="fa-solid fa-house"></i>
+                    <span class="nav-text">Households</span>
                 </a>
-                <a class="nav-link loadable <?= ($title == 'Residents') ? 'active' : '' ?>" href="residents">
-                    <div class="d-flex justify-content-between align-items-center w-100">
-                        <span><i class="fa-solid fa-users"></i> Residents</span>
+
+                <a class="nav-link loadable <?= ($title == 'Residents') ? 'active' : '' ?>" href="residents" title="Residents">
+                    <i class="fa-solid fa-users"></i>
+                    <span class="nav-text">Residents</span>
+                    <span class="nav-end">
                         <i class="fa-solid fa-exclamation-triangle text-danger" title="Page in development"></i>
-                    </div>
+                    </span>
                 </a>
-                <a class="nav-link loadable <?= ($title == 'Demographics') ? 'active' : '' ?>" href="demographics">
-                    <div class="d-flex justify-content-between align-items-center w-100">
-                        <span><i class="fa-solid fa-chart-column"></i> Demographics</span>
+
+                <a class="nav-link loadable <?= ($title == 'Demographics') ? 'active' : '' ?>" href="demographics" title="Demographics">
+                    <i class="fa-solid fa-chart-column"></i>
+                    <span class="nav-text">Demographics</span>
+                    <span class="nav-end">
                         <i class="fa-solid fa-exclamation-triangle text-danger" title="Page in development"></i>
-                    </div>
+                    </span>
                 </a>
-                <a class="nav-link loadable <?= ($title == 'Housing & Facilities') ? 'active' : '' ?>" href="housing-and-facilities">
-                    <div class="d-flex justify-content-between align-items-center w-100">
-                        <span><i class="fa-solid fa-building"></i> Housing & Facilities</span>
+
+                <a class="nav-link loadable <?= ($title == 'Housing & Facilities') ? 'active' : '' ?>" href="housing-and-facilities" title="Housing & Facilities">
+                    <i class="fa-solid fa-building"></i>
+                    <span class="nav-text">Housing & Facilities</span>
+                    <span class="nav-end">
                         <i class="fa-solid fa-exclamation-triangle text-danger" title="Page in development"></i>
-                    </div>
+                    </span>
                 </a>
-                <a class="nav-link loadable <?= ($title == 'Livelihood') ? 'active' : '' ?>" href="livelihood">
-                    <div class="d-flex justify-content-between align-items-center w-100">
-                        <span><i class="fa-solid fa-briefcase"></i> Livelihood</span>
+
+                <a class="nav-link loadable <?= ($title == 'Livelihood') ? 'active' : '' ?>" href="livelihood" title="Livelihood">
+                    <i class="fa-solid fa-briefcase"></i>
+                    <span class="nav-text">Livelihood</span>
+                    <span class="nav-end">
                         <i class="fa-solid fa-exclamation-triangle text-danger" title="Page in development"></i>
-                    </div>
+                    </span>
                 </a>
-                <a class="nav-link loadable <?= ($title == 'Social Sectors') ? 'active' : '' ?>" href="social-sectors">
-                    <div class="d-flex justify-content-between align-items-center w-100">
-                        <span><i class="fa-solid fa-hand-holding-heart"></i> Social Sectors</span>
+
+                <a class="nav-link loadable <?= ($title == 'Social Sectors') ? 'active' : '' ?>" href="social-sectors" title="Social Sectors">
+                    <i class="fa-solid fa-hand-holding-heart"></i>
+                    <span class="nav-text">Social Sectors</span>
+                    <span class="nav-end">
                         <i class="fa-solid fa-exclamation-triangle text-danger" title="Page in development"></i>
-                    </div>
+                    </span>
                 </a>
-                <a class="nav-link loadable <?= ($title == 'Health Monitoring') ? 'active' : '' ?>" href="health-monitoring">
-                    <div class="d-flex justify-content-between align-items-center w-100">
-                        <span><i class="fa-solid fa-heart-pulse"></i> Health Monitoring</span>
+
+                <a class="nav-link loadable <?= ($title == 'Health Monitoring') ? 'active' : '' ?>" href="health-monitoring" title="Health Monitoring">
+                    <i class="fa-solid fa-heart-pulse"></i>
+                    <span class="nav-text">Health Monitoring</span>
+                    <span class="nav-end">
                         <i class="fa-solid fa-exclamation-triangle text-danger" title="Page in development"></i>
-                    </div>
+                    </span>
                 </a>
-                <a class="nav-link loadable <?= ($title == 'Reports') ? 'active' : '' ?>" href="reports">
-                    <div class="d-flex justify-content-between align-items-center w-100">
-                        <span><i class="fa-solid fa-file-lines"></i> Reports</span>
+
+                <a class="nav-link loadable <?= ($title == 'Reports') ? 'active' : '' ?>" href="reports" title="Reports">
+                    <i class="fa-solid fa-file-lines"></i>
+                    <span class="nav-text">Reports</span>
+                    <span class="nav-end">
                         <i class="fa-solid fa-exclamation-triangle text-danger" title="Page in development"></i>
-                    </div>
+                    </span>
                 </a>
 
                 <!-- ADMIN ONLY -->
                 <?php if (isset($user) && ($user['role'] === 'ADMIN' || $user['role'] === 'SUPER_ADMIN')): ?>
-                    <a class="nav-link loadable <?= ($title == 'User Management') ? 'active' : '' ?>" href="user-management">
-                        <div class="d-flex justify-content-between align-items-center w-100">
-                            <span><i class="fa-solid fa-id-badge"></i> User Management</span>
-                        </div>
+                    <a class="nav-link loadable <?= ($title == 'User Management') ? 'active' : '' ?>" href="user-management" title="User Management">
+                        <i class="fa-solid fa-id-badge"></i>
+                        <span class="nav-text">User Management</span>
                     </a>
                 <?php endif; ?>
 
-                <a class="nav-link btn_logout <?= ($title == 'Logout') ? 'active' : '' ?>" href="javascript:void(0)">
-                    <div class="d-flex justify-content-between align-items-center w-100">
-                        <span><i class="fa-solid fa-right-from-bracket"></i> Logout</span>
-                    </div>
+                <a class="nav-link btn_logout <?= ($title == 'Logout') ? 'active' : '' ?>" href="javascript:void(0)" title="Logout">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span class="nav-text">Logout</span>
                 </a>
             </nav>
         </aside>
@@ -109,9 +121,16 @@
         <main class="main">
             <!-- TOP BAR -->
             <div class="topbar">
-                <div>
-                    <p class="subtitle">Barangay <?= ucfirst($system_information['barangay_name']) ?> Household Information System</p>
-                    <h4 class="title"><?= isset($title) ? strtoupper($title) : 'UNKNOWN PAGE' ?></h4>
+                <div class="d-flex align-items-center gap-2">
+                    <!-- ✅ Sidebar Toggle Button -->
+                    <button class="sidebar-toggle" id="sidebarToggle">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+
+                    <div>
+                        <p class="subtitle">Barangay <?= ucfirst($system_information['barangay_name']) ?> Household Information System</p>
+                        <h4 class="title"><?= isset($title) ? strtoupper($title) : 'UNKNOWN PAGE' ?></h4>
+                    </div>
                 </div>
 
                 <div class="d-flex gap-2 align-items-center">
