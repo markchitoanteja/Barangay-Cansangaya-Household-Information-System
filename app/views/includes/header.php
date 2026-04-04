@@ -27,7 +27,7 @@
                     <img src="<?= base_url('public/assets/img/') . $system_information['official_logo'] . "?v=" . env('APP_VERSION', '1.0.0') ?>" alt="Barangay Logo">
                 </div>
                 <div>
-                    <h6>Barangay HIS</h6>
+                    <h6>Barangay Test</h6>
                     <small>Brgy. <?= ucfirst($system_information['barangay_name']) ?></small>
                 </div>
             </div>
