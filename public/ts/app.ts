@@ -333,30 +333,32 @@ $((): void => {
                 } else {
                     showLoading();
 
-                    const formData = { user_id, full_name, username, role, password };
+                    // const formData = { user_id, full_name, username, role, password };
 
-                    $.ajax({
-                        url: "update-user-account-super-admin-mode",
-                        method: "POST",
-                        data: formData,
-                        dataType: "JSON",
-                        success: (response) => {
-                            setTimeout(() => {
-                                if (response.success) {
-                                    location.reload();
-                                } else {
-                                    hideLoading();
+                    // $.ajax({
+                    //     url: "update-user-account-super-admin-mode",
+                    //     method: "POST",
+                    //     data: formData,
+                    //     dataType: "JSON",
+                    //     success: (response) => {
+                    //         setTimeout(() => {
+                    //             if (response.success) {
+                    //                 location.reload();
+                    //             } else {
+                    //                 hideLoading();
 
-                                    $("#user_account_username").addClass("border-danger").parent().after(`<div class="text-danger small username-error">${response.error}</div>`);
-                                }
-                            }, 250);
-                        },
-                        error: (xhr, status, error) => {
-                            console.error("AJAX Error:", error);
+                    //                 $("#user_account_username").addClass("border-danger").parent().after(`<div class="text-danger small username-error">${response.error}</div>`);
+                    //             }
+                    //         }, 250);
+                    //     },
+                    //     error: (xhr, status, error) => {
+                    //         console.error("AJAX Error:", error);
 
-                            console.log(xhr.responseText);
-                        }
-                    });
+                    //         console.log(xhr.responseText);
+                    //     }
+                    // });
+
+                    console.table({ user_id, full_name, username, role, password });
                 }
             }
         }
@@ -943,12 +945,7 @@ $((): void => {
         $('#edit_household_housing_type').val(housing_type);
         $('#edit_household_comfort_room').val(comfort_room);
         $('#edit_household_water_system').val(water_system);
-    });
-
-
-
-
-    
+    });    
 });
 
 function checkUpdates() {

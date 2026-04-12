@@ -1,5 +1,5 @@
         <script>
-            const ROLE = <?= json_encode($user["role"]) ?>;
+            const ROLE = <?= json_encode(session_get('user', null)['role'] ?? null) ?>;
             const APP_DEBUG = <?= env('APP_DEBUG', true) ?>;
             const flashData = <?= json_encode(get_flash('flash_notif', null)) ?>;
         </script>
