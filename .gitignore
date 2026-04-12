@@ -1,0 +1,7 @@
+node_modules/
+# Ignore everything in img folder
+public/assets/img/*
+
+# Allow specific files
+!public/assets/img/default_logo.png
+!public/assets/img/user-avatar.png
