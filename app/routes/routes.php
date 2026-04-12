@@ -24,7 +24,6 @@ return function (Router $router) {
     $router->get('/livelihood', 'AdminController@livelihood');
     $router->get('/social-sectors', 'AdminController@social_sectors');
     $router->get('/health-monitoring', 'AdminController@health_monitoring');
-    $router->get('/reports', 'AdminController@reports');
     $router->get('/user-management', 'AdminController@user_management');
     $router->post('/add-user-account', 'AdminController@add_user_account');
     $router->post('/update-security-questions', 'AdminController@update_security_questions');

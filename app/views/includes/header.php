@@ -94,26 +94,13 @@
                     </span>
                 </a>
 
-                <a class="nav-link loadable <?= ($title == 'Reports') ? 'active' : '' ?>" href="reports" title="Reports">
-                    <i class="fa-solid fa-file-lines"></i>
-                    <span class="nav-text">Reports</span>
-                    <span class="nav-end">
-                        <i class="fa-solid fa-exclamation-triangle text-danger" title="Page in development"></i>
-                    </span>
-                </a>
-
-                <!-- ADMIN ONLY -->
+                <!-- ADMIN and SUPER_ADMIN ONLY -->
                 <?php if (isset($user) && ($user['role'] === 'ADMIN' || $user['role'] === 'SUPER_ADMIN')): ?>
                     <a class="nav-link loadable <?= ($title == 'User Management') ? 'active' : '' ?>" href="user-management" title="User Management">
                         <i class="fa-solid fa-id-badge"></i>
                         <span class="nav-text">User Management</span>
                     </a>
                 <?php endif; ?>
-
-                <a class="nav-link btn_logout <?= ($title == 'Logout') ? 'active' : '' ?>" href="javascript:void(0)" title="Logout">
-                    <i class="fa-solid fa-right-from-bracket"></i>
-                    <span class="nav-text">Logout</span>
-                </a>
             </nav>
         </aside>
 
@@ -122,11 +109,6 @@
             <!-- TOP BAR -->
             <div class="topbar">
                 <div class="d-flex align-items-center gap-2">
-                    <!-- ✅ Sidebar Toggle Button -->
-                    <button class="sidebar-toggle" id="sidebarToggle">
-                        <i class="fa-solid fa-bars"></i>
-                    </button>
-
                     <div>
                         <p class="subtitle">Barangay <?= ucfirst($system_information['barangay_name']) ?> Household Information System</p>
                         <h4 class="title"><?= isset($title) ? strtoupper($title) : 'UNKNOWN PAGE' ?></h4>

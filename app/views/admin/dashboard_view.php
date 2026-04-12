@@ -1,6 +1,23 @@
 <section class="panel">
     <div class="panel-body">
-        <div class="row">
+        <div class="row g-3">
+            <!-- Households -->
+            <div class="col-md-3">
+                <a href="households" class="gov-stat-link loadable">
+                    <div class="card gov-stat-card">
+                        <div class="gov-stat-header">
+                            <i class="fa-solid fa-house"></i>
+                            <span>Households</span>
+                            <i class="fa-solid fa-arrow-right ms-auto gov-arrow"></i>
+                        </div>
+                        <div class="gov-stat-body">
+                            <h3><?= number_format($total_households ?? 0) ?></h3>
+                            <small>Family units recorded</small>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
             <!-- Residents -->
             <div class="col-md-3">
                 <a href="residents" class="gov-stat-link loadable">
@@ -15,23 +32,6 @@
                         <div class="gov-stat-body">
                             <h3><?= number_format($total_residents ?? 0) ?></h3>
                             <small>Registered individuals</small>
-                        </div>
-                    </div>
-                </a>
-            </div>
-
-            <!-- Households -->
-            <div class="col-md-3">
-                <a href="households" class="gov-stat-link loadable">
-                    <div class="card gov-stat-card">
-                        <div class="gov-stat-header">
-                            <i class="fa-solid fa-house"></i>
-                            <span>Households</span>
-                            <i class="fa-solid fa-arrow-right ms-auto gov-arrow"></i>
-                        </div>
-                        <div class="gov-stat-body">
-                            <h3><?= number_format($total_households ?? 0) ?></h3>
-                            <small>Family units recorded</small>
                         </div>
                     </div>
                 </a>

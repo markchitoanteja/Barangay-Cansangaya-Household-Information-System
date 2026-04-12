@@ -419,36 +419,6 @@ class AdminController extends Controller
         ], $data);
     }
 
-    public function reports()
-    {
-        $current_user = session_get('user', null);
-
-        write_log('ACCESS_PAGE', 'reports', null, 'Accessed reports page');
-
-        $user_model = $this->model('User_Model');
-
-        $security_questions = $user_model->MOD_GET_QUESTIONS_BY_ID($current_user['id']);
-
-        $system_information_model = $this->model('System_Information_Model');
-
-        $system_information = $system_information_model->MOD_GET_SYSTEM_INFORMATION();
-
-        $data = [
-            'title' => 'Reports',
-            'user' => $current_user,
-            'security_questions' => $security_questions,
-            'system_information' => $system_information
-        ];
-
-        $this->view([
-            'includes/header',
-            'admin/reports_view',
-            'includes/modals/global_modals',
-            'includes/overlays/loading_overlay',
-            'includes/footer'
-        ], $data);
-    }
-
     public function user_management()
     {
         if (session_get('user')['role'] != 'ADMIN' && session_get('user')['role'] != 'SUPER_ADMIN') {
@@ -707,9 +677,13 @@ class AdminController extends Controller
                 'full_name' => $full_name,
                 'username' => $username,
                 'role' => $role,
-                'password_hash' => password_hash($password, PASSWORD_BCRYPT),
                 'updated_at' => $this->current_date()
             ];
+
+            // Only update password if not empty
+            if (!empty($password)) {
+                $data['password_hash'] = password_hash($password, PASSWORD_BCRYPT);
+            }
 
             $updated_user_id = $user_model->MOD_UPDATE_USER_ACCOUNT_SUPER_ADMIN_MODE($user_id, $data);
 
