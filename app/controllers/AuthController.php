@@ -12,16 +12,15 @@ class AuthController extends Controller
             return;
         }
 
-        // 2️⃣ Attempt auto-login via remember token
-        $remember_me = session_get('remember_me', false);
-        $remember_username = session_get('remember_username');
-        $remember_token = session_get('remember_token');
+        // 2️⃣ Attempt auto-login via cookies (FIXED)
+        $remember_username = $_COOKIE['remember_username'] ?? null;
+        $remember_token = $_COOKIE['remember_token'] ?? null;
 
-        if ($remember_me && $remember_username && $remember_token) {
+        if ($remember_username && $remember_token) {
             $user = $user_model->MOD_GET_USER_BY_USERNAME($remember_username);
 
             if (!empty($user) && $user_model->VALIDATE_REMEMBER_TOKEN($user['id'], $remember_token)) {
-                // ✅ Token is valid, log the user in
+                // ✅ Restore session
                 session_set('is_login', true);
                 session_set('user', $user);
 
@@ -33,10 +32,9 @@ class AuthController extends Controller
                 redirect('dashboard');
                 return;
             } else {
-                // 🚨 Token invalid or expired, clear remember me session
-                session_remove('remember_me');
-                session_remove('remember_username');
-                session_remove('remember_token');
+                // 🚨 Invalid token → clear cookies (NOT session)
+                setcookie('remember_username', '', time() - 3600, '/');
+                setcookie('remember_token', '', time() - 3600, '/');
             }
         }
 
@@ -115,16 +113,15 @@ class AuthController extends Controller
                 if ($remember) {
                     $token = bin2hex(random_bytes(32));
 
-                    session_set('remember_me', true);
-                    session_set('remember_token', $token);
-                    session_set('remember_username', $username);
-
-                    // ✅ Store token in database
+                    // Store in DB
                     $user_model->MOD_STORE_REMEMBER_TOKEN($user['id'], $token);
+
+                    // Store in persistent cookies (e.g., 30 days)
+                    setcookie('remember_username', $username, time() + (86400 * 30), "/", "", false, true);
+                    setcookie('remember_token', $token, time() + (86400 * 30), "/", "", false, true);
                 } else {
-                    session_remove('remember_me');
-                    session_remove('remember_token');
-                    session_remove('remember_username');
+                    setcookie('remember_username', '', time() - 3600, "/");
+                    setcookie('remember_token', '', time() - 3600, "/");
                 }
 
                 // ✅ Log success

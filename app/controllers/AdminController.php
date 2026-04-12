@@ -8,37 +8,34 @@ class AdminController extends Controller
 
         // 1️⃣ Check if session exists
         if (session_get('is_login', false) === true) {
-            return; // user already logged in
+            return;
         }
 
-        // 2️⃣ Check for remember token
-        $remember_me       = session_get('remember_me', false);
-        $remember_username = session_get('remember_username');
-        $remember_token    = session_get('remember_token');
+        // 2️⃣ Check remember-me via cookies (FIXED)
+        $remember_username = $_COOKIE['remember_username'] ?? null;
+        $remember_token    = $_COOKIE['remember_token'] ?? null;
 
-        if ($remember_me && $remember_username && $remember_token) {
+        if ($remember_username && $remember_token) {
             $user = $user_model->MOD_GET_USER_BY_USERNAME($remember_username);
 
             if (!empty($user) && $user_model->VALIDATE_REMEMBER_TOKEN($user['id'], $remember_token)) {
-                // ✅ Auto-login user
+                // ✅ Restore session
                 session_set('is_login', true);
                 session_set('user', $user);
 
-                // Load security questions
                 $security_questions = $user_model->MOD_GET_QUESTIONS_BY_USER_ID((int)$user['id']);
                 session_set('security_questions', $security_questions);
 
                 write_log('LOGIN_SUCCESS', 'users', $user['id'], 'User auto-logged in via remember token');
                 return;
             } else {
-                // 🚨 Token invalid or expired
-                session_remove('remember_me');
-                session_remove('remember_username');
-                session_remove('remember_token');
+                // 🚨 Invalid token → clear cookies
+                setcookie('remember_username', '', time() - 3600, '/');
+                setcookie('remember_token', '', time() - 3600, '/');
             }
         }
 
-        // 3️⃣ If not logged in and no valid token, redirect to login
+        // 3️⃣ Not authenticated → redirect
         flash('login_notif', [
             'title' => 'Login Required',
             'text'  => 'You must be logged in to access this page.',
