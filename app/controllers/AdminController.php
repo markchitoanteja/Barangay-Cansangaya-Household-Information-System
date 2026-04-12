@@ -87,6 +87,12 @@ class AdminController extends Controller
 
         $system_information = $system_information_model->MOD_GET_SYSTEM_INFORMATION();
 
+        $household_model = $this->model('Household_Model');
+        $total_households = count($household_model->MOD_GET_HOUSEHOLDS());
+        
+        $residents_model = $this->model('Residents_Model');
+        $total_residents = count($residents_model->MOD_GET_RESIDENTS());
+
         // Prepare data for view
         $data = [
             'title' => 'Dashboard',
@@ -96,10 +102,10 @@ class AdminController extends Controller
             'total_pages' => $total_pages,
             'search' => $search,
             'security_questions' => $security_questions,
-            'total_residents' => 109,
-            'total_households' => 23,
-            'total_health' => 69,
-            'total_reports' => 10,
+            'total_households' => $total_households,
+            'total_residents' => $total_residents,
+            'total_demographics' => 0,
+            'total_health' => 0,
             'system_information' => $system_information
         ];
 

@@ -1,6 +1,7 @@
 <section class="panel">
     <div class="panel-body">
         <div class="row g-3">
+
             <!-- Households -->
             <div class="col-md-3">
                 <a href="households" class="gov-stat-link loadable">
@@ -12,7 +13,7 @@
                         </div>
                         <div class="gov-stat-body">
                             <h3><?= number_format($total_households ?? 0) ?></h3>
-                            <small>Family units recorded</small>
+                            <small>Registered family units</small>
                         </div>
                     </div>
                 </a>
@@ -24,14 +25,29 @@
                     <div class="card gov-stat-card">
                         <div class="gov-stat-header">
                             <i class="fa-solid fa-users"></i>
-                            <span>Total Residents</span>
-
-                            <!-- Arrow -->
+                            <span>Residents</span>
                             <i class="fa-solid fa-arrow-right ms-auto gov-arrow"></i>
                         </div>
                         <div class="gov-stat-body">
                             <h3><?= number_format($total_residents ?? 0) ?></h3>
-                            <small>Registered individuals</small>
+                            <small>Total population recorded</small>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Demographics -->
+            <div class="col-md-3">
+                <a href="demographics" class="gov-stat-link loadable">
+                    <div class="card gov-stat-card">
+                        <div class="gov-stat-header">
+                            <i class="fa-solid fa-chart-column"></i>
+                            <span>Demographics</span>
+                            <i class="fa-solid fa-arrow-right ms-auto gov-arrow"></i>
+                        </div>
+                        <div class="gov-stat-body">
+                            <h3><?= number_format($total_demographics ?? 0) ?></h3>
+                            <small>Population breakdown insights</small>
                         </div>
                     </div>
                 </a>
@@ -43,29 +59,12 @@
                     <div class="card gov-stat-card">
                         <div class="gov-stat-header">
                             <i class="fa-solid fa-heart-pulse"></i>
-                            <span>Health Records</span>
+                            <span>Health Monitoring</span>
                             <i class="fa-solid fa-arrow-right ms-auto gov-arrow"></i>
                         </div>
                         <div class="gov-stat-body">
                             <h3><?= number_format($total_health ?? 0) ?></h3>
-                            <small>Monitored cases</small>
-                        </div>
-                    </div>
-                </a>
-            </div>
-
-            <!-- Reports -->
-            <div class="col-md-3">
-                <a href="reports" class="gov-stat-link loadable">
-                    <div class="card gov-stat-card">
-                        <div class="gov-stat-header">
-                            <i class="fa-solid fa-file-lines"></i>
-                            <span>Reports Generated</span>
-                            <i class="fa-solid fa-arrow-right ms-auto gov-arrow"></i>
-                        </div>
-                        <div class="gov-stat-body">
-                            <h3><?= number_format($total_reports ?? 0) ?></h3>
-                            <small>System outputs</small>
+                            <small>Medical records tracked</small>
                         </div>
                     </div>
                 </a>

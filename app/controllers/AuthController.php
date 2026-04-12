@@ -316,21 +316,25 @@ class AuthController extends Controller
         $user_model = $this->model('User_Model');
         $current_user = session_get('user', null);
 
-        // Log logout
+        // Log logout + clear DB tokens
         if ($current_user) {
             write_log('LOGOUT', 'users', $current_user['id'], 'User logged out successfully');
 
-            // ✅ Clear remember tokens from DB for this user
+            // Clear DB remember tokens
             $user_model->MOD_CLEAR_REMEMBER_TOKENS($current_user['id']);
         }
 
-        // Clear all login and remember me session data
+        // ❌ Clear session
         session_remove('is_login');
         session_remove('user');
-        session_remove('remember_me');
-        session_remove('remember_username');
-        session_remove('remember_token');
+        session_remove('security_questions');
 
+        // ❌ Clear cookies (IMPORTANT FIX)
+        setcookie('remember_username', '', time() - 3600, '/');
+        setcookie('remember_token', '', time() - 3600, '/');
+        setcookie('remember_role', '', time() - 3600, '/');
+
+        // Flash message
         flash('login_notif', [
             'title' => 'Logged out',
             'text'  => 'Logged out successfully.',

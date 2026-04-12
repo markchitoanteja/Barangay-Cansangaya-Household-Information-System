@@ -44,16 +44,11 @@
                             <!-- PUROK -->
                             <div class="col-md-4">
                                 <div class="form-floating">
-                                    <select class="form-select gov-input"
-                                        id="household_purok"
-                                        name="household_purok" required>
+                                    <select class="form-select gov-input" id="household_purok" required>
                                         <option value="" disabled selected>-- Select One --</option>
-                                        <option value="Purok 1">Purok 1</option>
-                                        <option value="Purok 2">Purok 2</option>
-                                        <option value="Purok 3">Purok 3</option>
-                                        <option value="Purok 4">Purok 4</option>
-                                        <option value="Purok 5">Purok 5</option>
-                                        <option value="Purok 6">Purok 6</option>
+                                        <?php for ($i = 1; $i <= 7; $i++): ?>
+                                            <option value="Purok <?= $i ?>">Purok <?= $i ?></option>
+                                        <?php endfor; ?>
                                     </select>
                                     <label>Purok / Zone</label>
                                 </div>
@@ -194,15 +189,10 @@
                             <!-- PUROK -->
                             <div class="col-md-4">
                                 <div class="form-floating">
-                                    <select class="form-select gov-input"
-                                        id="edit_household_purok"
-                                        name="edit_household_purok" required>
-                                        <option value="Purok 1">Purok 1</option>
-                                        <option value="Purok 2">Purok 2</option>
-                                        <option value="Purok 3">Purok 3</option>
-                                        <option value="Purok 4">Purok 4</option>
-                                        <option value="Purok 5">Purok 5</option>
-                                        <option value="Purok 6">Purok 6</option>
+                                    <select class="form-select gov-input" id="edit_household_purok" required>
+                                        <?php for ($i = 1; $i <= 7; $i++): ?>
+                                            <option value="Purok <?= $i ?>">Purok <?= $i ?></option>
+                                        <?php endfor; ?>
                                     </select>
                                     <label>Purok / Zone</label>
                                 </div>
@@ -266,8 +256,7 @@
                                     </select>
                                     <label>Water System</label>
                                 </div>
-                                <small class="info-text"
-                                    data-tooltip="• Level 1: Point source (well/spring) • Level 2: Communal faucet • Level 3: Household connection">
+                                <small class="info-text" data-tooltip="• Level 1: Point source (well/spring) • Level 2: Communal faucet • Level 3: Household connection">
                                     Water service (e.g., Level 2)
                                 </small>
                             </div>

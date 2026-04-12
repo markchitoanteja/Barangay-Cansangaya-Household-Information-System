@@ -932,7 +932,6 @@ $((): void => {
         const id = $(this).data('id');
         const household_code = $(this).data('household_code');
         const purok = $(this).data('purok');
-        const current_purok = $(this).data('current_purok');
         const housing_type = $(this).data('housing_type');
         const comfort_room = $(this).data('comfort_room');
         const water_system = $(this).data('water_system');
