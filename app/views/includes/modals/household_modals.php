@@ -164,6 +164,9 @@
             <form id="edit_household_form">
                 <div class="modal-body gov-modal-body">
                     <input type="hidden" id="edit_household_id">
+                    <input type="hidden" id="edit_original_household_household_code">
+                    <input type="hidden" id="edit_original_household_purok">
+                    
                     <!-- HOUSEHOLD DETAILS -->
                     <div class="gov-section">
                         <div class="gov-section__label">Household Details</div>

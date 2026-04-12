@@ -16,4 +16,9 @@ class Household_Model extends Query
     {
         return $this->table('households')->insert($data);
     }
+    
+    public function MOD_UPDATE_HOUSEHOLD(string $id, array $data): string
+    {
+        return $this->table('households')->where('id', $id)->update($data);
+    }
 }

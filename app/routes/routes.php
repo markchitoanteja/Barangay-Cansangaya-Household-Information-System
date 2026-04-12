@@ -37,6 +37,7 @@ return function (Router $router) {
     $router->post('/clear-logs', 'AdminController@clear_logs');
     $router->post('/generate-household-code', 'AdminController@generate_household_code');
     $router->post('/add-household', 'AdminController@add_household');
+    $router->post('/update-household', 'AdminController@update_household');
 
     // System Update Routes
     $router->get('/check-updates', 'UpdateController@check');

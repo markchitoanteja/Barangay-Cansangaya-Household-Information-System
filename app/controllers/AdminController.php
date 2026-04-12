@@ -1000,4 +1000,44 @@ class AdminController extends Controller
 
         json($response);
     }
+    
+    public function update_household()
+    {
+        $id = input('id', null);
+        $household_code = input('household_code', null);
+        $purok = input('purok', null);
+        $address = input('address', null);
+        $housing_type = input('housing_type', null);
+        $comfort_room = input('comfort_room', null);
+        $water_system = input('water_system', null);
+
+        $response = [
+            'success' => true,
+            'message' => 'Household updated successfully.'
+        ];
+
+        $data = [
+            'household_code' => $household_code,
+            'purok' => $purok,
+            'address' => $address,
+            'housing_type' => $housing_type,
+            'comfort_room' => $comfort_room,
+            'water_system' => $water_system,
+        ];
+
+        $household_model = $this->model('Household_Model');
+
+        $new_household_id = $household_model->MOD_UPDATE_HOUSEHOLD($id, $data);
+
+        // Log household update
+        write_log('UPDATE_HOUSEHOLD', 'households', $new_household_id, "Updated household: $household_code in $purok", session_get('user')['id']);
+
+        flash('flash_notif', [
+            'title' => 'Household Updated',
+            'text' => 'The household has been successfully updated.',
+            'icon' => 'success',
+        ]);
+
+        json($response);
+    }
 }

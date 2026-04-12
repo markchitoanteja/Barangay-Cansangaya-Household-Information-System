@@ -916,7 +916,43 @@ $((): void => {
                         location.reload();
                     } else {
                         hideLoading();
-                        alert(response.error || 'Failed to update security questions.');
+                    }
+                }, 250);
+            },
+            error: (xhr, status, error) => {
+                hideLoading();
+                console.error('AJAX Error:', error);
+                console.log(xhr.responseText);
+            }
+        });
+    });
+
+    $('#edit_household_form').on('submit', function (e) {
+        e.preventDefault();
+
+        const id = $('#edit_household_id').val()?.toString().trim();
+        const household_code = $('#edit_household_household_code').val()?.toString().trim();
+        const purok = $('#edit_household_purok').val()?.toString().trim();
+        const address = $('#edit_household_address').val()?.toString().trim();
+        const housing_type = $('#edit_household_housing_type').val()?.toString().trim();
+        const comfort_room = $('#edit_household_comfort_room').val()?.toString().trim();
+        const water_system = $('#edit_household_water_system').val()?.toString().trim();
+
+        showLoading();
+
+        const formData = { id, household_code, purok, address, housing_type, comfort_room, water_system };
+
+        $.ajax({
+            url: 'update-household',
+            method: 'POST',
+            data: formData,
+            dataType: 'JSON',
+            success: (response) => {
+                setTimeout(() => {
+                    if (response.success) {
+                        location.reload();
+                    } else {
+                        hideLoading();
                     }
                 }, 250);
             },
@@ -932,6 +968,7 @@ $((): void => {
         const id = $(this).data('id');
         const household_code = $(this).data('household_code');
         const purok = $(this).data('purok');
+        const address = $(this).data('address');
         const housing_type = $(this).data('housing_type');
         const comfort_room = $(this).data('comfort_room');
         const water_system = $(this).data('water_system');
@@ -939,10 +976,42 @@ $((): void => {
         $('#edit_household_id').val(id);
         $('#edit_household_household_code').val(household_code);
         $('#edit_household_purok').val(purok);
+        $('#edit_household_address').val(address);
         $('#edit_household_housing_type').val(housing_type);
         $('#edit_household_comfort_room').val(comfort_room);
         $('#edit_household_water_system').val(water_system);
-    });    
+
+        $('#edit_original_household_purok').val(purok);
+        $('#edit_original_household_household_code').val(household_code);
+    });
+
+    $('#edit_household_purok').on('change', function () {
+        const purok = $(this).val()?.toString().trim();
+        const originalPurok = $('#edit_original_household_purok').val()?.toString().trim();
+        const originalCode = $('#edit_original_household_household_code').val()?.toString().trim();
+
+        // If same as original → revert, no AJAX
+        if (purok === originalPurok) {
+            $('#edit_household_household_code').val(originalCode ?? '');
+
+            return;
+        }
+
+        $.ajax({
+            url: 'generate-household-code',
+            method: 'POST',
+            data: { purok },
+            dataType: 'JSON',
+            success: (response) => {
+                $('#edit_household_household_code').val(response.household_code);
+            },
+            error: (xhr, status, error) => {
+                hideLoading();
+                console.error('AJAX Error:', error);
+                console.log(xhr.responseText);
+            }
+        });
+    });
 });
 
 function checkUpdates() {

@@ -88,6 +88,7 @@
                                         data-id="<?= $household['id'] ?>"
                                         data-household_code="<?= esc($household['household_code']) ?>"
                                         data-purok="<?= esc($household['purok']) ?>"
+                                        data-address="<?= esc($household['address']) ?>"
                                         data-current_purok="<?= esc($household['purok']) ?>"
                                         data-housing_type="<?= esc($household['housing_type']) ?>"
                                         data-comfort_room="<?= esc($household['comfort_room']) ?>"
