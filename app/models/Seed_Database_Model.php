@@ -94,40 +94,21 @@ class Seed_Database_Model extends Query
         // RESIDENTS TABLE
         $residentsColumns = "
             id INT AUTO_INCREMENT PRIMARY KEY,
-
             household_id INT NOT NULL,
-
             first_name VARCHAR(100) NOT NULL,
             middle_name VARCHAR(100),
             last_name VARCHAR(100) NOT NULL,
-
             sex ENUM('Male','Female') NOT NULL,
             birthdate DATE NOT NULL,
-
             civil_status ENUM('Single','Married','Widowed','Separated'),
-
-            relationship ENUM('Head','Spouse','Child','Relative'),
-
-            -- LIVELIHOOD
-            is_farmer TINYINT(1) DEFAULT 0,
-            is_fisherfolk TINYINT(1) DEFAULT 0,
-            has_sari_sari TINYINT(1) DEFAULT 0,
-
-            -- SOCIAL SECTORS
-            is_pwd TINYINT(1) DEFAULT 0,
-            is_solo_parent TINYINT(1) DEFAULT 0,
-            is_4ps TINYINT(1) DEFAULT 0,
-
-            -- HEALTH
-            teen_pregnancy TINYINT(1) DEFAULT 0,
-
+            relationship ENUM('Head','Spouse','Child','Relative','Other'),
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            -- INDEXES
+            INDEX idx_household_id (household_id),
+            INDEX idx_name (last_name, first_name),
 
-            CONSTRAINT fk_residents_household
-                FOREIGN KEY (household_id)
-                REFERENCES households(id)
-                ON DELETE CASCADE ON UPDATE CASCADE
+            CONSTRAINT fk_residents_household FOREIGN KEY (household_id) REFERENCES households(id) ON DELETE CASCADE ON UPDATE CASCADE
         ";
         self::table('residents')->createTableIfNotExists($residentsColumns);
 

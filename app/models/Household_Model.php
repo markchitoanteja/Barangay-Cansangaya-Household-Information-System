@@ -6,6 +6,11 @@ class Household_Model extends Query
     {
         return $this->table('households')->orderBy('id', 'DESC')->get();
     }
+    
+    public function MOD_GET_HOUSEHOLDS_SORT_BY_HOUSEHOLD_CODE(): array
+    {
+        return $this->table('households')->orderBy('household_code', 'ASC')->get();
+    }
 
     public function MOD_GET_LAST_PUROK(string $purok): ?array
     {

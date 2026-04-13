@@ -187,7 +187,7 @@ class AdminController extends Controller
             'includes/footer'
         ], $data);
     }
-
+    
     public function residents()
     {
         $current_user = session_get('user', null);
@@ -195,22 +195,9 @@ class AdminController extends Controller
         write_log('ACCESS_PAGE', 'residents', null, 'Accessed residents page');
 
         $user_model = $this->model('User_Model');
+        $household_model = $this->model('Household_Model');
 
-        // --- Sample data (mocked) ---
-        $all_residents = [
-            ['id' => 1, 'purok' => 'Purok 1', 'housing_type' => 'Single Family', 'comfort_room' => 'Yes', 'water_system' => 'Piped'],
-            ['id' => 2, 'purok' => 'Purok 2', 'housing_type' => 'Apartment', 'comfort_room' => 'No', 'water_system' => 'Well'],
-            ['id' => 3, 'purok' => 'Purok 3', 'housing_type' => 'Duplex', 'comfort_room' => 'Yes', 'water_system' => 'River'],
-            ['id' => 4, 'purok' => 'Purok 1', 'housing_type' => 'Single Family', 'comfort_room' => 'No', 'water_system' => 'Piped'],
-            ['id' => 5, 'purok' => 'Purok 2', 'housing_type' => 'Apartment', 'comfort_room' => 'Yes', 'water_system' => 'Well'],
-            ['id' => 6, 'purok' => 'Purok 3', 'housing_type' => 'Duplex', 'comfort_room' => 'No', 'water_system' => 'River'],
-            ['id' => 7, 'purok' => 'Purok 4', 'housing_type' => 'Single Family', 'comfort_room' => 'Yes', 'water_system' => 'Piped'],
-            ['id' => 8, 'purok' => 'Purok 5', 'housing_type' => 'Apartment', 'comfort_room' => 'No', 'water_system' => 'Well'],
-            ['id' => 9, 'purok' => 'Purok 1', 'housing_type' => 'Duplex', 'comfort_room' => 'Yes', 'water_system' => 'River'],
-            ['id' => 10, 'purok' => 'Purok 2', 'housing_type' => 'Single Family', 'comfort_room' => 'No', 'water_system' => 'Piped'],
-            ['id' => 11, 'purok' => 'Purok 3', 'housing_type' => 'Apartment', 'comfort_room' => 'Yes', 'water_system' => 'Well'],
-            ['id' => 12, 'purok' => 'Purok 4', 'housing_type' => 'Duplex', 'comfort_room' => 'No', 'water_system' => 'River'],
-        ];
+        $all_households = $household_model->MOD_GET_HOUSEHOLDS();
 
         // --- Get search filters ---
         $search_input = trim((string) input('search_input'));
@@ -219,7 +206,7 @@ class AdminController extends Controller
         $water_system = trim((string) input('water_system'));
 
         // --- Filter data based on input ---
-        $filtered_households = array_filter($all_residents, function ($h) use ($search_input, $housing_type, $comfort_room, $water_system) {
+        $filtered_households = array_filter($all_households, function ($h) use ($search_input, $housing_type, $comfort_room, $water_system) {
             $matches_search = empty($search_input) || stripos($h['purok'], $search_input) !== false || stripos($h['housing_type'], $search_input) !== false;
             $matches_housing = empty($housing_type) || $h['housing_type'] === $housing_type;
             $matches_comfort = empty($comfort_room) || $h['comfort_room'] === $comfort_room;
@@ -246,11 +233,14 @@ class AdminController extends Controller
 
         $system_information = $system_information_model->MOD_GET_SYSTEM_INFORMATION();
 
+        $households_unfiltered = $household_model->MOD_GET_HOUSEHOLDS_SORT_BY_HOUSEHOLD_CODE();
+
         // --- Prepare data for view ---
         $data = [
             'title' => 'Residents',
             'user' => $current_user,
             'households' => $households,
+            'households_unfiltered' => $households_unfiltered,
             'security_questions' => $security_questions,
             'current_page' => $current_page,
             'total_pages' => $total_pages,
@@ -261,7 +251,6 @@ class AdminController extends Controller
             'system_information' => $system_information
         ];
 
-        // --- Load views ---
         $this->view([
             'includes/header',
             'admin/residents_view',

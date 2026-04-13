@@ -183,8 +183,7 @@
                                         readonly required>
                                     <label>Household Code</label>
                                 </div>
-                                <small class="info-text"
-                                    data-tooltip="System-generated unique code per household. Format: PRK##-#### (Purok + sequence number).">
+                                <small class="info-text" data-tooltip="System-generated unique code per household. Format: PRK##-#### (Purok + sequence number).">
                                     Auto-generated (e.g., PRK01-0001)
                                 </small>
                             </div>

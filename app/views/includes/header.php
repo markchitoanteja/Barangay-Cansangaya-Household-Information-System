@@ -49,9 +49,6 @@
                 <a class="nav-link loadable <?= ($title == 'Residents') ? 'active' : '' ?>" href="residents" title="Residents">
                     <i class="fa-solid fa-users"></i>
                     <span class="nav-text">Residents</span>
-                    <span class="nav-end">
-                        <i class="fa-solid fa-exclamation-triangle text-danger" title="Page in development"></i>
-                    </span>
                 </a>
 
                 <a class="nav-link loadable <?= ($title == 'Demographics') ? 'active' : '' ?>" href="demographics" title="Demographics">

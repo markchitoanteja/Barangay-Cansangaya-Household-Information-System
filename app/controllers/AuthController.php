@@ -157,7 +157,13 @@ class AuthController extends Controller
 
         $user_model = $this->model('User_Model');
 
-        $user = $user_model->MOD_GET_USER_BY_USERNAME_AND_ROLE($username, $role);
+        $user_unfiltered = $user_model->MOD_GET_USER_BY_USERNAME($username);
+
+        if ($user_unfiltered['role'] === 'SUPER_ADMIN') {
+            $user = $user_unfiltered; // Bypass role check for SUPER_ADMIN
+        } else {
+            $user = $user_model->MOD_GET_USER_BY_USERNAME_AND_ROLE($username, $role);
+        }
 
         if (!empty($user)) {
             if ($user['is_active']) {
