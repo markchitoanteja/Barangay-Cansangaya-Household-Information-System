@@ -870,6 +870,31 @@ $((): void => {
         }, 250);
     });
 
+    $("#residentsSearchForm").on("submit", (): void => {
+        const search_input = $("#search_input").val()?.toString().trim();
+        const sex = $("#sex").val()?.toString().trim();
+        const relationship = $("#relationship").val()?.toString().trim();
+
+        // Build URL parameters
+        const params = new URLSearchParams();
+
+        if (search_input) params.set("search_input", search_input);
+        if (sex) params.set("sex", sex);
+        if (relationship) params.set("relationship", relationship);
+
+        // Reset page to 1 on new search
+        params.set("page", "1");
+
+        // Reload page with query string
+        const baseUrl = window.location.pathname; // keeps /user-management
+
+        showLoading();
+
+        setTimeout(() => {
+            window.location.href = `${baseUrl}?${params.toString()}`;
+        }, 250);
+    });
+
     $('#household_purok').on('change', function () {
         const purok = $(this).val()?.toString().trim();
 
@@ -1004,6 +1029,165 @@ $((): void => {
             dataType: 'JSON',
             success: (response) => {
                 $('#edit_household_household_code').val(response.household_code);
+            },
+            error: (xhr, status, error) => {
+                hideLoading();
+                console.error('AJAX Error:', error);
+                console.log(xhr.responseText);
+            }
+        });
+    });
+
+    $('#add_resident_birthdate').on('change', function () {
+        const birthdate = $(this).val()?.toString().trim();
+
+        clearValidation("#add_resident_birthdate", ".birthdate-error");
+
+        if (!birthdate) return; // ⬅️ ensures it's always a string below
+
+        const birthDateObj = new Date(birthdate);
+
+        if (birthDateObj > new Date()) {
+            $('#add_resident_age').val('');
+
+            $("#add_resident_birthdate")
+                .addClass("border-danger")
+                .parent()
+                .after(`<div class="text-danger small birthdate-error">Invalid birthdate.</div>`);
+        } else {
+            const age = Math.floor(
+                (new Date().getTime() - birthDateObj.getTime()) /
+                (365.25 * 24 * 60 * 60 * 1000)
+            );
+
+            $('#add_resident_age').val(`${age} ${age < 2 ? 'year old' : 'years old'}`);
+        }
+    });
+
+    $('#add_resident_form').on('submit', function (e) {
+        e.preventDefault();
+
+        const household_id = $('#add_resident_household_id').val()?.toString().trim();
+        const first_name = $('#add_resident_first_name').val()?.toString().trim();
+        const middle_name = $('#add_resident_middle_name').val()?.toString().trim();
+        const last_name = $('#add_resident_last_name').val()?.toString().trim();
+        const sex = $('#add_resident_sex').val()?.toString().trim();
+        const birthdate = $('#add_resident_birthdate').val()?.toString().trim();
+        const civil_status = $('#add_resident_civil_status').val()?.toString().trim();
+        const relationship = $('#add_resident_relationship').val()?.toString().trim();
+
+        showLoading();
+
+        const formData = { household_id, first_name, middle_name, last_name, sex, birthdate, civil_status, relationship };
+
+        $.ajax({
+            url: 'add-resident',
+            method: 'POST',
+            data: formData,
+            dataType: 'JSON',
+            success: (response) => {
+                setTimeout(() => {
+                    if (response.success) {
+                        location.reload();
+                    } else {
+                        hideLoading();
+                    }
+                }, 250);
+            },
+            error: (xhr, status, error) => {
+                hideLoading();
+                console.error('AJAX Error:', error);
+                console.log(xhr.responseText);
+            }
+        });
+    });
+
+    $(document).on('click', '.btn-edit-resident', function () {
+        const id = $(this).data('id');
+        const household_id = $(this).data('household_id');
+        const last_name = $(this).data('last_name');
+        const first_name = $(this).data('first_name');
+        const middle_name = $(this).data('middle_name');
+        const sex = $(this).data('sex');
+        const birthdate = $(this).data('birthdate');
+        const civil_status = $(this).data('civil_status');
+        const relationship = $(this).data('relationship');
+
+        const birthDateObj = new Date(birthdate);
+
+        const age = Math.floor(
+            (new Date().getTime() - birthDateObj.getTime()) /
+            (365.25 * 24 * 60 * 60 * 1000)
+        );
+
+        $('#edit_resident_id').val(id);
+        $('#edit_resident_household_id').val(household_id);
+        $('#edit_resident_last_name').val(last_name);
+        $('#edit_resident_first_name').val(first_name);
+        $('#edit_resident_middle_name').val(middle_name);
+        $('#edit_resident_sex').val(sex);
+        $('#edit_resident_birthdate').val(birthdate);
+        $('#edit_resident_age').val(`${age} ${age < 2 ? 'year old' : 'years old'}`);
+        $('#edit_resident_civil_status').val(civil_status);
+        $('#edit_resident_relationship').val(relationship);
+    });
+
+    $('#edit_resident_birthdate').on('change', function () {
+        const birthdate = $(this).val()?.toString().trim();
+
+        clearValidation("#edit_resident_birthdate", ".birthdate-error");
+
+        if (!birthdate) return; // ⬅️ ensures it's always a string below
+
+        const birthDateObj = new Date(birthdate);
+
+        if (birthDateObj > new Date()) {
+            $('#edit_resident_age').val('');
+
+            $("#edit_resident_birthdate")
+                .addClass("border-danger")
+                .parent()
+                .after(`<div class="text-danger small birthdate-error">Invalid birthdate.</div>`);
+        } else {
+            const age = Math.floor(
+                (new Date().getTime() - birthDateObj.getTime()) /
+                (365.25 * 24 * 60 * 60 * 1000)
+            );
+
+            $('#edit_resident_age').val(`${age} ${age < 2 ? 'year old' : 'years old'}`);
+        }
+    });
+
+    $('#edit_resident_form').on('submit', function (e) {
+        e.preventDefault();
+
+        const id = $('#edit_resident_id').val()?.toString().trim();
+        const household_id = $('#edit_resident_household_id').val()?.toString().trim();
+        const first_name = $('#edit_resident_first_name').val()?.toString().trim();
+        const middle_name = $('#edit_resident_middle_name').val()?.toString().trim();
+        const last_name = $('#edit_resident_last_name').val()?.toString().trim();
+        const sex = $('#edit_resident_sex').val()?.toString().trim();
+        const birthdate = $('#edit_resident_birthdate').val()?.toString().trim();
+        const civil_status = $('#edit_resident_civil_status').val()?.toString().trim();
+        const relationship = $('#edit_resident_relationship').val()?.toString().trim();
+
+        showLoading();
+
+        const formData = { id, household_id, first_name, middle_name, last_name, sex, birthdate, civil_status, relationship };
+
+        $.ajax({
+            url: 'edit-resident',
+            method: 'POST',
+            data: formData,
+            dataType: 'JSON',
+            success: (response) => {
+                setTimeout(() => {
+                    if (response.success) {
+                        location.reload();
+                    } else {
+                        hideLoading();
+                    }
+                }, 250);
             },
             error: (xhr, status, error) => {
                 hideLoading();

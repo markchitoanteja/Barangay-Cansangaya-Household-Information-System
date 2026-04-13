@@ -89,9 +89,9 @@ class AdminController extends Controller
 
         $household_model = $this->model('Household_Model');
         $total_households = count($household_model->MOD_GET_HOUSEHOLDS());
-        
-        $residents_model = $this->model('Residents_Model');
-        $total_residents = count($residents_model->MOD_GET_RESIDENTS());
+
+        $Resident_Model = $this->model('Resident_Model');
+        $total_residents = count($Resident_Model->MOD_GET_RESIDENTS());
 
         // Prepare data for view
         $data = [
@@ -120,64 +120,97 @@ class AdminController extends Controller
 
     public function households()
     {
+        // ==============================
+        // 1. SESSION & ACCESS LOGGING
+        // ==============================
         $current_user = session_get('user', null);
-
         write_log('ACCESS_PAGE', 'households', null, 'Accessed households page');
 
+
+        // ==============================
+        // 2. LOAD MODELS
+        // ==============================
         $user_model = $this->model('User_Model');
         $household_model = $this->model('Household_Model');
+        $system_information_model = $this->model('System_Information_Model');
 
+
+        // ==============================
+        // 3. FETCH RAW DATA
+        // ==============================
         $all_households = $household_model->MOD_GET_HOUSEHOLDS();
 
-        // --- Get search filters ---
+
+        // ==============================
+        // 4. GET FILTER INPUTS
+        // ==============================
         $search_input = trim((string) input('search_input'));
-        $housing_type = trim((string) input('housing_type'));
         $comfort_room = trim((string) input('comfort_room'));
         $water_system = trim((string) input('water_system'));
 
-        // --- Filter data based on input ---
-        $filtered_households = array_filter($all_households, function ($h) use ($search_input, $housing_type, $comfort_room, $water_system) {
-            $matches_search = empty($search_input) || stripos($h['purok'], $search_input) !== false || stripos($h['housing_type'], $search_input) !== false;
-            $matches_housing = empty($housing_type) || $h['housing_type'] === $housing_type;
+
+        // ==============================
+        // 5. APPLY FILTERING
+        // ==============================
+        $filtered_households = array_filter($all_households, function ($h) use ($search_input, $comfort_room, $water_system) {
+
+            $matches_search = empty($search_input)
+                || stripos($h['purok'], $search_input) !== false
+                || stripos($h['housing_type'], $search_input) !== false;
+
             $matches_comfort = empty($comfort_room) || $h['comfort_room'] === $comfort_room;
             $matches_water = empty($water_system) || $h['water_system'] === $water_system;
 
-            return $matches_search && $matches_housing && $matches_comfort && $matches_water;
+            return $matches_search && $matches_comfort && $matches_water;
         });
 
-        // --- Pagination setup ---
+
+        // ==============================
+        // 6. PAGINATION
+        // ==============================
         $per_page = 10;
+
         $current_page = (int)(input('page') ?? 1);
         if ($current_page < 1) $current_page = 1;
 
         $total_households = count($filtered_households);
-        $total_pages = (int)ceil($total_households / $per_page);
+        $total_pages = (int) ceil($total_households / $per_page);
         $offset = ($current_page - 1) * $per_page;
 
-        // Slice for current page
         $households = array_slice($filtered_households, $offset, $per_page);
 
+
+        // ==============================
+        // 7. FETCH AUXILIARY DATA
+        // ==============================
         $security_questions = $user_model->MOD_GET_QUESTIONS_BY_ID($current_user['id']);
-
-        $system_information_model = $this->model('System_Information_Model');
-
         $system_information = $system_information_model->MOD_GET_SYSTEM_INFORMATION();
 
-        // --- Prepare data for view ---
+
+        // ==============================
+        // 8. PREPARE VIEW DATA
+        // ==============================
         $data = [
             'title' => 'Households',
             'user' => $current_user,
+
             'households' => $households,
-            'security_questions' => $security_questions,
+
             'current_page' => $current_page,
             'total_pages' => $total_pages,
+
             'search_input' => $search_input,
-            'housing_type' => $housing_type,
             'comfort_room' => $comfort_room,
             'water_system' => $water_system,
+
+            'security_questions' => $security_questions,
             'system_information' => $system_information
         ];
 
+
+        // ==============================
+        // 9. LOAD VIEW
+        // ==============================
         $this->view([
             'includes/header',
             'admin/households_view',
@@ -187,70 +220,105 @@ class AdminController extends Controller
             'includes/footer'
         ], $data);
     }
-    
+
     public function residents()
     {
+        // ==============================
+        // 1. SESSION & ACCESS LOGGING
+        // ==============================
         $current_user = session_get('user', null);
-
         write_log('ACCESS_PAGE', 'residents', null, 'Accessed residents page');
 
+
+        // ==============================
+        // 2. LOAD MODELS
+        // ==============================
         $user_model = $this->model('User_Model');
+        $resident_model = $this->model('Resident_Model');
         $household_model = $this->model('Household_Model');
+        $system_information_model = $this->model('System_Information_Model');
 
-        $all_households = $household_model->MOD_GET_HOUSEHOLDS();
 
-        // --- Get search filters ---
+        // ==============================
+        // 3. FETCH RAW DATA
+        // ==============================
+        $all_residents = $resident_model->MOD_GET_RESIDENTS();
+
+
+        // ==============================
+        // 4. GET FILTER INPUTS
+        // ==============================
         $search_input = trim((string) input('search_input'));
-        $housing_type = trim((string) input('housing_type'));
-        $comfort_room = trim((string) input('comfort_room'));
-        $water_system = trim((string) input('water_system'));
+        $sex = trim((string) input('sex'));
+        $relationship = trim((string) input('relationship'));
 
-        // --- Filter data based on input ---
-        $filtered_households = array_filter($all_households, function ($h) use ($search_input, $housing_type, $comfort_room, $water_system) {
-            $matches_search = empty($search_input) || stripos($h['purok'], $search_input) !== false || stripos($h['housing_type'], $search_input) !== false;
-            $matches_housing = empty($housing_type) || $h['housing_type'] === $housing_type;
-            $matches_comfort = empty($comfort_room) || $h['comfort_room'] === $comfort_room;
-            $matches_water = empty($water_system) || $h['water_system'] === $water_system;
 
-            return $matches_search && $matches_housing && $matches_comfort && $matches_water;
+        // ==============================
+        // 5. APPLY FILTERING
+        // ==============================
+        $filtered_residents = array_filter($all_residents, function ($r) use ($search_input, $sex, $relationship) {
+
+            $matches_search = empty($search_input)
+                || stripos($r['first_name'], $search_input) !== false
+                || stripos($r['last_name'], $search_input) !== false;
+
+            $matches_sex = empty($sex) || $r['sex'] === $sex;
+            $matches_relationship = empty($relationship) || $r['relationship'] === $relationship;
+
+            return $matches_search && $matches_sex && $matches_relationship;
         });
 
-        // --- Pagination setup ---
+
+        // ==============================
+        // 6. PAGINATION
+        // ==============================
         $per_page = 10;
+
         $current_page = (int)(input('page') ?? 1);
         if ($current_page < 1) $current_page = 1;
 
-        $total_households = count($filtered_households);
-        $total_pages = (int)ceil($total_households / $per_page);
+        $total_residents = count($filtered_residents);
+        $total_pages = (int) ceil($total_residents / $per_page);
         $offset = ($current_page - 1) * $per_page;
 
-        // Slice for current page
-        $households = array_slice($filtered_households, $offset, $per_page);
+        $residents = array_slice($filtered_residents, $offset, $per_page);
 
+
+        // ==============================
+        // 7. FETCH AUXILIARY DATA
+        // ==============================
         $security_questions = $user_model->MOD_GET_QUESTIONS_BY_ID($current_user['id']);
-
-        $system_information_model = $this->model('System_Information_Model');
-
         $system_information = $system_information_model->MOD_GET_SYSTEM_INFORMATION();
 
+        // Extra dataset (specific to residents)
         $households_unfiltered = $household_model->MOD_GET_HOUSEHOLDS_SORT_BY_HOUSEHOLD_CODE();
 
-        // --- Prepare data for view ---
+
+        // ==============================
+        // 8. PREPARE VIEW DATA
+        // ==============================
         $data = [
             'title' => 'Residents',
             'user' => $current_user,
-            'households' => $households,
+
+            'residents' => $residents,
             'households_unfiltered' => $households_unfiltered,
-            'security_questions' => $security_questions,
+
             'current_page' => $current_page,
             'total_pages' => $total_pages,
+
             'search_input' => $search_input,
-            'housing_type' => $housing_type,
-            'comfort_room' => $comfort_room,
-            'water_system' => $water_system,
+            'sex' => $sex,
+            'relationship' => $relationship,
+
+            'security_questions' => $security_questions,
             'system_information' => $system_information
         ];
 
+
+        // ==============================
+        // 9. LOAD VIEW
+        // ==============================
         $this->view([
             'includes/header',
             'admin/residents_view',
@@ -989,7 +1057,7 @@ class AdminController extends Controller
 
         json($response);
     }
-    
+
     public function update_household()
     {
         $id = input('id', null);
@@ -1024,6 +1092,93 @@ class AdminController extends Controller
         flash('flash_notif', [
             'title' => 'Household Updated',
             'text' => 'The household has been successfully updated.',
+            'icon' => 'success',
+        ]);
+
+        json($response);
+    }
+
+    public function add_resident()
+    {
+        $household_id = input('household_id', null);
+        $first_name = input('first_name', null);
+        $middle_name = input('middle_name', null);
+        $last_name = input('last_name', null);
+        $sex = input('sex', null);
+        $birthdate = input('birthdate', null);
+        $civil_status = input('civil_status', null);
+        $relationship = input('relationship', null);
+
+        $response = [
+            'success' => true,
+            'message' => 'Resident added successfully.'
+        ];
+
+        $data = [
+            'household_id' => $household_id,
+            'first_name' => $first_name,
+            'middle_name' => $middle_name,
+            'last_name' => $last_name,
+            'sex' => $sex,
+            'birthdate' => $birthdate,
+            'civil_status' => $civil_status,
+            'relationship' => $relationship
+        ];
+
+        $resident_model = $this->model('Resident_Model');
+
+        $new_resident_id = $resident_model->MOD_INSERT_RESIDENT($data);
+
+        // Log resident creation
+        write_log('ADD_RESIDENT', 'residents', $new_resident_id, "Added new resident: $first_name $last_name", session_get('user')['id']);
+
+        flash('flash_notif', [
+            'title' => 'Resident Added',
+            'text' => 'The resident has been successfully added.',
+            'icon' => 'success',
+        ]);
+
+        json($response);
+    }
+    
+    public function edit_resident()
+    {
+        $id = input('id', null);
+        $household_id = input('household_id', null);
+        $first_name = input('first_name', null);
+        $middle_name = input('middle_name', null);
+        $last_name = input('last_name', null);
+        $sex = input('sex', null);
+        $birthdate = input('birthdate', null);
+        $civil_status = input('civil_status', null);
+        $relationship = input('relationship', null);
+
+        $response = [
+            'success' => true,
+            'message' => 'Resident updated successfully.'
+        ];
+
+        $data = [
+            'household_id' => $household_id,
+            'first_name' => $first_name,
+            'middle_name' => $middle_name,
+            'last_name' => $last_name,
+            'sex' => $sex,
+            'birthdate' => $birthdate,
+            'civil_status' => $civil_status,
+            'relationship' => $relationship
+        ];
+
+        $resident_model = $this->model('Resident_Model');
+
+        $new_resident_id = $resident_model->MOD_UPDATE_RESIDENT($id, $data);
+
+        // Log resident update
+        write_log('UPDATE_RESIDENT', 'residents', $new_resident_id, "Updated resident: $first_name $last_name", session_get('user')['id']);
+
+        flash('flash_notif', [
+            'title' => 'Resident Updated',
+            'text' => 'The resident has been successfully updated.',
             'icon' => 'success',
         ]);
 

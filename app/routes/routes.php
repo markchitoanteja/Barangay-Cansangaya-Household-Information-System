@@ -38,6 +38,8 @@ return function (Router $router) {
     $router->post('/generate-household-code', 'AdminController@generate_household_code');
     $router->post('/add-household', 'AdminController@add_household');
     $router->post('/update-household', 'AdminController@update_household');
+    $router->post('/add-resident', 'AdminController@add_resident');
+    $router->post('/edit-resident', 'AdminController@edit_resident');
 
     // System Update Routes
     $router->get('/check-updates', 'UpdateController@check');

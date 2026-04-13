@@ -10,7 +10,7 @@
     <!-- PANEL BODY -->
     <div class="panel-body mb-3">
         <!-- FILTERS -->
-        <form id="householSearchForm" action="javascript:void(0)" class="row g-2 mb-3">
+        <form id="residentsSearchForm" action="javascript:void(0)" class="row g-2 mb-3">
             <div class="col-md-5 d-flex flex-column">
                 <div class="form-floating flex-grow-1">
                     <input type="text" name="search_input" class="form-control gov-input" id="search_input" placeholder="Search User" value="<?= esc($search_input ?? '') ?>">
@@ -29,13 +29,15 @@
             </div>
             <div class="col-md-2 d-flex flex-column">
                 <div class="form-floating flex-grow-1">
-                    <select class="form-select gov-input" name="age" id="age">
-                        <option value="">All Age Groups</option>
-                        <option value="Level 1" <?= ($age ?? '') === 'Level 1' ? 'selected' : '' ?>>Level 1</option>
-                        <option value="Level 2" <?= ($age ?? '') === 'Level 2' ? 'selected' : '' ?>>Level 2</option>
-                        <option value="Level 3" <?= ($age ?? '') === 'Level 3' ? 'selected' : '' ?>>Level 3</option>
+                    <select class="form-select gov-input" name="relationship" id="relationship">
+                        <option value="">All Relationships</option>
+                        <option value="Head" <?= ($relationship ?? '') === 'Head' ? 'selected' : '' ?>>Head</option>
+                        <option value="Spouse" <?= ($relationship ?? '') === 'Spouse' ? 'selected' : '' ?>>Spouse</option>
+                        <option value="Child" <?= ($relationship ?? '') === 'Child' ? 'selected' : '' ?>>Child</option>
+                        <option value="Relative" <?= ($relationship ?? '') === 'Relative' ? 'selected' : '' ?>>Relative</option>
+                        <option value="Other" <?= ($relationship ?? '') === 'Other' ? 'selected' : '' ?>>Other</option>
                     </select>
-                    <label><i class="fa-solid fa-user me-1"></i>Age Group</label>
+                    <label><i class="fa-solid fa-user me-1"></i>Relationship to Head</label>
                 </div>
             </div>
             <div class="col-md-3 d-flex flex-column">
@@ -46,7 +48,7 @@
                         </button>
                     </div>
                     <div class="col-6 d-flex">
-                        <button type="button" class="btn btn-outline-secondary flex-grow-1" data-url="households" id="reset_filter_button">
+                        <button type="button" class="btn btn-outline-secondary flex-grow-1" data-url="residents" id="reset_filter_button">
                             <i class="fa-solid fa-arrows-rotate me-2"></i>Reset
                         </button>
                     </div>
@@ -60,47 +62,50 @@
                 <thead class="table-light">
                     <tr>
                         <th class="text-center">#</th>
-                        <th>Full Name</th>
+                        <th>Last Name</th>
+                        <th>First Name</th>
                         <th>Sex</th>
-                        <th>Birthdate</th>
-                        <th>Age</th>
+                        <th>Birth Date</th>
                         <th>Household</th>
+                        <th>Relationship to Head</th>
                         <th class="text-center">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php if (!empty($households)): ?>
+                    <?php if (!empty($residents)): ?>
                         <?php $counter = ($current_page - 1) * 10 + 1; ?>
-                        <?php foreach ($households as $household): ?>
+
+                        <?php foreach ($residents as $resident): ?>
                             <tr>
-                                <td class="text-center"><?= $counter ?></td>
-                                <td><?= esc($household['household_code']) ?></td>
-                                <td><?= esc($household['purok']) ?></td>
-                                <td><?= esc($household['housing_type']) ?></td>
-                                <td><?= esc($household['comfort_room']) ?></td>
-                                <td><?= esc($household['water_system']) ?></td>
+                                <td class="text-center"><?= $counter++ ?></td>
+                                <td><?= esc($resident['last_name']) ?></td>
+                                <td><?= esc($resident['first_name']) ?></td>
+                                <td><?= esc($resident['sex']) ?></td>
+                                <td><?= esc(date('F j, Y', strtotime($resident['birthdate']))) ?></td>
+                                <td><?= esc($resident['household_name']) ?></td>
+                                <td><?= esc($resident['relationship']) ?></td>
                                 <td class="text-center">
-                                    <button class="btn btn-sm btn-soft btn-edit-household"
-                                        title="Edit Household"
+                                    <button class="btn btn-sm btn-soft btn-edit-resident"
+                                        title="Edit Resident"
                                         data-bs-toggle="modal"
-                                        data-bs-target="#editHouseholdModal"
-                                        data-id="<?= $household['id'] ?>"
-                                        data-household_code="<?= esc($household['household_code']) ?>"
-                                        data-purok="<?= esc($household['purok']) ?>"
-                                        data-address="<?= esc($household['address']) ?>"
-                                        data-current_purok="<?= esc($household['purok']) ?>"
-                                        data-housing_type="<?= esc($household['housing_type']) ?>"
-                                        data-comfort_room="<?= esc($household['comfort_room']) ?>"
-                                        data-water_system="<?= esc($household['water_system']) ?>">
+                                        data-bs-target="#edit_resident_modal"
+                                        data-id="<?= $resident['id'] ?>"
+                                        data-first_name="<?= esc($resident['first_name']) ?>"
+                                        data-last_name="<?= esc($resident['last_name']) ?>"
+                                        data-middle_name="<?= esc($resident['middle_name']) ?>"
+                                        data-sex="<?= esc($resident['sex']) ?>"
+                                        data-birthdate="<?= esc($resident['birthdate']) ?>"
+                                        data-household_id="<?= esc($resident['household_id']) ?>"
+                                        data-civil_status="<?= esc($resident['civil_status']) ?>"
+                                        data-relationship="<?= esc($resident['relationship']) ?>">
                                         <i class="fa-solid fa-pen"></i>
                                     </button>
                                 </td>
                             </tr>
-                            <?php $counter++; ?>
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr class="text-center">
-                            <td colspan="7">No Data Available</td>
+                            <td colspan="8">No Data Available</td>
                         </tr>
                     <?php endif; ?>
                 </tbody>
