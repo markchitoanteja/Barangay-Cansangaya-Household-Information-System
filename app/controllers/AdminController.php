@@ -104,8 +104,8 @@ class AdminController extends Controller
             'security_questions' => $security_questions,
             'total_households' => $total_households,
             'total_residents' => $total_residents,
-            'total_demographics' => 0,
-            'total_health' => 0,
+            'total_beneficiaries' => 0,
+            'total_health_records' => 0,
             'system_information' => $system_information
         ];
 
@@ -1024,9 +1024,12 @@ class AdminController extends Controller
         $household_code = input('household_code', null);
         $purok = input('purok', null);
         $address = input('address', null);
+
         $housing_type = input('housing_type', null);
+        $ownership_status = input('ownership_status', null);
         $comfort_room = input('comfort_room', null);
         $water_system = input('water_system', null);
+        $electricity_access = input('electricity_access', 1);
 
         $response = [
             'success' => true,
@@ -1037,9 +1040,12 @@ class AdminController extends Controller
             'household_code' => $household_code,
             'purok' => $purok,
             'address' => $address,
+
             'housing_type' => $housing_type,
+            'ownership_status' => $ownership_status,
             'comfort_room' => $comfort_room,
             'water_system' => $water_system,
+            'electricity_access' => $electricity_access,
         ];
 
         $household_model = $this->model('Household_Model');
@@ -1047,7 +1053,13 @@ class AdminController extends Controller
         $new_household_id = $household_model->MOD_INSERT_HOUSEHOLD($data);
 
         // Log household creation
-        write_log('ADD_HOUSEHOLD', 'households', $new_household_id, "Added new household: $household_code in $purok", session_get('user')['id']);
+        write_log(
+            'ADD_HOUSEHOLD',
+            'households',
+            $new_household_id,
+            "Added new household: $household_code in $purok",
+            session_get('user')['id']
+        );
 
         flash('flash_notif', [
             'title' => 'Household Added',
@@ -1064,9 +1076,12 @@ class AdminController extends Controller
         $household_code = input('household_code', null);
         $purok = input('purok', null);
         $address = input('address', null);
+
         $housing_type = input('housing_type', null);
+        $ownership_status = input('ownership_status', null);
         $comfort_room = input('comfort_room', null);
         $water_system = input('water_system', null);
+        $electricity_access = input('electricity_access', 1);
 
         $response = [
             'success' => true,
@@ -1077,17 +1092,26 @@ class AdminController extends Controller
             'household_code' => $household_code,
             'purok' => $purok,
             'address' => $address,
+
             'housing_type' => $housing_type,
+            'ownership_status' => $ownership_status,
             'comfort_room' => $comfort_room,
             'water_system' => $water_system,
+            'electricity_access' => $electricity_access,
         ];
 
         $household_model = $this->model('Household_Model');
 
-        $new_household_id = $household_model->MOD_UPDATE_HOUSEHOLD($id, $data);
+        $updated_household_id = $household_model->MOD_UPDATE_HOUSEHOLD($id, $data);
 
         // Log household update
-        write_log('UPDATE_HOUSEHOLD', 'households', $new_household_id, "Updated household: $household_code in $purok", session_get('user')['id']);
+        write_log(
+            'UPDATE_HOUSEHOLD',
+            'households',
+            $updated_household_id,
+            "Updated household: $household_code in $purok",
+            session_get('user')['id']
+        );
 
         flash('flash_notif', [
             'title' => 'Household Updated',
@@ -1140,7 +1164,7 @@ class AdminController extends Controller
 
         json($response);
     }
-    
+
     public function edit_resident()
     {
         $id = input('id', null);

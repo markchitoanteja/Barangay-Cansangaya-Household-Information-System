@@ -91,8 +91,10 @@
                                         data-address="<?= esc($household['address']) ?>"
                                         data-current_purok="<?= esc($household['purok']) ?>"
                                         data-housing_type="<?= esc($household['housing_type']) ?>"
+                                        data-ownership_status="<?= esc($household['ownership_status']) ?>"
                                         data-comfort_room="<?= esc($household['comfort_room']) ?>"
-                                        data-water_system="<?= esc($household['water_system']) ?>">
+                                        data-water_system="<?= esc($household['water_system']) ?>"
+                                        data-electricity_access="<?= esc($household['electricity_access']) ?>">
                                         <i class="fa-solid fa-pen"></i>
                                     </button>
                                 </td>

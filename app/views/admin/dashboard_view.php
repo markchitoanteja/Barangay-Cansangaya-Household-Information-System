@@ -36,39 +36,40 @@
                 </a>
             </div>
 
-            <!-- Demographics -->
+            <!-- Beneficiaries -->
             <div class="col-md-3">
-                <a href="demographics" class="gov-stat-link loadable">
+                <a href="programs" class="gov-stat-link loadable">
                     <div class="card gov-stat-card">
                         <div class="gov-stat-header">
-                            <i class="fa-solid fa-chart-column"></i>
-                            <span>Demographics</span>
+                            <i class="fa-solid fa-people-group"></i>
+                            <span>Beneficiaries</span>
                             <i class="fa-solid fa-arrow-right ms-auto gov-arrow"></i>
                         </div>
                         <div class="gov-stat-body">
-                            <h3><?= number_format($total_demographics ?? 0) ?></h3>
-                            <small>Population breakdown insights</small>
+                            <h3><?= number_format($total_beneficiaries ?? 0) ?></h3>
+                            <small>Residents in programs</small>
                         </div>
                     </div>
                 </a>
             </div>
 
-            <!-- Health Monitoring -->
+            <!-- Health Records -->
             <div class="col-md-3">
-                <a href="health-monitoring" class="gov-stat-link loadable">
+                <a href="health-records" class="gov-stat-link loadable">
                     <div class="card gov-stat-card">
                         <div class="gov-stat-header">
                             <i class="fa-solid fa-heart-pulse"></i>
-                            <span>Health Monitoring</span>
+                            <span>Health Records</span>
                             <i class="fa-solid fa-arrow-right ms-auto gov-arrow"></i>
                         </div>
                         <div class="gov-stat-body">
-                            <h3><?= number_format($total_health ?? 0) ?></h3>
-                            <small>Medical records tracked</small>
+                            <h3><?= number_format($total_health_records ?? 0) ?></h3>
+                            <small>Health profiles tracked</small>
                         </div>
                     </div>
                 </a>
             </div>
+
         </div>
     </div>
 </section>

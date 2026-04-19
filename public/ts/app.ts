@@ -919,16 +919,29 @@ $((): void => {
     $('#household_form').on('submit', function (e) {
         e.preventDefault();
 
-        const household_code = $('#household_household_code').val()?.toString().trim();
-        const purok = $('#household_purok').val()?.toString().trim();
-        const address = $('#household_address').val()?.toString().trim();
-        const housing_type = $('#household_housing_type').val()?.toString().trim();
-        const comfort_room = $('#household_comfort_room').val()?.toString().trim();
-        const water_system = $('#household_water_system').val()?.toString().trim();
+        const household_code = String($('#household_household_code').val() ?? '').trim();
+        const purok = String($('#household_purok').val() ?? '').trim();
+        const address = String($('#household_address').val() ?? '').trim();
+
+        const housing_type = String($('#household_housing_type').val() ?? '').trim();
+        const ownership_status = String($('#household_ownership_status').val() ?? '').trim();
+        const comfort_room = String($('#household_comfort_room').val() ?? '').trim();
+        const water_system = String($('#household_water_system').val() ?? '').trim();
+
+        const electricity_access = $('#household_electricity_access').val();
 
         showLoading();
 
-        const formData = { household_code, purok, address, housing_type, comfort_room, water_system };
+        const formData = {
+            household_code,
+            purok,
+            address,
+            housing_type,
+            ownership_status,
+            comfort_room,
+            water_system,
+            electricity_access
+        };
 
         $.ajax({
             url: 'add-household',
@@ -955,17 +968,32 @@ $((): void => {
     $('#edit_household_form').on('submit', function (e) {
         e.preventDefault();
 
-        const id = $('#edit_household_id').val()?.toString().trim();
-        const household_code = $('#edit_household_household_code').val()?.toString().trim();
-        const purok = $('#edit_household_purok').val()?.toString().trim();
-        const address = $('#edit_household_address').val()?.toString().trim();
-        const housing_type = $('#edit_household_housing_type').val()?.toString().trim();
-        const comfort_room = $('#edit_household_comfort_room').val()?.toString().trim();
-        const water_system = $('#edit_household_water_system').val()?.toString().trim();
+        const id = String($('#edit_household_id').val() ?? '').trim();
+
+        const household_code = String($('#edit_household_household_code').val() ?? '').trim();
+        const purok = String($('#edit_household_purok').val() ?? '').trim();
+        const address = String($('#edit_household_address').val() ?? '').trim();
+
+        const housing_type = String($('#edit_household_housing_type').val() ?? '').trim();
+        const ownership_status = String($('#edit_household_ownership_status').val() ?? '').trim();
+        const comfort_room = String($('#edit_household_comfort_room').val() ?? '').trim();
+        const water_system = String($('#edit_household_water_system').val() ?? '').trim();
+
+        const electricity_access = $('#edit_household_electricity_access').val();
 
         showLoading();
 
-        const formData = { id, household_code, purok, address, housing_type, comfort_room, water_system };
+        const formData = {
+            id,
+            household_code,
+            purok,
+            address,
+            housing_type,
+            ownership_status,
+            comfort_room,
+            water_system,
+            electricity_access
+        };
 
         $.ajax({
             url: 'update-household',
@@ -995,16 +1023,20 @@ $((): void => {
         const purok = $(this).data('purok');
         const address = $(this).data('address');
         const housing_type = $(this).data('housing_type');
+        const ownership_status = $(this).data('ownership_status');
         const comfort_room = $(this).data('comfort_room');
         const water_system = $(this).data('water_system');
+        const electricity_access = $(this).data('electricity_access');
 
         $('#edit_household_id').val(id);
         $('#edit_household_household_code').val(household_code);
         $('#edit_household_purok').val(purok);
         $('#edit_household_address').val(address);
         $('#edit_household_housing_type').val(housing_type);
+        $('#edit_household_ownership_status').val(ownership_status);
         $('#edit_household_comfort_room').val(comfort_room);
         $('#edit_household_water_system').val(water_system);
+        $('#edit_household_electricity_access').val(electricity_access);
 
         $('#edit_original_household_purok').val(purok);
         $('#edit_original_household_household_code').val(household_code);
