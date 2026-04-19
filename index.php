@@ -31,11 +31,25 @@ if ($path === '//') $path = '/';
 $router = new Router();
 
 try {
+    if (env('DB_CHANGESETTINGS') === 'true') {
+        $seedModel = new Seed_Database_Model();
+
+        // 1. Drop all tables
+        $seedModel->dropAllTables();
+
+        // 2. Re-run full seed
+        $seedModel->MOD_SEED_DATABASE();
+
+        // 3. Turn OFF the flag (important to prevent loop)
+        set_env_value('DB_CHANGESETTINGS', 'false');
+    }
+
     // --- 1. Force DB connection early ---
     $pdo = Database::pdo();
 
     // --- 2. Seed database if not already seeded ---
     $seedModel = new Seed_Database_Model();
+
     if (!$seedModel->is_seeded()) {  // Make sure you implement is_seeded() in your model
         $seedModel->MOD_SEED_DATABASE();
     }

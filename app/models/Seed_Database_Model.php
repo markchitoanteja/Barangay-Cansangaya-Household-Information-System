@@ -16,6 +16,27 @@ class Seed_Database_Model extends Query
     }
 
     /**
+     * Drop all tables in the current database.
+     */
+    public function dropAllTables(): void
+    {
+        $pdo = Database::pdo();
+
+        // Disable foreign key checks
+        $pdo->exec("SET FOREIGN_KEY_CHECKS = 0");
+
+        // Get all tables
+        $tables = $pdo->query("SHOW TABLES")->fetchAll(PDO::FETCH_COLUMN);
+
+        foreach ($tables as $table) {
+            $pdo->exec("DROP TABLE IF EXISTS `$table`");
+        }
+
+        // Re-enable foreign key checks
+        $pdo->exec("SET FOREIGN_KEY_CHECKS = 1");
+    }
+
+    /**
      * Check if the database has already been seeded.
      */
     public function is_seeded(): bool
