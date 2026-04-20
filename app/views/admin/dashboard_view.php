@@ -1,7 +1,7 @@
+<!-- Cards -->
 <section class="panel">
     <div class="panel-body">
         <div class="row g-3">
-
             <!-- Households -->
             <div class="col-md-3">
                 <a href="households" class="gov-stat-link loadable">
@@ -18,7 +18,6 @@
                     </div>
                 </a>
             </div>
-
             <!-- Residents -->
             <div class="col-md-3">
                 <a href="residents" class="gov-stat-link loadable">
@@ -35,24 +34,6 @@
                     </div>
                 </a>
             </div>
-
-            <!-- Beneficiaries -->
-            <div class="col-md-3">
-                <a href="programs" class="gov-stat-link loadable">
-                    <div class="card gov-stat-card">
-                        <div class="gov-stat-header">
-                            <i class="fa-solid fa-people-group"></i>
-                            <span>Beneficiaries</span>
-                            <i class="fa-solid fa-arrow-right ms-auto gov-arrow"></i>
-                        </div>
-                        <div class="gov-stat-body">
-                            <h3><?= number_format($total_beneficiaries ?? 0) ?></h3>
-                            <small>Residents in programs</small>
-                        </div>
-                    </div>
-                </a>
-            </div>
-
             <!-- Health Records -->
             <div class="col-md-3">
                 <a href="health-records" class="gov-stat-link loadable">
@@ -69,11 +50,27 @@
                     </div>
                 </a>
             </div>
-
+            <!-- Beneficiaries -->
+            <div class="col-md-3">
+                <a href="programs" class="gov-stat-link loadable">
+                    <div class="card gov-stat-card">
+                        <div class="gov-stat-header">
+                            <i class="fa-solid fa-people-group"></i>
+                            <span>Beneficiaries</span>
+                            <i class="fa-solid fa-arrow-right ms-auto gov-arrow"></i>
+                        </div>
+                        <div class="gov-stat-body">
+                            <h3><?= number_format($total_beneficiaries ?? 0) ?></h3>
+                            <small>Residents in programs</small>
+                        </div>
+                    </div>
+                </a>
+            </div>
         </div>
     </div>
 </section>
 
+<!-- Logs -->
 <section class="panel">
     <div class="panel-header d-flex justify-content-between align-items-center mb-3">
         <h5><i class="fa-solid fa-file-lines me-2"></i>System Logs</h5>

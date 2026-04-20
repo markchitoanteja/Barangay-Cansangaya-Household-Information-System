@@ -214,7 +214,7 @@
     </div>
 </div>
 
-<!-- Update Security Questions Modal -->
+<!-- UPDATE SECURITY QUESTIONS MODAL -->
 <div class="modal fade" id="securityQuestionsModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content gov-modal">

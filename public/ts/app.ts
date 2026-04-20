@@ -845,7 +845,32 @@ $((): void => {
         });
     });
 
-    $("#householSearchForm").on("submit", (): void => {
+    $("#householdSearchForm").on("submit", (): void => {
+        const search_input = $("#search_input").val()?.toString().trim();
+        const comfort_room = $("#comfort_room").val()?.toString().trim();
+        const water_system = $("#water_system").val()?.toString().trim();
+
+        // Build URL parameters
+        const params = new URLSearchParams();
+
+        if (search_input) params.set("search_input", search_input);
+        if (comfort_room) params.set("comfort_room", comfort_room);
+        if (water_system) params.set("water_system", water_system);
+
+        // Reset page to 1 on new search
+        params.set("page", "1");
+
+        // Reload page with query string
+        const baseUrl = window.location.pathname; // keeps /user-management
+
+        showLoading();
+
+        setTimeout(() => {
+            window.location.href = `${baseUrl}?${params.toString()}`;
+        }, 250);
+    });
+    
+    $("#socioEconomicSearchForm").on("submit", (): void => {
         const search_input = $("#search_input").val()?.toString().trim();
         const comfort_room = $("#comfort_room").val()?.toString().trim();
         const water_system = $("#water_system").val()?.toString().trim();
@@ -1227,6 +1252,134 @@ $((): void => {
                 console.log(xhr.responseText);
             }
         });
+    });
+
+    $('#socio_economic_form').on('submit', function (e) {
+        e.preventDefault();
+
+        const resident_id = $('#add_socio_economic_resident_id').val()?.toString().trim();
+        const occupation = $('#add_socio_economic_occupation').val()?.toString().trim();
+        const employment_status = $('#add_socio_economic_employment_status').val()?.toString().trim();
+        const monthly_income = $('#add_socio_economic_monthly_income').val()?.toString().trim();
+        const education_level = $('#add_socio_economic_education_level').val()?.toString().trim();
+        const literacy_status = $('#add_socio_economic_literacy_status').val()?.toString().trim();
+
+        clearValidation("#add_socio_economic_resident_id", ".resident_id-error");
+
+        showLoading();
+
+        const formData = { resident_id, occupation, employment_status, monthly_income, education_level, literacy_status };
+
+        $.ajax({
+            url: 'add-socio-economic-profile',
+            method: 'POST',
+            data: formData,
+            dataType: 'JSON',
+            success: (response) => {
+                setTimeout(() => {
+                    if (response.success) {
+                        location.reload();
+                    } else {
+                        hideLoading();
+
+                        $("#add_socio_economic_resident_id").addClass("border-danger").parent().after(`<div class="text-danger small resident_id-error">${response.error}</div>`);
+                    }
+                }, 250);
+            },
+            error: (xhr, status, error) => {
+                hideLoading();
+                console.error('AJAX Error:', error);
+                console.log(xhr.responseText);
+            }
+        });
+    });
+    
+    $('#edit_socio_economic_form').on('submit', function (e) {
+        e.preventDefault();
+
+        const id = $('#edit_socio_economic_id').val()?.toString().trim();
+        const resident_id = $('#edit_socio_economic_resident_id').val()?.toString().trim();
+        const occupation = $('#edit_socio_economic_occupation').val()?.toString().trim();
+        const employment_status = $('#edit_socio_economic_employment_status').val()?.toString().trim();
+        const monthly_income = $('#edit_socio_economic_monthly_income').val()?.toString().trim();
+        const education_level = $('#edit_socio_economic_education_level').val()?.toString().trim();
+        const literacy_status = $('#edit_socio_economic_literacy_status').val()?.toString().trim();
+
+        clearValidation("#edit_socio_economic_resident_id", ".resident_id-error");
+
+        showLoading();
+
+        const formData = { id, resident_id, occupation, employment_status, monthly_income, education_level, literacy_status };
+
+        $.ajax({
+            url: 'edit-socio-economic-profile',
+            method: 'POST',
+            data: formData,
+            dataType: 'JSON',
+            success: (response) => {
+                setTimeout(() => {
+                    if (response.success) {
+                        location.reload();
+                    } else {
+                        hideLoading();
+
+                        $("#edit_socio_economic_resident_id").addClass("border-danger").parent().after(`<div class="text-danger small resident_id-error">${response.error}</div>`);
+                    }
+                }, 250);
+            },
+            error: (xhr, status, error) => {
+                hideLoading();
+                console.error('AJAX Error:', error);
+                console.log(xhr.responseText);
+            }
+        });
+    });
+
+    $("#add_socio_economic_resident_id").on("change", function () {
+        clearValidation("#add_socio_economic_resident_id", ".resident_id-error");
+    });
+
+    $(document).on('click', '.btn-edit-socio-economic-profile', function () {
+        const id = $(this).data('id');
+        const resident_id = $(this).data('resident_id');
+        const occupation = $(this).data('occupation');
+        const employment_status = $(this).data('employment_status');
+        const monthly_income = $(this).data('monthly_income');
+        const education_level = $(this).data('education_level');
+        const literacy_status = $(this).data('literacy_status');
+
+        $('#edit_socio_economic_id').val(id);
+        $('#edit_socio_economic_resident_id').val(resident_id);
+        $('#edit_socio_economic_occupation').val(occupation);
+        $('#edit_socio_economic_employment_status').val(employment_status);
+        $('#edit_socio_economic_monthly_income').val(monthly_income);
+        $('#edit_socio_economic_education_level').val(education_level);
+        $('#edit_socio_economic_literacy_status').val(literacy_status);
+    });
+
+    $("#socioEconomicSearchForm").on("submit", (): void => {
+        const search_input = $("#search_input").val()?.toString().trim();
+        const employment_status = $("#employment_status").val()?.toString().trim();
+        const education_level = $("#education_level").val()?.toString().trim();
+
+        // Build URL parameters
+        const params = new URLSearchParams();
+
+        if (search_input) params.set("search_input", search_input);
+        if (employment_status) params.set("employment_status", employment_status);
+        if (education_level) params.set("education_level", education_level);
+
+        // Reset page to 1 on new search
+        params.set("page", "1");
+
+        // Reload page with query string
+        const baseUrl = window.location.pathname; // keeps /user-management
+
+        showLoading();
+
+        setTimeout(() => {
+            window.location.href = `${baseUrl}?${params.toString()}`;
+        }, 250);
     });
 });
 

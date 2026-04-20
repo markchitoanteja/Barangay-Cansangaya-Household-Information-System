@@ -10,7 +10,7 @@
     <!-- PANEL BODY -->
     <div class="panel-body mb-3">
         <!-- FILTERS -->
-        <form id="householSearchForm" action="javascript:void(0)" class="row g-2 mb-3">
+        <form id="householdSearchForm" action="javascript:void(0)" class="row g-2 mb-3">
             <div class="col-md-5 d-flex flex-column">
                 <div class="form-floating flex-grow-1">
                     <input type="text" name="search_input" class="form-control gov-input" id="search_input" placeholder="Search User" value="<?= esc($search_input ?? '') ?>">

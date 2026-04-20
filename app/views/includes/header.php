@@ -33,7 +33,6 @@
 
             <div class="nav-section">System Navigation</div>
             <nav class="nav flex-column side-nav">
-
                 <!-- DASHBOARD -->
                 <a class="nav-link loadable <?= ($title == 'Dashboard') ? 'active' : '' ?>" href="dashboard" title="Dashboard">
                     <i class="fa-solid fa-gauge"></i>
@@ -81,7 +80,6 @@
                         <span class="nav-text">User Management</span>
                     </a>
                 <?php endif; ?>
-
             </nav>
         </aside>
 

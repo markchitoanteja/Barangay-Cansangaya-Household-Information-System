@@ -331,28 +331,106 @@ class AdminController extends Controller
 
     public function socio_economic()
     {
+        // ==============================
+        // 1. SESSION & ACCESS LOGGING
+        // ==============================
         $current_user = session_get('user', null);
-
         write_log('ACCESS_PAGE', 'socio_economic', null, 'Accessed socio-economic page');
 
+
+        // ==============================
+        // 2. LOAD MODELS
+        // ==============================
         $user_model = $this->model('User_Model');
-
-        $security_questions = $user_model->MOD_GET_QUESTIONS_BY_ID($current_user['id']);
-
+        $socio_economic_model = $this->model('Socio_Economic_Model');
+        $resident_model = $this->model('Resident_Model');
         $system_information_model = $this->model('System_Information_Model');
 
+
+        // ==============================
+        // 3. FETCH RAW DATA
+        // ==============================
+        $all_socio_economic_profiles = $socio_economic_model->MOD_GET_SOCIO_ECONOMIC_PROFILES();
+        $residents = $resident_model->MOD_GET_RESIDENTS();
+        $residents_selection = $resident_model->MOD_GET_RESIDENTS_SORT_BY_LAST_NAME();
+
+
+        // ==============================
+        // 4. GET FILTER INPUTS
+        // ==============================
+        $search_input = trim((string) input('search_input'));
+        $employment_status = trim((string) input('employment_status'));
+        $education_level = trim((string) input('education_level'));
+
+
+        // ==============================
+        // 5. APPLY FILTERING
+        // ==============================
+        $filtered_socio_economic_profiles = array_filter($all_socio_economic_profiles, function ($h) use ($search_input, $employment_status, $education_level) {
+
+            $matches_search = empty($search_input)
+                || stripos($h['last_name'], $search_input) !== false
+                || stripos($h['first_name'], $search_input) !== false;
+
+            $matches_employment = empty($employment_status) || $h['employment_status'] === $employment_status;
+            $matches_education = empty($education_level) || $h['education_level'] === $education_level;
+
+            return $matches_search && $matches_employment && $matches_education;
+        });
+
+
+        // ==============================
+        // 6. PAGINATION
+        // ==============================
+        $per_page = 10;
+
+        $current_page = (int)(input('page') ?? 1);
+        if ($current_page < 1) $current_page = 1;
+
+        $total_socio_economic_profiles = count($filtered_socio_economic_profiles);
+        $total_pages = (int) ceil($total_socio_economic_profiles / $per_page);
+        $offset = ($current_page - 1) * $per_page;
+
+        $socio_economic_profiles = array_slice($filtered_socio_economic_profiles, $offset, $per_page);
+
+
+        // ==============================
+        // 7. FETCH AUXILIARY DATA
+        // ==============================
+        $security_questions = $user_model->MOD_GET_QUESTIONS_BY_ID($current_user['id']);
         $system_information = $system_information_model->MOD_GET_SYSTEM_INFORMATION();
 
+
+        // ==============================
+        // 8. PREPARE VIEW DATA
+        // ==============================
         $data = [
             'title' => 'Socio-Economic Profile',
             'user' => $current_user,
+
+            'socio_economic_profiles' => $socio_economic_profiles,
+            'residents' => $residents,
+            'residents_selection' => $residents_selection,
+
+            'current_page' => $current_page,
+            'total_pages' => $total_pages,
+
+            'search_input' => $search_input,
+            'employment_status' => $employment_status,
+            'education_level' => $education_level,
+
             'security_questions' => $security_questions,
-            'system_information' => $system_information,
+            'system_information' => $system_information
         ];
 
+
+        // ==============================
+        // 9. LOAD VIEW
+        // ==============================
         $this->view([
             'includes/header',
             'admin/socio_economic_view',
+            'includes/modals/socio_economic_modals',
             'includes/modals/global_modals',
             'includes/overlays/loading_overlay',
             'includes/footer'
@@ -1177,5 +1255,102 @@ class AdminController extends Controller
         ]);
 
         json($response);
+    }
+
+    public function add_socio_economic_profile()
+    {
+        $resident_id = input('resident_id', null);
+        $occupation = input('occupation', null);
+        $employment_status = input('employment_status', null);
+        $monthly_income = input('monthly_income', null);
+        $education_level = input('education_level', null);
+        $literacy_status = input('literacy_status', null); // FIXED name
+
+        $socio_economic_model = $this->model('Socio_Economic_Model');
+
+        // 🔍 CHECK IF ALREADY EXISTS
+        $existing = $socio_economic_model->GET_BY_RESIDENT_ID($resident_id);
+
+        if ($existing) {
+            return json([
+                'success' => false,
+                'error' => 'This resident already has a socio-economic profile.'
+            ]);
+        }
+
+        $data = [
+            'resident_id' => $resident_id,
+            'occupation' => $occupation,
+            'employment_status' => $employment_status,
+            'monthly_income' => $monthly_income,
+            'education_level' => $education_level,
+            'is_literate' => $literacy_status
+        ];
+
+        $new_socio_economic_id = $socio_economic_model->MOD_INSERT_SOCIO_ECONOMIC_PROFILE($data);
+
+        // Log
+        write_log(
+            'ADD_SOCIO_ECONOMIC_PROFILE',
+            'socio_economic_profiles',
+            $new_socio_economic_id,
+            "Added new socio-economic profile for resident: $resident_id",
+            session_get('user')['id']
+        );
+
+        flash('flash_notif', [
+            'title' => 'Socio-economic Profile Added',
+            'text' => 'The socio-economic profile has been successfully added.',
+            'icon' => 'success',
+        ]);
+
+        return json([
+            'success' => true,
+            'message' => 'Socio-economic profile added successfully.'
+        ]);
+    }
+    
+    public function edit_socio_economic_profile()
+    {
+        $id = input('id', null);
+        $resident_id = input('resident_id', null);
+        $occupation = input('occupation', null);
+        $employment_status = input('employment_status', null);
+        $monthly_income = input('monthly_income', null);
+        $education_level = input('education_level', null);
+        $literacy_status = input('literacy_status', null); // FIXED name
+
+        $socio_economic_model = $this->model('Socio_Economic_Model');
+
+        $data = [
+            'resident_id' => $resident_id,
+            'occupation' => $occupation,
+            'employment_status' => $employment_status,
+            'monthly_income' => $monthly_income,
+            'education_level' => $education_level,
+            'is_literate' => $literacy_status
+        ];
+
+        $socio_economic_model->MOD_UPDATE_SOCIO_ECONOMIC_PROFILE($id, $data);
+
+        // Log
+        write_log(
+            'UPDATE_SOCIO_ECONOMIC_PROFILE',
+            'socio_economic_profiles',
+            $id,
+            "Updated socio-economic profile for resident: $resident_id",
+            session_get('user')['id']
+        );
+
+        flash('flash_notif', [
+            'title' => 'Socio-economic Profile Updated',
+            'text' => 'The socio-economic profile has been successfully updated.',
+            'icon' => 'success',
+        ]);
+
+        return json([
+            'success' => true,
+            'message' => 'Socio-economic profile updated successfully.'
+        ]);
     }
 }

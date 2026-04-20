@@ -15,6 +15,20 @@ class Resident_Model extends Query
             ->orderBy('residents.id', 'DESC')
             ->get();
     }
+    
+    public function MOD_GET_RESIDENTS_SORT_BY_LAST_NAME(): array
+    {
+        return $this->table('residents')
+            ->select([
+                'residents.*',
+                'households.household_code',
+                'households.purok',
+                "CONCAT(households.household_code, ' - ', households.purok) AS household_name"
+            ])
+            ->join('households', 'residents.household_id', '=', 'households.id')
+            ->orderBy('residents.last_name, residents.first_name', 'ASC')
+            ->get();
+    }
 
     public function MOD_INSERT_RESIDENT(array $data): string
     {
