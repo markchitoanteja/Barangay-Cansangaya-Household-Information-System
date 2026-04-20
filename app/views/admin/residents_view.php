@@ -66,6 +66,7 @@
                         <th>First Name</th>
                         <th>Sex</th>
                         <th>Birth Date</th>
+                        <th>Age</th>
                         <th>Household</th>
                         <th>Relationship to Head</th>
                         <th class="text-center">Actions</th>
@@ -82,6 +83,7 @@
                                 <td><?= esc($resident['first_name']) ?></td>
                                 <td><?= esc($resident['sex']) ?></td>
                                 <td><?= esc(date('F j, Y', strtotime($resident['birthdate']))) ?></td>
+                                <td><?= ($age = (new DateTime())->diff(new DateTime($resident['birthdate']))->y) . ' ' . ($age === 1 ? 'year old' : 'years old') ?></td>
                                 <td><?= esc($resident['household_name']) ?></td>
                                 <td><?= esc($resident['relationship']) ?></td>
                                 <td class="text-center">

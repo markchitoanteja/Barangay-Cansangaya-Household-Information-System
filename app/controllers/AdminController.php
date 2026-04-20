@@ -329,11 +329,11 @@ class AdminController extends Controller
         ], $data);
     }
 
-    public function demographics()
+    public function socio_economic()
     {
         $current_user = session_get('user', null);
 
-        write_log('ACCESS_PAGE', 'demographics', null, 'Accessed demographics page');
+        write_log('ACCESS_PAGE', 'socio_economic', null, 'Accessed socio-economic page');
 
         $user_model = $this->model('User_Model');
 
@@ -344,7 +344,7 @@ class AdminController extends Controller
         $system_information = $system_information_model->MOD_GET_SYSTEM_INFORMATION();
 
         $data = [
-            'title' => 'Demographics',
+            'title' => 'Socio-Economic Profile',
             'user' => $current_user,
             'security_questions' => $security_questions,
             'system_information' => $system_information,
@@ -352,18 +352,18 @@ class AdminController extends Controller
 
         $this->view([
             'includes/header',
-            'admin/demographics_view',
+            'admin/socio_economic_view',
             'includes/modals/global_modals',
             'includes/overlays/loading_overlay',
             'includes/footer'
         ], $data);
     }
 
-    public function housing_and_facilities()
+    public function health_records()
     {
         $current_user = session_get('user', null);
 
-        write_log('ACCESS_PAGE', 'housing_and_facilities', null, 'Accessed housing & facilities page');
+        write_log('ACCESS_PAGE', 'health_records', null, 'Accessed health records page');
 
         $user_model = $this->model('User_Model');
 
@@ -374,7 +374,7 @@ class AdminController extends Controller
         $system_information = $system_information_model->MOD_GET_SYSTEM_INFORMATION();
 
         $data = [
-            'title' => 'Housing & Facilities',
+            'title' => 'Health Records',
             'user' => $current_user,
             'security_questions' => $security_questions,
             'system_information' => $system_information
@@ -382,18 +382,18 @@ class AdminController extends Controller
 
         $this->view([
             'includes/header',
-            'admin/housing_and_facilities_view',
+            'admin/health_records_view',
             'includes/modals/global_modals',
             'includes/overlays/loading_overlay',
             'includes/footer'
         ], $data);
     }
 
-    public function livelihood()
+    public function programs()
     {
         $current_user = session_get('user', null);
 
-        write_log('ACCESS_PAGE', 'livelihood', null, 'Accessed livelihood page');
+        write_log('ACCESS_PAGE', 'programs', null, 'Accessed programs page');
 
         $user_model = $this->model('User_Model');
 
@@ -404,7 +404,7 @@ class AdminController extends Controller
         $system_information = $system_information_model->MOD_GET_SYSTEM_INFORMATION();
 
         $data = [
-            'title' => 'Livelihood',
+            'title' => 'Programs',
             'user' => $current_user,
             'security_questions' => $security_questions,
             'system_information' => $system_information
@@ -412,18 +412,18 @@ class AdminController extends Controller
 
         $this->view([
             'includes/header',
-            'admin/livelihood_view',
+            'admin/programs_view',
             'includes/modals/global_modals',
             'includes/overlays/loading_overlay',
             'includes/footer'
         ], $data);
     }
 
-    public function social_sectors()
+    public function reports()
     {
         $current_user = session_get('user', null);
 
-        write_log('ACCESS_PAGE', 'social_sectors', null, 'Accessed social sectors page');
+        write_log('ACCESS_PAGE', 'reports', null, 'Accessed reports page');
 
         $user_model = $this->model('User_Model');
 
@@ -434,7 +434,7 @@ class AdminController extends Controller
         $system_information = $system_information_model->MOD_GET_SYSTEM_INFORMATION();
 
         $data = [
-            'title' => 'Social Sectors',
+            'title' => 'Reports & Analytics',
             'user' => $current_user,
             'security_questions' => $security_questions,
             'system_information' => $system_information
@@ -442,37 +442,7 @@ class AdminController extends Controller
 
         $this->view([
             'includes/header',
-            'admin/social_sectors_view',
-            'includes/modals/global_modals',
-            'includes/overlays/loading_overlay',
-            'includes/footer'
-        ], $data);
-    }
-
-    public function health_monitoring()
-    {
-        $current_user = session_get('user', null);
-
-        write_log('ACCESS_PAGE', 'health_monitoring', null, 'Accessed health monitoring page');
-
-        $user_model = $this->model('User_Model');
-
-        $security_questions = $user_model->MOD_GET_QUESTIONS_BY_ID($current_user['id']);
-
-        $system_information_model = $this->model('System_Information_Model');
-
-        $system_information = $system_information_model->MOD_GET_SYSTEM_INFORMATION();
-
-        $data = [
-            'title' => 'Health Monitoring',
-            'user' => $current_user,
-            'security_questions' => $security_questions,
-            'system_information' => $system_information
-        ];
-
-        $this->view([
-            'includes/header',
-            'admin/health_monitoring_view',
+            'admin/reports_view',
             'includes/modals/global_modals',
             'includes/overlays/loading_overlay',
             'includes/footer'

@@ -154,7 +154,7 @@ $remember_checked   = isset($_COOKIE['remember_token']);
                                     <?= $remember_checked ? 'checked' : '' ?>>
 
                                 <label class="form-check-label small" for="login_remember">
-                                    Remember me
+                                    Keep me logged in
                                 </label>
                             </div>
 

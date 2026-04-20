@@ -19,11 +19,10 @@ return function (Router $router) {
     $router->get('/dashboard', 'AdminController@dashboard');
     $router->get('/households', 'AdminController@households');
     $router->get('/residents', 'AdminController@residents');
-    $router->get('/demographics', 'AdminController@demographics');
-    $router->get('/housing-and-facilities', 'AdminController@housing_and_facilities');
-    $router->get('/livelihood', 'AdminController@livelihood');
-    $router->get('/social-sectors', 'AdminController@social_sectors');
-    $router->get('/health-monitoring', 'AdminController@health_monitoring');
+    $router->get('/socio-economic', 'AdminController@socio_economic');
+    $router->get('/health-records', 'AdminController@health_records');
+    $router->get('/programs', 'AdminController@programs');
+    $router->get('/reports', 'AdminController@reports');
     $router->get('/user-management', 'AdminController@user_management');
     $router->post('/add-user-account', 'AdminController@add_user_account');
     $router->post('/update-security-questions', 'AdminController@update_security_questions');
