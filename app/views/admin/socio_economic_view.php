@@ -82,7 +82,11 @@
                             <tr>
                                 <td class="text-center"><?= esc($counter++) ?></td>
                                 <td>
-                                    <?= esc($profile['first_name'] . ' ' . $profile['last_name']) ?><br>
+                                    <?= esc(
+                                        $profile['first_name']
+                                            . (!empty($profile['middle_name']) ? ' ' . strtoupper(substr($profile['middle_name'], 0, 1)) . '.' : '')
+                                            . ' ' . $profile['last_name']
+                                    ) ?><br>
                                     <small class="text-muted">Household: <?= esc($profile['household_name']) ?></small>
                                 </td>
                                 <td><?= esc($profile['occupation'] ?? 'N/A') ?></td>
@@ -90,17 +94,18 @@
                                 <td><?= isset($profile['monthly_income']) ? '₱' . number_format($profile['monthly_income'], 2) : 'N/A' ?></td>
                                 <td><?= esc($profile['education_level'] ?? 'N/A') ?></td>
                                 <td class="text-center">
+                                    <button class="btn btn-sm btn-soft btn-view-socio-economic-profile"
+                                        title="View Socio-Economic Profile"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#view_socio_economic_modal"
+                                        data-profile='<?= json_encode($profile) ?>'>
+                                        <i class="fa-solid fa-eye"></i>
+                                    </button>
                                     <button class="btn btn-sm btn-soft btn-edit-socio-economic-profile"
                                         title="Edit Socio-Economic Profile"
                                         data-bs-toggle="modal"
                                         data-bs-target="#editSocioEconomicModal"
-                                        data-id="<?= $profile['id'] ?>"
-                                        data-resident_id="<?= $profile['resident_id'] ?>"
-                                        data-occupation="<?= $profile['occupation'] ?>"
-                                        data-employment_status="<?= $profile['employment_status'] ?>"
-                                        data-monthly_income="<?= $profile['monthly_income'] ?>"
-                                        data-education_level="<?= $profile['education_level'] ?>"
-                                        data-literacy_status="<?= $profile['is_literate'] ?>">
+                                        data-profile='<?= json_encode($profile) ?>'>
                                         <i class="fa-solid fa-pen"></i>
                                     </button>
                                 </td>

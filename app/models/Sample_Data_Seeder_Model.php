@@ -9,7 +9,6 @@ class Sample_Data_Seeder_Model extends Query
     private array $householdIds = [];
     private array $programIds = [];
 
-    // 🔥 Prevent duplicate identity (first + middle + last + birthdate)
     private array $usedIdentityKeys = [];
 
     // ================= UTIL =================
@@ -42,8 +41,6 @@ class Sample_Data_Seeder_Model extends Query
         $this->seedHealth();
 
         $this->seedResidentStatusEvents();
-
-        // 🔥 FIX: enforce full bidirectional consistency
         $this->enforceStatusConsistency();
 
         $this->seedPrograms();
@@ -128,9 +125,7 @@ class Sample_Data_Seeder_Model extends Query
 
                 $attempts++;
 
-                if ($attempts > 10) {
-                    break;
-                }
+                if ($attempts > 10) break;
             } while (isset($this->usedIdentityKeys[$key]));
 
             $this->usedIdentityKeys[$key] = true;
@@ -152,6 +147,85 @@ class Sample_Data_Seeder_Model extends Query
         $this->residentIds = range(1, $this->residentTarget);
     }
 
+    // ================= SOCIO ECONOMIC =================
+    private function seedSocioEconomic(): void
+    {
+        $rows = [];
+
+        foreach ($this->residentIds as $id) {
+
+            $profile = $this->generateEconomicProfile();
+
+            $rows[] = [
+                'resident_id'        => $id,
+                'occupation'         => $profile['occupation'],
+                'employment_status'  => $profile['employment_status'],
+                'monthly_income'     => $profile['monthly_income'],
+                'education_level'    => $profile['education_level'],
+                'is_literate'        => $this->generateLiteracy($profile['education_level']),
+            ];
+        }
+
+        $this->batchInsert('socio_economic_profiles', $rows);
+    }
+
+    // ================= REALISTIC PHILIPPINE ECONOMIC MODEL =================
+    private function generateEconomicProfile(): array
+    {
+        $profiles = [
+
+            ['occupation' => 'Unemployed', 'employment_status' => 'Unemployed', 'education' => ['None', 'Elementary', 'High School'], 'income' => [0, 0]],
+
+            ['occupation' => 'Student', 'employment_status' => 'Student', 'education' => ['Elementary', 'High School', 'Senior High', 'College'], 'income' => [0, 5000]],
+
+            ['occupation' => 'Vendor', 'employment_status' => 'Self-Employed', 'education' => ['Elementary', 'High School'], 'income' => [3000, 15000]],
+
+            ['occupation' => 'Tricycle Driver', 'employment_status' => 'Self-Employed', 'education' => ['Elementary', 'High School'], 'income' => [6000, 18000]],
+
+            ['occupation' => 'Laborer', 'employment_status' => 'Employed', 'education' => ['Elementary', 'High School'], 'income' => [8000, 16000]],
+
+            ['occupation' => 'Factory Worker', 'employment_status' => 'Employed', 'education' => ['High School', 'Senior High'], 'income' => [12000, 22000]],
+
+            ['occupation' => 'Office Clerk', 'employment_status' => 'Employed', 'education' => ['Senior High', 'College'], 'income' => [15000, 30000]],
+
+            ['occupation' => 'Teacher', 'employment_status' => 'Employed', 'education' => ['College', 'Postgraduate'], 'income' => [25000, 50000]],
+
+            ['occupation' => 'Nurse', 'employment_status' => 'Employed', 'education' => ['College'], 'income' => [30000, 60000]],
+
+            ['occupation' => 'Engineer', 'employment_status' => 'Employed', 'education' => ['College'], 'income' => [35000, 90000]],
+
+            ['occupation' => 'Retired', 'employment_status' => 'Retired', 'education' => ['Elementary', 'High School', 'College'], 'income' => [2000, 15000]],
+        ];
+
+        $p = $this->random($profiles);
+        $education = $this->random($p['education']);
+
+        return [
+            'occupation'        => $p['occupation'],
+            'employment_status' => $p['employment_status'],
+            'monthly_income'    => rand($p['income'][0], $p['income'][1]),
+            'education_level'   => $education,
+        ];
+    }
+
+    // ================= LITERACY (EDUCATION-BASED PROBABILITY) =================
+    private function generateLiteracy(string $education): int
+    {
+        $chance = match ($education) {
+            'Postgraduate' => 99,
+            'College'      => 98,
+            'Senior High'  => 96,
+            'High School'  => 92,
+            'Elementary'   => 80,
+            'None'         => 50,
+            default         => 85
+        };
+
+        $chance = max(25, min(100, $chance + rand(-2, 2)));
+
+        return rand(1, 100) <= $chance ? 1 : 0;
+    }
+
     // ================= STATUS EVENTS =================
     private function seedResidentStatusEvents(): void
     {
@@ -170,9 +244,7 @@ class Sample_Data_Seeder_Model extends Query
                     'cause'         => 'Natural Causes'
                 ];
 
-                self::table('residents')
-                    ->where('id', $id)
-                    ->update(['status' => 'Deceased']);
+                self::table('residents')->where('id', $id)->update(['status' => 'Deceased']);
             } elseif ($roll <= 18) {
 
                 $migrationRows[] = [
@@ -183,31 +255,22 @@ class Sample_Data_Seeder_Model extends Query
                     'destination'       => 'Unknown City'
                 ];
 
-                self::table('residents')
-                    ->where('id', $id)
-                    ->update(['status' => 'Transferred']);
+                self::table('residents')->where('id', $id)->update(['status' => 'Transferred']);
             }
         }
 
-        if ($deathRows) {
-            $this->batchInsert('death_records', $deathRows);
-        }
-
-        if ($migrationRows) {
-            $this->batchInsert('migration_records', $migrationRows);
-        }
+        if ($deathRows) $this->batchInsert('death_records', $deathRows);
+        if ($migrationRows) $this->batchInsert('migration_records', $migrationRows);
     }
 
-    // ================= CONSISTENCY ENFORCER =================
+    // ================= CONSISTENCY =================
     private function enforceStatusConsistency(): void
     {
         $residents = self::table('residents')->get();
 
         foreach ($residents as $r) {
 
-            $hasDeath = self::table('death_records')
-                ->where('resident_id', $r['id'])
-                ->exists();
+            $hasDeath = self::table('death_records')->where('resident_id', $r['id'])->exists();
 
             $hasMigration = self::table('migration_records')
                 ->where('resident_id', $r['id'])
@@ -215,33 +278,11 @@ class Sample_Data_Seeder_Model extends Query
                 ->exists();
 
             if ($hasDeath) {
-                self::table('residents')
-                    ->where('id', $r['id'])
-                    ->update(['status' => 'Deceased']);
+                self::table('residents')->where('id', $r['id'])->update(['status' => 'Deceased']);
             }
 
             if ($hasMigration) {
-                self::table('residents')
-                    ->where('id', $r['id'])
-                    ->update(['status' => 'Transferred']);
-            }
-
-            if ($r['status'] === 'Deceased' && !$hasDeath) {
-                self::table('death_records')->insert([
-                    'resident_id'   => $r['id'],
-                    'date_of_death' => date('Y-m-d'),
-                    'cause'         => 'Auto-repaired consistency'
-                ]);
-            }
-
-            if ($r['status'] === 'Transferred' && !$hasMigration) {
-                self::table('migration_records')->insert([
-                    'resident_id'       => $r['id'],
-                    'migration_type'    => 'OUT',
-                    'date_of_migration' => date('Y-m-d'),
-                    'origin'            => 'Auto-repaired',
-                    'destination'       => 'Unknown'
-                ]);
+                self::table('residents')->where('id', $r['id'])->update(['status' => 'Transferred']);
             }
         }
     }
@@ -332,28 +373,6 @@ class Sample_Data_Seeder_Model extends Query
         ];
     }
 
-    // ================= SOCIO ECONOMIC =================
-    private function seedSocioEconomic(): void
-    {
-        $rows = [];
-
-        foreach ($this->residentIds as $id) {
-
-            $income = rand(3000, 60000);
-
-            $rows[] = [
-                'resident_id'       => $id,
-                'occupation'        => 'Generated',
-                'employment_status' => 'Employed',
-                'monthly_income'    => $income,
-                'education_level'   => 'College',
-                'is_literate'       => 1,
-            ];
-        }
-
-        $this->batchInsert('socio_economic_profiles', $rows);
-    }
-
     // ================= HEALTH =================
     private function seedHealth(): void
     {
@@ -362,13 +381,13 @@ class Sample_Data_Seeder_Model extends Query
         foreach ($this->residentIds as $id) {
 
             $rows[] = [
-                'resident_id'         => $id,
-                'is_pwd'              => rand(1, 100) <= 5,
-                'is_senior'           => rand(1, 100) <= 10,
-                'has_chronic_illness' => rand(1, 100) <= 15,
+                'resident_id'             => $id,
+                'is_pwd'                  => rand(1, 100) <= 5,
+                'is_senior'              => rand(1, 100) <= 10,
+                'has_chronic_illness'    => rand(1, 100) <= 15,
                 'chronic_illness_details' => null,
-                'blood_type'          => $this->random(['A+', 'B+', 'O+', 'AB+']),
-                'vaccinated'          => rand(1, 100) <= 80,
+                'blood_type'             => $this->random(['A+', 'B+', 'O+', 'AB+']),
+                'vaccinated'             => rand(1, 100) <= 80,
             ];
         }
 

@@ -34,6 +34,22 @@
                     </div>
                 </a>
             </div>
+             <!-- Programs -->
+            <div class="col-md-3">
+                <a href="programs" class="gov-stat-link loadable">
+                    <div class="card gov-stat-card">
+                        <div class="gov-stat-header">
+                            <i class="fa-solid fa-hand-holding-heart"></i>
+                            <span>Programs</span>
+                            <i class="fa-solid fa-arrow-right ms-auto gov-arrow"></i>
+                        </div>
+                        <div class="gov-stat-body">
+                            <h3><?= number_format($total_programs ?? 0) ?></h3>
+                            <small>Active programs</small>
+                        </div>
+                    </div>
+                </a>
+            </div>
             <!-- Health Records -->
             <div class="col-md-3">
                 <a href="health-records" class="gov-stat-link loadable">
@@ -46,22 +62,6 @@
                         <div class="gov-stat-body">
                             <h3><?= number_format($total_health_records ?? 0) ?></h3>
                             <small>Health profiles tracked</small>
-                        </div>
-                    </div>
-                </a>
-            </div>
-            <!-- Beneficiaries -->
-            <div class="col-md-3">
-                <a href="programs" class="gov-stat-link loadable">
-                    <div class="card gov-stat-card">
-                        <div class="gov-stat-header">
-                            <i class="fa-solid fa-people-group"></i>
-                            <span>Beneficiaries</span>
-                            <i class="fa-solid fa-arrow-right ms-auto gov-arrow"></i>
-                        </div>
-                        <div class="gov-stat-body">
-                            <h3><?= number_format($total_beneficiaries ?? 0) ?></h3>
-                            <small>Residents in programs</small>
                         </div>
                     </div>
                 </a>
@@ -130,7 +130,7 @@
                                 <td><?= esc($log['full_name']) ?></td>
                                 <td><?= esc($log['action']) ?></td>
                                 <td><?= esc($log['description'] ?? 'N/A') ?></td>
-                                <td><?= date("M d, Y h:i A", strtotime($log['created_at'])) ?></td>
+                                <td><?= date("F d, Y h:i A", strtotime($log['created_at'])) ?></td>
                             </tr>
                             <?php $count++; ?>
                         <?php endforeach; ?>

@@ -325,10 +325,6 @@ class Seed_Database_Model extends Query
         }
     }
 
-    /* =========================
-       SEED METHODS (UNCHANGED)
-    ========================= */
-
     /**
      * Seed default users if the table is empty.
      */

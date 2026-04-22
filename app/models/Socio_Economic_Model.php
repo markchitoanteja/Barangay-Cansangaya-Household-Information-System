@@ -8,6 +8,7 @@ class Socio_Economic_Model extends Query
             ->select([
                 'socio_economic_profiles.*',
                 'residents.first_name',
+                'residents.middle_name',
                 'residents.last_name',
                 'residents.id AS resident_id',
                 'households.household_code',

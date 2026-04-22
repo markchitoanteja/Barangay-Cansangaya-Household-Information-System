@@ -1370,22 +1370,50 @@ $((): void => {
         clearValidation("#add_socio_economic_resident_id", ".resident_id-error");
     });
 
-    $(document).on('click', '.btn-edit-socio-economic-profile', function () {
-        const id = $(this).data('id');
-        const resident_id = $(this).data('resident_id');
-        const occupation = $(this).data('occupation');
-        const employment_status = $(this).data('employment_status');
-        const monthly_income = $(this).data('monthly_income');
-        const education_level = $(this).data('education_level');
-        const literacy_status = $(this).data('literacy_status');
+    $(document).on('click', '.btn-view-socio-economic-profile', function () {
+        const profile = $(this).data('profile');
 
-        $('#edit_socio_economic_id').val(id);
-        $('#edit_socio_economic_resident_id').val(resident_id);
-        $('#edit_socio_economic_occupation').val(occupation);
-        $('#edit_socio_economic_employment_status').val(employment_status);
-        $('#edit_socio_economic_monthly_income').val(monthly_income);
-        $('#edit_socio_economic_education_level').val(education_level);
-        $('#edit_socio_economic_literacy_status').val(literacy_status);
+        const fullname = profile.first_name + (profile.middle_name ? ` ${profile.middle_name.charAt(0)}.` : '') + ' ' + profile.last_name;
+
+        // Header / identity
+        $('#view_socio_fullname').text(fullname);
+
+        // Resident
+        $('#view_socio_resident').text(fullname ?? 'N/A');
+
+        // Employment
+        $('#view_socio_occupation').text(profile.occupation ?? 'N/A');
+        $('#view_socio_employment_status').text(profile.employment_status ?? 'N/A');
+        $('#view_socio_monthly_income').text(
+            profile.monthly_income
+                ? `₱${parseFloat(profile.monthly_income).toLocaleString('en-PH', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                })}`
+                : 'N/A'
+        );
+
+        // Education
+        $('#view_socio_education_level').text(profile.education_level ?? 'N/A');
+
+        // Literacy (convert 1/0 to readable label)
+        $('#view_socio_literacy_status').text(
+            profile.is_literate == 1 ? 'Literate' : 'Not Literate'
+        );
+
+        $('#view_socio_household').text(profile.household_name ?? 'N/A');
+    });
+
+    $(document).on('click', '.btn-edit-socio-economic-profile', function () {
+        const profile = $(this).data('profile');
+
+        $('#edit_socio_economic_id').val(profile.id);
+        $('#edit_socio_economic_resident_id').val(profile.resident_id);
+        $('#edit_socio_economic_occupation').val(profile.occupation);
+        $('#edit_socio_economic_employment_status').val(profile.employment_status);
+        $('#edit_socio_economic_monthly_income').val(profile.monthly_income);
+        $('#edit_socio_economic_education_level').val(profile.education_level);
+        $('#edit_socio_economic_literacy_status').val(profile.is_literate);
     });
 
     $("#socioEconomicSearchForm").on("submit", (): void => {

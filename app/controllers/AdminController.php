@@ -469,28 +469,84 @@ class AdminController extends Controller
 
     public function programs()
     {
+        // ==============================
+        // 1. SESSION & ACCESS LOGGING
+        // ==============================
         $current_user = session_get('user', null);
-
         write_log('ACCESS_PAGE', 'programs', null, 'Accessed programs page');
 
+        // ==============================
+        // 2. LOAD MODELS
+        // ==============================
         $user_model = $this->model('User_Model');
-
-        $security_questions = $user_model->MOD_GET_QUESTIONS_BY_ID($current_user['id']);
-
+        $program_model = $this->model('Programs_Model');
         $system_information_model = $this->model('System_Information_Model');
 
+        // ==============================
+        // 3. FETCH RAW DATA
+        // ==============================
+        $all_programs = $program_model->MOD_GET_PROGRAMS();
+
+        // ==============================
+        // 4. GET FILTER INPUTS
+        // ==============================
+        $search_input = trim((string) input('search_input'));
+
+        // ==============================
+        // 5. APPLY FILTERING
+        // ==============================
+        $filtered_programs = array_filter($all_programs, function ($program) use ($search_input) {
+
+            $matches_search = empty($search_input) || stripos($program['program_name'], $search_input) !== false;
+
+            return $matches_search;
+        });
+
+        // ==============================
+        // 6. PAGINATION
+        // ==============================
+        $per_page = 10;
+
+        $current_page = (int)(input('page') ?? 1);
+        if ($current_page < 1) $current_page = 1;
+
+        $total_programs = count($filtered_programs);
+        $total_pages = (int) ceil($total_programs / $per_page);
+        $offset = ($current_page - 1) * $per_page;
+
+        $programs = array_slice($filtered_programs, $offset, $per_page);
+
+        // ==============================
+        // 7. FETCH AUXILIARY DATA
+        // ==============================
+        $security_questions = $user_model->MOD_GET_QUESTIONS_BY_ID($current_user['id']);
         $system_information = $system_information_model->MOD_GET_SYSTEM_INFORMATION();
 
+        // ==============================
+        // 8. PREPARE VIEW DATA
+        // ==============================
         $data = [
             'title' => 'Programs',
             'user' => $current_user,
+
+            'programs' => $programs,
+            
+            'current_page' => $current_page,
+            'total_pages' => $total_pages,
+
+            'search_input' => $search_input,
+            
             'security_questions' => $security_questions,
             'system_information' => $system_information
         ];
 
+        // ==============================
+        // 9. LOAD VIEW
+        // ==============================
         $this->view([
             'includes/header',
             'admin/programs_view',
+            // 'includes/modals/socio_economic_modals',
             'includes/modals/global_modals',
             'includes/overlays/loading_overlay',
             'includes/footer'
@@ -1315,7 +1371,7 @@ class AdminController extends Controller
             'message' => 'Socio-economic profile added successfully.'
         ]);
     }
-    
+
     public function edit_socio_economic_profile()
     {
         $id = input('id', null);
