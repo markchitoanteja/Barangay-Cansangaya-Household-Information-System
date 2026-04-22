@@ -1,3 +1,156 @@
+<!-- VIEW RESIDENT MODAL -->
+<div class="modal fade" id="view_resident_modal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content gov-modal">
+
+            <!-- HEADER -->
+            <div class="modal-header gov-modal-header">
+                <div class="d-flex align-items-center gap-3">
+                    <img src="<?= base_url('public/assets/img/') . ($system_information['official_logo'] ?? 'default_logo.png') . '?v=' . env('APP_VERSION') ?>" alt="Barangay Logo" class="gov-modal-logo">
+                    <div>
+                        <h5 class="modal-title mb-0">VIEW RESIDENT RECORD</h5>
+                        <small class="gov-modal-subtitle">
+                            Barangay <?= ucfirst($system_information['barangay_name']) ?> Household Information System
+                        </small>
+                    </div>
+                </div>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body gov-modal-body">
+                <!-- RECORD HEADER -->
+                <div class="panel mb-3">
+                    <div class="panel-body d-flex justify-content-between align-items-center flex-wrap gap-2">
+
+                        <div>
+                            <h5 class="fw-bold mb-1" id="view_resident_fullname">
+                                Juan Dela Cruz
+                            </h5>
+                            <div class="text-muted small" id="view_resident_household">
+                                Resident Profile Record
+                            </div>
+                        </div>
+
+                        <div class="text-end">
+                            <div class="small text-muted">Status</div>
+                            <div class="fw-semibold" id="view_resident_status">Active</div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- PERSONAL INFORMATION -->
+                <div class="gov-section">
+                    <div class="gov-section__label">Personal Information</div>
+
+                    <div class="panel">
+                        <div class="panel-body p-0">
+                            <table class="table mb-0 align-middle">
+                                <tbody>
+
+                                    <tr>
+                                        <td class="text-muted" style="width:40%;">First Name</td>
+                                        <td id="view_resident_first_name" class="fw-semibold">Juan</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class="text-muted">Middle Name</td>
+                                        <td id="view_resident_middle_name" class="fw-semibold text-muted">N/A</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class="text-muted">Last Name</td>
+                                        <td id="view_resident_last_name" class="fw-semibold">Dela Cruz</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class="text-muted">Sex</td>
+                                        <td id="view_resident_sex" class="fw-semibold">Male</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class="text-muted">Birthdate</td>
+                                        <td id="view_resident_birthdate" class="fw-semibold">1995-01-01</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class="text-muted">Age</td>
+                                        <td id="view_resident_age" class="fw-semibold">30</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class="text-muted">Civil Status</td>
+                                        <td id="view_resident_civil_status" class="fw-semibold">Single</td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- HOUSEHOLD INFORMATION -->
+                <div class="gov-section">
+                    <div class="gov-section__label">Household Assignment</div>
+
+                    <div class="panel">
+                        <div class="panel-body p-0">
+                            <table class="table mb-0 align-middle">
+                                <tbody>
+
+                                    <tr>
+                                        <td class="text-muted" style="width:40%;">Household</td>
+                                        <td id="view_resident_household" class="fw-semibold">PRK01-0001</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class="text-muted">Purok</td>
+                                        <td id="view_resident_purok" class="fw-semibold">Purok 1</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class="text-muted">Relationship</td>
+                                        <td id="view_resident_relationship" class="fw-semibold">Head</td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RECORD STATUS -->
+                <div class="gov-section">
+                    <div class="gov-section__label">Record Status</div>
+
+                    <div class="panel">
+                        <div class="panel-body">
+
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="text-muted">Current Status</span>
+                                <span class="pill" id="view_resident_status_pill">Active</span>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FOOT NOTE -->
+                <div class="gov-meta mt-3">
+                    <i class="fa-solid fa-circle-info me-2"></i>
+                    Resident records are linked to household profiles in the system.
+                </div>
+
+            </div>
+
+            <!-- FOOTER -->
+            <div class="modal-footer gov-modal-footer">
+                <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- ADD RESIDENT MODAL -->
 <div class="modal fade" id="add_resident_modal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -68,9 +221,6 @@
                                     <input type="text" class="form-control gov-input" id="add_resident_age" placeholder="Age" readonly required>
                                     <label>Age (Auto)</label>
                                 </div>
-                                <small class="info-text" data-tooltip="Auto Generated based on birthdate. Will be updated if birthdate is edited.">
-                                    Auto Generated (e.g., 24 years old)
-                                </small>
                             </div>
 
                             <div class="col-md-3">
@@ -104,9 +254,6 @@
                                     </select>
                                     <label>Household</label>
                                 </div>
-                                <small class="info-text" data-tooltip="Select a household to assign this resident to. Only active households are available for selection.">
-                                    Assign resident to a household record.
-                                </small>
                             </div>
 
                             <div class="col-md-6">
@@ -210,9 +357,6 @@
                                     <input type="text" class="form-control gov-input" id="edit_resident_age" placeholder="Age" readonly required>
                                     <label>Age (Auto)</label>
                                 </div>
-                                <small class="info-text" data-tooltip="Auto Generated based on birthdate. Will be updated if birthdate is edited.">
-                                    Auto Generated (e.g., 24 years old)
-                                </small>
                             </div>
 
                             <div class="col-md-3">
@@ -244,9 +388,6 @@
                                     </select>
                                     <label>Household</label>
                                 </div>
-                                <small class="info-text" data-tooltip="Select a household to assign this resident to. Only active households are available for selection.">
-                                    Assign resident to a household record.
-                                </small>
                             </div>
 
                             <div class="col-md-6">

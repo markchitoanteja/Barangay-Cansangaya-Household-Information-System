@@ -200,6 +200,12 @@ final class QueryBuilder
         return (bool) $stmt->fetchColumn();
     }
 
+    public function truncate(): bool
+    {
+        $sql = "TRUNCATE TABLE {$this->table}";
+        return $this->pdo->exec($sql) !== false;
+    }
+
     // ----------------------------
     // Private helpers
     // ----------------------------

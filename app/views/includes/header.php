@@ -31,50 +31,71 @@
                 </div>
             </div>
 
-            <div class="nav-section">System Navigation</div>
             <nav class="nav flex-column side-nav">
+                <div class="nav-section">Analytics</div>
                 <!-- DASHBOARD -->
                 <a class="nav-link loadable <?= ($title == 'Dashboard') ? 'active' : '' ?>" href="dashboard" title="Dashboard">
                     <i class="fa-solid fa-gauge"></i>
                     <span class="nav-text">Dashboard</span>
                 </a>
 
-                <!-- CORE DATA -->
+                <div class="nav-section">Core Data</div>
+
+                <!-- HOUSEHOLDS -->
                 <a class="nav-link loadable <?= ($title == 'Households') ? 'active' : '' ?>" href="households" title="Households">
                     <i class="fa-solid fa-house"></i>
                     <span class="nav-text">Households</span>
                 </a>
 
+                <!-- RESIDENTS -->
                 <a class="nav-link loadable <?= ($title == 'Residents') ? 'active' : '' ?>" href="residents" title="Residents">
                     <i class="fa-solid fa-users"></i>
                     <span class="nav-text">Residents</span>
                 </a>
 
-                <!-- EXTENDED PROFILES -->
+                <div class="nav-section">Profiles & Socio-economic</div>
+                <!-- SOCIO-ECONOMIC -->
                 <a class="nav-link loadable <?= ($title == 'Socio-Economic Profile') ? 'active' : '' ?>" href="socio-economic" title="Socio-Economic Profile">
                     <i class="fa-solid fa-briefcase"></i>
                     <span class="nav-text">Socio-Economic</span>
                 </a>
 
-                <a class="nav-link loadable <?= ($title == 'Health Records') ? 'active' : '' ?>" href="health-records" title="Health Records">
-                    <i class="fa-solid fa-heart-pulse"></i>
-                    <span class="nav-text">Health Records</span>
-                </a>
-
+                <div class="nav-section">Programs & Services</div>
                 <!-- PROGRAMS -->
                 <a class="nav-link loadable <?= ($title == 'Programs') ? 'active' : '' ?>" href="programs" title="Programs">
                     <i class="fa-solid fa-hand-holding-heart"></i>
                     <span class="nav-text">Programs</span>
                 </a>
 
-                <!-- REPORTS -->
-                <a class="nav-link loadable <?= ($title == 'Reports & Analytics') ? 'active' : '' ?>" href="reports" title="Reports & Analytics">
-                    <i class="fa-solid fa-chart-column"></i>
-                    <span class="nav-text">Reports</span>
+                <div class="nav-section">Health</div>
+                <!-- HEALTH RECORDS -->
+                <a class="nav-link loadable <?= ($title == 'Health Records') ? 'active' : '' ?>" href="health-records" title="Health Records">
+                    <i class="fa-solid fa-heart-pulse"></i>
+                    <span class="nav-text">Health Records</span>
+                </a>
+
+                <div class="nav-section">Vital & Civil Records</div>
+                <!-- BIRTH RECORDS -->
+                <a class="nav-link loadable <?= ($title == 'Birth Records') ? 'active' : '' ?>" href="birth-records" title="Birth Records">
+                    <i class="fa-solid fa-baby"></i>
+                    <span class="nav-text">Birth Records</span>
+                </a>
+
+                <!-- MIGRATION RECORDS -->
+                <a class="nav-link loadable <?= ($title == 'Migration Records') ? 'active' : '' ?>" href="migration-records" title="Migration Records">
+                    <i class="fa-solid fa-truck"></i>
+                    <span class="nav-text">Migration Records</span>
+                </a>
+
+                <!-- DEATH RECORDS -->
+                <a class="nav-link loadable <?= ($title == 'Death Records') ? 'active' : '' ?>" href="death-records" title="Death Records">
+                    <i class="fa-solid fa-heart-crack"></i>
+                    <span class="nav-text">Death Records</span>
                 </a>
 
                 <!-- ADMIN ONLY -->
                 <?php if (isset($user) && ($user['role'] === 'ADMIN' || $user['role'] === 'SUPER_ADMIN')): ?>
+                    <div class="nav-section">Administration</div>
                     <a class="nav-link loadable <?= ($title == 'User Management') ? 'active' : '' ?>" href="user-management" title="User Management">
                         <i class="fa-solid fa-id-badge"></i>
                         <span class="nav-text">User Management</span>
@@ -95,6 +116,15 @@
                 </div>
 
                 <div class="d-flex gap-2 align-items-center">
+                    <!-- Generate Sample Data -->
+                    <?php if (isset($user) && $user['role'] === 'SUPER_ADMIN'): ?>
+                        <button type="button" id="btnSeedSampleData" class="pill pill-btn btn-outline-warning d-flex align-items-center gap-2" title="Generate sample records for testing">
+
+                            <i class="fa-solid fa-seedling"></i>
+                            <span class="d-none d-md-inline">Generate Sample Data</span>
+                        </button>
+                    <?php endif; ?>
+
                     <!-- System Update -->
                     <?php if (isset($user) && ($user['role'] === 'ADMIN' || $user['role'] === 'SUPER_ADMIN')): ?>
                         <div class="dropdown d-none" id="drpdwn_updates">

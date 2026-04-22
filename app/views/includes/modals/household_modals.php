@@ -1,3 +1,115 @@
+<!-- View Household Modal -->
+<div class="modal fade" id="viewHouseholdModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content gov-modal">
+
+            <!-- HEADER -->
+            <div class="modal-header gov-modal-header">
+                <div class="d-flex align-items-center gap-3">
+                    <img src="<?= base_url('public/assets/img/') . ($system_information['official_logo'] ?? 'default_logo.png') . '?v=' . env('APP_VERSION') ?>" class="gov-modal-logo">
+                    <div>
+                        <h5 class="modal-title mb-0">VIEW HOUSEHOLD RECORD</h5>
+                        <small class="gov-modal-subtitle">
+                            Barangay <?= ucfirst($system_information['barangay_name']) ?> Household Information System
+                        </small>
+                    </div>
+                </div>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- FORM BODY -->
+            <div class="modal-body gov-modal-body">
+
+                <!-- RECORD HEADER -->
+                <div class="panel mb-3">
+                    <div class="panel-body">
+
+                        <div class="row align-items-center g-2">
+                            <div class="col-md-8">
+                                <h5 class="fw-bold mb-1" id="view_household_household_code">
+                                    #####-####
+                                </h5>
+                                <div class="text-muted small" id="view_household_address">
+                                    ##### #, ##########
+                                </div>
+                            </div>
+
+                            <div class="col-md-4 text-md-end">
+                                <div class="small text-muted">Purok / Zone</div>
+                                <div class="fw-semibold" id="view_household_purok">##### #</div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- MAIN RECORD TABLE -->
+                <div class="panel">
+                    <div class="panel-body p-0">
+                        <table class="table mb-0 align-middle">
+                            <!-- HOUSING -->
+                            <thead>
+                                <tr>
+                                    <th colspan="2" class="bg-light text-uppercase small">
+                                        Housing Information
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="text-muted" style="width: 40%;">Housing Type</td>
+                                    <td id="view_household_housing_type" class="fw-semibold">#######</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">Ownership Status</td>
+                                    <td id="view_household_ownership_status" class="fw-semibold">#######</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">Comfort Room</td>
+                                    <td id="view_household_comfort_room" class="fw-semibold">#######</td>
+                                </tr>
+                            </tbody>
+
+                            <!-- UTILITIES -->
+                            <thead>
+                                <tr>
+                                    <th colspan="2" class="bg-light text-uppercase small">
+                                        Basic Utilities
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="text-muted">Water System</td>
+                                    <td id="view_household_water_system" class="fw-semibold">##### #</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">Electricity Access</td>
+                                    <td id="view_household_electricity_access" class="fw-semibold">###</td>
+                                </tr>
+                            </tbody>
+
+                        </table>
+
+                    </div>
+                </div>
+
+                <!-- FOOT NOTE -->
+                <div class="gov-meta mt-3">
+                    <i class="fa-solid fa-circle-info me-2"></i>
+                    Household members are managed under <strong>Residents</strong>.
+                </div>
+
+            </div>
+
+            <!-- FOOTER -->
+            <div class="modal-footer gov-modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Add Household Modal -->
 <div class="modal fade" id="householdModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-lg">

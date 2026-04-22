@@ -1180,6 +1180,7 @@ class AdminController extends Controller
         $birthdate = input('birthdate', null);
         $civil_status = input('civil_status', null);
         $relationship = input('relationship', null);
+        $status = input('status', null);
 
         $response = [
             'success' => true,
@@ -1194,7 +1195,9 @@ class AdminController extends Controller
             'sex' => $sex,
             'birthdate' => $birthdate,
             'civil_status' => $civil_status,
-            'relationship' => $relationship
+            'relationship' => $relationship,
+            'status' => $status,
+            'created_at' => $this->current_date()
         ];
 
         $resident_model = $this->model('Resident_Model');
@@ -1224,6 +1227,7 @@ class AdminController extends Controller
         $birthdate = input('birthdate', null);
         $civil_status = input('civil_status', null);
         $relationship = input('relationship', null);
+        $status = input('status', null);
 
         $response = [
             'success' => true,
@@ -1238,7 +1242,9 @@ class AdminController extends Controller
             'sex' => $sex,
             'birthdate' => $birthdate,
             'civil_status' => $civil_status,
-            'relationship' => $relationship
+            'relationship' => $relationship,
+            'status' => $status,
+            'updated_at' => $this->current_date()
         ];
 
         $resident_model = $this->model('Resident_Model');

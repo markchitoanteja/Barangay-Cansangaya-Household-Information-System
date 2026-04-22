@@ -87,19 +87,18 @@
                                 <td><?= esc($resident['household_name']) ?></td>
                                 <td><?= esc($resident['relationship']) ?></td>
                                 <td class="text-center">
+                                    <button class="btn btn-sm btn-soft btn-view-resident"
+                                        title="View Resident Details"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#view_resident_modal"
+                                        data-resident='<?= json_encode($resident) ?>'>
+                                        <i class="fa-solid fa-eye"></i>
+                                    </button>
                                     <button class="btn btn-sm btn-soft btn-edit-resident"
                                         title="Edit Resident"
                                         data-bs-toggle="modal"
                                         data-bs-target="#edit_resident_modal"
-                                        data-id="<?= $resident['id'] ?>"
-                                        data-first_name="<?= esc($resident['first_name']) ?>"
-                                        data-last_name="<?= esc($resident['last_name']) ?>"
-                                        data-middle_name="<?= esc($resident['middle_name']) ?>"
-                                        data-sex="<?= esc($resident['sex']) ?>"
-                                        data-birthdate="<?= esc($resident['birthdate']) ?>"
-                                        data-household_id="<?= esc($resident['household_id']) ?>"
-                                        data-civil_status="<?= esc($resident['civil_status']) ?>"
-                                        data-relationship="<?= esc($resident['relationship']) ?>">
+                                        data-resident='<?= json_encode($resident) ?>'>
                                         <i class="fa-solid fa-pen"></i>
                                     </button>
                                 </td>

@@ -869,7 +869,7 @@ $((): void => {
             window.location.href = `${baseUrl}?${params.toString()}`;
         }, 250);
     });
-    
+
     $("#socioEconomicSearchForm").on("submit", (): void => {
         const search_input = $("#search_input").val()?.toString().trim();
         const comfort_room = $("#comfort_room").val()?.toString().trim();
@@ -1042,29 +1042,34 @@ $((): void => {
         });
     });
 
+    $(document).on('click', '.btn-view-household', function () {
+        const household = $(this).data('household');
+
+        $('#view_household_household_code').text(household.household_code);
+        $('#view_household_purok').text(household.purok);
+        $('#view_household_address').text(household.address);
+        $('#view_household_housing_type').text(household.housing_type);
+        $('#view_household_ownership_status').text(household.ownership_status);
+        $('#view_household_comfort_room').text(household.comfort_room);
+        $('#view_household_water_system').text(household.water_system);
+        $('#view_household_electricity_access').text(household.electricity_access == '1' ? 'Yes' : 'No');
+    });
+
     $(document).on('click', '.btn-edit-household', function () {
-        const id = $(this).data('id');
-        const household_code = $(this).data('household_code');
-        const purok = $(this).data('purok');
-        const address = $(this).data('address');
-        const housing_type = $(this).data('housing_type');
-        const ownership_status = $(this).data('ownership_status');
-        const comfort_room = $(this).data('comfort_room');
-        const water_system = $(this).data('water_system');
-        const electricity_access = $(this).data('electricity_access');
+        const household = $(this).data('household');
 
-        $('#edit_household_id').val(id);
-        $('#edit_household_household_code').val(household_code);
-        $('#edit_household_purok').val(purok);
-        $('#edit_household_address').val(address);
-        $('#edit_household_housing_type').val(housing_type);
-        $('#edit_household_ownership_status').val(ownership_status);
-        $('#edit_household_comfort_room').val(comfort_room);
-        $('#edit_household_water_system').val(water_system);
-        $('#edit_household_electricity_access').val(electricity_access);
+        $('#edit_household_id').val(household.id);
+        $('#edit_household_household_code').val(household.household_code);
+        $('#edit_household_purok').val(household.purok);
+        $('#edit_household_address').val(household.address);
+        $('#edit_household_housing_type').val(household.housing_type);
+        $('#edit_household_ownership_status').val(household.ownership_status);
+        $('#edit_household_comfort_room').val(household.comfort_room);
+        $('#edit_household_water_system').val(household.water_system);
+        $('#edit_household_electricity_access').val(household.electricity_access);
 
-        $('#edit_original_household_purok').val(purok);
-        $('#edit_original_household_household_code').val(household_code);
+        $('#edit_original_household_purok').val(household.purok);
+        $('#edit_original_household_household_code').val(household.household_code);
     });
 
     $('#edit_household_purok').on('change', function () {
@@ -1132,10 +1137,11 @@ $((): void => {
         const birthdate = $('#add_resident_birthdate').val()?.toString().trim();
         const civil_status = $('#add_resident_civil_status').val()?.toString().trim();
         const relationship = $('#add_resident_relationship').val()?.toString().trim();
+        const status = $('#add_resident_status').val()?.toString().trim();
 
         showLoading();
 
-        const formData = { household_id, first_name, middle_name, last_name, sex, birthdate, civil_status, relationship };
+        const formData = { household_id, first_name, middle_name, last_name, sex, birthdate, civil_status, relationship, status };
 
         $.ajax({
             url: 'add-resident',
@@ -1159,34 +1165,58 @@ $((): void => {
         });
     });
 
-    $(document).on('click', '.btn-edit-resident', function () {
-        const id = $(this).data('id');
-        const household_id = $(this).data('household_id');
-        const last_name = $(this).data('last_name');
-        const first_name = $(this).data('first_name');
-        const middle_name = $(this).data('middle_name');
-        const sex = $(this).data('sex');
-        const birthdate = $(this).data('birthdate');
-        const civil_status = $(this).data('civil_status');
-        const relationship = $(this).data('relationship');
+    $(document).on('click', '.btn-view-resident', function () {
+        const resident = $(this).data('resident');
+        const birthDateObj = new Date(resident.birthdate);
+        const age = Math.floor(
+            (new Date().getTime() - birthDateObj.getTime()) /
+            (365.25 * 24 * 60 * 60 * 1000)
+        );
+        const middleInitial = resident.middle_name ? ` ${resident.middle_name.charAt(0)}.` : '';
 
-        const birthDateObj = new Date(birthdate);
+        $('#view_resident_fullname').html(`${resident.first_name}${middleInitial} ${resident.last_name}`.trim());
+        $('#view_resident_household').html(resident.purok + ' - ' + resident.household_code);
+        $('#view_resident_last_name').html(resident.last_name);
+        $('#view_resident_first_name').html(resident.first_name);
+        $('#view_resident_middle_name').html(resident.middle_name ? resident.middle_name : 'N/A');
+        $('#view_resident_sex').html(resident.sex);
+        $('#view_resident_birthdate').html(new Date(resident.birthdate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }));
+        $('#view_resident_age').html(`${age} ${age < 2 ? 'year old' : 'years old'}`);
+        $('#view_resident_civil_status').html(resident.civil_status);
+        $('#view_resident_relationship').html(resident.relationship);
+        $('#view_resident_status').html(resident.status);
+        $('#view_resident_status_pill').html(resident.status);
+        $('#view_resident_status').html(resident.status).attr('class', `${getStatusClass(resident.status, false)}`);
+        $('#view_resident_status_pill').html(resident.status).attr('class', `pill ${getStatusClass(resident.status, true)}`);
+
+        if (resident.middle_name) {
+            $('#view_resident_middle_name').removeClass('text-muted');
+        } else {
+            $('#view_resident_middle_name').addClass('text-muted');
+        }
+    });
+
+    $(document).on('click', '.btn-edit-resident', function () {
+        const resident = $(this).data('resident');
+
+        const birthDateObj = new Date(resident.birthdate);
 
         const age = Math.floor(
             (new Date().getTime() - birthDateObj.getTime()) /
             (365.25 * 24 * 60 * 60 * 1000)
         );
 
-        $('#edit_resident_id').val(id);
-        $('#edit_resident_household_id').val(household_id);
-        $('#edit_resident_last_name').val(last_name);
-        $('#edit_resident_first_name').val(first_name);
-        $('#edit_resident_middle_name').val(middle_name);
-        $('#edit_resident_sex').val(sex);
-        $('#edit_resident_birthdate').val(birthdate);
+        $('#edit_resident_id').val(resident.id);
+        $('#edit_resident_household_id').val(resident.household_id);
+        $('#edit_resident_last_name').val(resident.last_name);
+        $('#edit_resident_first_name').val(resident.first_name);
+        $('#edit_resident_middle_name').val(resident.middle_name);
+        $('#edit_resident_sex').val(resident.sex);
+        $('#edit_resident_birthdate').val(resident.birthdate);
         $('#edit_resident_age').val(`${age} ${age < 2 ? 'year old' : 'years old'}`);
-        $('#edit_resident_civil_status').val(civil_status);
-        $('#edit_resident_relationship').val(relationship);
+        $('#edit_resident_civil_status').val(resident.civil_status);
+        $('#edit_resident_relationship').val(resident.relationship);
+        $('#edit_resident_status').val(resident.status);
     });
 
     $('#edit_resident_birthdate').on('change', function () {
@@ -1227,10 +1257,11 @@ $((): void => {
         const birthdate = $('#edit_resident_birthdate').val()?.toString().trim();
         const civil_status = $('#edit_resident_civil_status').val()?.toString().trim();
         const relationship = $('#edit_resident_relationship').val()?.toString().trim();
+        const status = $('#edit_resident_status').val()?.toString().trim();
 
         showLoading();
 
-        const formData = { id, household_id, first_name, middle_name, last_name, sex, birthdate, civil_status, relationship };
+        const formData = { id, household_id, first_name, middle_name, last_name, sex, birthdate, civil_status, relationship, status };
 
         $.ajax({
             url: 'edit-resident',
@@ -1293,7 +1324,7 @@ $((): void => {
             }
         });
     });
-    
+
     $('#edit_socio_economic_form').on('submit', function (e) {
         e.preventDefault();
 
@@ -1381,7 +1412,78 @@ $((): void => {
             window.location.href = `${baseUrl}?${params.toString()}`;
         }, 250);
     });
+
+    $('#btnSeedSampleData').on('click', function () {
+        Swal.fire({
+            title: "Seed Sample Data?",
+            text: "This will populate the system with sample data and delete existing data.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#1f4e79", // Official blue
+            cancelButtonColor: "#6c757d",
+            confirmButtonText: "Yes, seed now",
+            cancelButtonText: "Cancel",
+            reverseButtons: true
+        }).then((result: any) => {
+            if (result.isConfirmed) {
+                showLoading();
+
+                $.ajax({
+                    url: 'seed-sample-data',
+                    method: 'POST',
+                    dataType: 'JSON',
+                    success: (response) => {
+                        setTimeout(() => {
+                            if (response.success) {
+                                location.reload();
+                            }
+                        }, 250);
+                    },
+                    error: (xhr, status, error) => {
+                        hideLoading();
+                        console.error('AJAX Error:', error);
+                        console.log(xhr.responseText);
+                    }
+                });
+            }
+        });
+    });
 });
+
+function getStatusClass(status: string | null | undefined, isPill: boolean): string {
+    let bgClass = '';
+
+    switch ((status || '').toLowerCase()) {
+        case 'active':
+            if (isPill) {
+                bgClass = 'bg-success-subtle border border-success-subtle';
+            }
+
+            return 'text-success ' + bgClass;
+
+        case 'inactive':
+            if (isPill) {
+                bgClass = 'bg-secondary-subtle border border-secondary-subtle';
+            }
+
+            return 'text-secondary ' + bgClass;
+
+        case 'transferred':
+            if (isPill) {
+                bgClass = 'bg-warning-subtle border border-warning-subtle';
+            }
+            return 'text-warning ' + bgClass;
+
+        case 'deceased':
+            if (isPill) {
+                bgClass = 'bg-danger-subtle border border-danger-subtle';
+            }
+            return 'text-danger ' + bgClass;
+
+        default:
+            return 'text-dark bg-light border';
+    }
+}
 
 function checkUpdates() {
     $.ajax({

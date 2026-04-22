@@ -81,20 +81,18 @@
                                 <td><?= esc($household['comfort_room']) ?></td>
                                 <td><?= esc($household['water_system']) ?></td>
                                 <td class="text-center">
+                                    <button class="btn btn-sm btn-soft btn-view-household"
+                                        title="View Household Details"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#viewHouseholdModal"
+                                        data-household='<?= json_encode($household) ?>'>
+                                        <i class="fa-solid fa-eye"></i>
+                                    </button>
                                     <button class="btn btn-sm btn-soft btn-edit-household"
                                         title="Edit Household"
                                         data-bs-toggle="modal"
                                         data-bs-target="#editHouseholdModal"
-                                        data-id="<?= $household['id'] ?>"
-                                        data-household_code="<?= esc($household['household_code']) ?>"
-                                        data-purok="<?= esc($household['purok']) ?>"
-                                        data-address="<?= esc($household['address']) ?>"
-                                        data-current_purok="<?= esc($household['purok']) ?>"
-                                        data-housing_type="<?= esc($household['housing_type']) ?>"
-                                        data-ownership_status="<?= esc($household['ownership_status']) ?>"
-                                        data-comfort_room="<?= esc($household['comfort_room']) ?>"
-                                        data-water_system="<?= esc($household['water_system']) ?>"
-                                        data-electricity_access="<?= esc($household['electricity_access']) ?>">
+                                        data-household='<?= json_encode($household) ?>'>
                                         <i class="fa-solid fa-pen"></i>
                                     </button>
                                 </td>

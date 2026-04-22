@@ -2,9 +2,6 @@
 
 class Seed_Database_Model extends Query
 {
-    /**
-     * Run the full database seed.
-     */
     public function MOD_SEED_DATABASE(): bool
     {
         $this->createTables();
@@ -12,50 +9,44 @@ class Seed_Database_Model extends Query
         $this->seedSecurityQuestions();
         $this->seedSystemInformation();
 
+        // 🔥 FIX: ensure data consistency after seeding
+        $this->syncDataConsistency();
+
         return true;
     }
 
-    /**
-     * Drop all tables in the current database.
-     */
     public function dropAllTables(): void
     {
         $pdo = Database::pdo();
 
-        // Disable foreign key checks
         $pdo->exec("SET FOREIGN_KEY_CHECKS = 0");
 
-        // Get all tables
         $tables = $pdo->query("SHOW TABLES")->fetchAll(PDO::FETCH_COLUMN);
 
         foreach ($tables as $table) {
             $pdo->exec("DROP TABLE IF EXISTS `$table`");
         }
 
-        // Re-enable foreign key checks
         $pdo->exec("SET FOREIGN_KEY_CHECKS = 1");
     }
 
-    /**
-     * Check if the database has already been seeded.
-     */
     public function is_seeded(): bool
     {
         try {
-            // If the 'users' table exists and has at least one row, consider the DB seeded
             return self::table('users')->exists();
         } catch (PDOException $e) {
-            // Table does not exist yet
             return false;
         }
     }
 
     /**
-     * Create necessary tables if they don't exist.
+     * =========================
+     * CREATE TABLES
+     * =========================
      */
     private function createTables(): void
     {
-        // USERS TABLE
+        /* USERS */
         $usersColumns = "
             id INT AUTO_INCREMENT PRIMARY KEY,
             full_name VARCHAR(120) NOT NULL,
@@ -68,8 +59,7 @@ class Seed_Database_Model extends Query
         ";
         self::table('users')->createTableIfNotExists($usersColumns);
 
-
-        // SECURITY QUESTIONS TABLE (RESTORED)
+        /* SECURITY QUESTIONS */
         $securityColumns = "
             id INT AUTO_INCREMENT PRIMARY KEY,
             user_id INT NOT NULL,
@@ -77,182 +67,267 @@ class Seed_Database_Model extends Query
             answer_hash VARCHAR(255) NOT NULL,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-
-            CONSTRAINT fk_security_questions_user 
-                FOREIGN KEY (user_id) REFERENCES users(id)
-                ON DELETE CASCADE ON UPDATE CASCADE
+            FOREIGN KEY (user_id) REFERENCES users(id)
+            ON DELETE CASCADE ON UPDATE CASCADE
         ";
         self::table('security_questions')->createTableIfNotExists($securityColumns);
 
-
-        // HOUSEHOLDS TABLE
+        /* HOUSEHOLDS */
         $householdsColumns = "
             id INT AUTO_INCREMENT PRIMARY KEY,
             household_code VARCHAR(20) NOT NULL UNIQUE,
             purok VARCHAR(50) NOT NULL,
             address TEXT,
-
             housing_type ENUM('Concrete','Semi-concrete','Wood') NOT NULL,
             ownership_status ENUM('Owned','Rented','Informal Settler') DEFAULT NULL,
             comfort_room ENUM('Owned','Shared','None') NOT NULL,
             water_system ENUM('Level 1','Level 2','Level 3') NOT NULL,
             electricity_access TINYINT(1) DEFAULT 1,
-
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
         ";
         self::table('households')->createTableIfNotExists($householdsColumns);
 
-
-        // RESIDENTS TABLE
+        /* RESIDENTS */
         $residentsColumns = "
             id INT AUTO_INCREMENT PRIMARY KEY,
             household_id INT NOT NULL,
-
             first_name VARCHAR(100) NOT NULL,
             middle_name VARCHAR(100),
             last_name VARCHAR(100) NOT NULL,
-
             sex ENUM('Male','Female') NOT NULL,
             birthdate DATE NOT NULL,
             civil_status ENUM('Single','Married','Widowed','Separated'),
             relationship ENUM('Head','Spouse','Child','Relative','Other'),
-
+            status ENUM('Active','Deceased','Transferred','Inactive') DEFAULT 'Active',
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-
             INDEX idx_household (household_id),
             INDEX idx_name (last_name, first_name),
-
-            CONSTRAINT fk_residents_household
-                FOREIGN KEY (household_id) REFERENCES households(id)
-                ON DELETE CASCADE ON UPDATE CASCADE
+            FOREIGN KEY (household_id) REFERENCES households(id)
+            ON DELETE CASCADE ON UPDATE CASCADE
         ";
         self::table('residents')->createTableIfNotExists($residentsColumns);
 
-
-        // SOCIO-ECONOMIC PROFILES
+        /* SOCIO ECONOMIC */
         $socioEconomicColumns = "
             id INT AUTO_INCREMENT PRIMARY KEY,
             resident_id INT NOT NULL UNIQUE,
-
-            occupation VARCHAR(150) DEFAULT NULL,
-            employment_status ENUM('Employed','Unemployed','Self-employed','Student','Retired') DEFAULT NULL,
-            monthly_income DECIMAL(10,2) DEFAULT NULL,
-
-            education_level ENUM('None','Elementary','High School','Senior High','College','Postgraduate') DEFAULT NULL,
+            occupation VARCHAR(150),
+            employment_status ENUM('Employed','Unemployed','Self-employed','Student','Retired'),
+            monthly_income DECIMAL(10,2),
+            education_level ENUM('None','Elementary','High School','Senior High','College','Postgraduate'),
             is_literate TINYINT(1) DEFAULT 1,
-
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-
-            CONSTRAINT fk_socio_resident
-                FOREIGN KEY (resident_id) REFERENCES residents(id)
-                ON DELETE CASCADE ON UPDATE CASCADE
+            FOREIGN KEY (resident_id) REFERENCES residents(id)
+            ON DELETE CASCADE ON UPDATE CASCADE
         ";
         self::table('socio_economic_profiles')->createTableIfNotExists($socioEconomicColumns);
 
-
-        // HEALTH RECORDS TABLE
+        /* HEALTH */
         $healthColumns = "
             id INT AUTO_INCREMENT PRIMARY KEY,
             resident_id INT NOT NULL UNIQUE,
-
             is_pwd TINYINT(1) DEFAULT 0,
             is_senior TINYINT(1) DEFAULT 0,
             has_chronic_illness TINYINT(1) DEFAULT 0,
-            chronic_illness_details TEXT DEFAULT NULL,
-
-            blood_type VARCHAR(5) DEFAULT NULL,
+            chronic_illness_details TEXT,
+            blood_type VARCHAR(5),
             vaccinated TINYINT(1) DEFAULT 0,
-
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-
-            CONSTRAINT fk_health_resident
-                FOREIGN KEY (resident_id) REFERENCES residents(id)
-                ON DELETE CASCADE ON UPDATE CASCADE
+            FOREIGN KEY (resident_id) REFERENCES residents(id)
+            ON DELETE CASCADE ON UPDATE CASCADE
         ";
         self::table('health_records')->createTableIfNotExists($healthColumns);
 
-
-        // PROGRAMS TABLE
+        /* PROGRAMS */
         $programsColumns = "
             id INT AUTO_INCREMENT PRIMARY KEY,
             program_name VARCHAR(150) NOT NULL,
-            description TEXT DEFAULT NULL,
+            description TEXT,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         ";
         self::table('programs')->createTableIfNotExists($programsColumns);
 
-
-        // PROGRAM BENEFICIARIES TABLE
+        /* BENEFICIARIES */
         $beneficiariesColumns = "
             id INT AUTO_INCREMENT PRIMARY KEY,
             resident_id INT NOT NULL,
             program_id INT NOT NULL,
-
-            date_enrolled DATE DEFAULT NULL,
+            date_enrolled DATE,
             status ENUM('Active','Inactive') DEFAULT 'Active',
-
             UNIQUE KEY unique_beneficiary (resident_id, program_id),
-
-            CONSTRAINT fk_pb_resident
-                FOREIGN KEY (resident_id) REFERENCES residents(id)
-                ON DELETE CASCADE ON UPDATE CASCADE,
-
-            CONSTRAINT fk_pb_program
-                FOREIGN KEY (program_id) REFERENCES programs(id)
-                ON DELETE CASCADE ON UPDATE CASCADE
+            FOREIGN KEY (resident_id) REFERENCES residents(id)
+            ON DELETE CASCADE ON UPDATE CASCADE,
+            FOREIGN KEY (program_id) REFERENCES programs(id)
+            ON DELETE CASCADE ON UPDATE CASCADE
         ";
         self::table('program_beneficiaries')->createTableIfNotExists($beneficiariesColumns);
 
-
-        // LOGS TABLE
+        /* LOGS */
         $logsColumns = "
             id INT AUTO_INCREMENT PRIMARY KEY,
             user_id INT NOT NULL,
             action VARCHAR(255) NOT NULL,
-            target_table VARCHAR(100) DEFAULT NULL,
-            target_id INT DEFAULT NULL,
-            description TEXT DEFAULT NULL,
+            target_table VARCHAR(100),
+            target_id INT,
+            description TEXT,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
-            CONSTRAINT fk_logs_user
-                FOREIGN KEY (user_id) REFERENCES users(id)
-                ON DELETE CASCADE ON UPDATE CASCADE
+            FOREIGN KEY (user_id) REFERENCES users(id)
+            ON DELETE CASCADE ON UPDATE CASCADE
         ";
         self::table('logs')->createTableIfNotExists($logsColumns);
 
-
-        // SYSTEM INFORMATION TABLE
+        /* SYSTEM INFO */
         $systemInfoColumns = "
             id INT AUTO_INCREMENT PRIMARY KEY,
             barangay_name VARCHAR(150) NOT NULL,
-            official_logo VARCHAR(255) DEFAULT NULL,
+            official_logo VARCHAR(255),
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
         ";
         self::table('system_information')->createTableIfNotExists($systemInfoColumns);
 
-
-        // REMEMBER TOKENS TABLE
+        /* TOKENS */
         $rememberTokensColumns = "
             id INT AUTO_INCREMENT PRIMARY KEY,
             user_id INT NOT NULL,
             token VARCHAR(128) NOT NULL,
             expires_at DATETIME NOT NULL,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
             INDEX(user_id),
             INDEX(token),
-
-            CONSTRAINT fk_remember_tokens_user
-                FOREIGN KEY (user_id) REFERENCES users(id)
-                ON DELETE CASCADE ON UPDATE CASCADE
+            FOREIGN KEY (user_id) REFERENCES users(id)
+            ON DELETE CASCADE ON UPDATE CASCADE
         ";
         self::table('user_remember_tokens')->createTableIfNotExists($rememberTokensColumns);
+
+        /* DEATH / MIGRATION / FEATURES TABLES (UNCHANGED) */
+        self::table('birth_records')->createTableIfNotExists("
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            child_resident_id INT,
+            mother_resident_id INT,
+            date_of_birth DATE NOT NULL,
+            sex ENUM('Male','Female') NOT NULL,
+            FOREIGN KEY (child_resident_id) REFERENCES residents(id),
+            FOREIGN KEY (mother_resident_id) REFERENCES residents(id)
+        ");
+
+        self::table('death_records')->createTableIfNotExists("
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            resident_id INT NOT NULL,
+            date_of_death DATE NOT NULL,
+            cause VARCHAR(255),
+            FOREIGN KEY (resident_id) REFERENCES residents(id)
+        ");
+
+        self::table('migration_records')->createTableIfNotExists("
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            resident_id INT,
+            migration_type ENUM('IN','OUT') NOT NULL,
+            date_of_migration DATE NOT NULL,
+            origin VARCHAR(150),
+            destination VARCHAR(150),
+            FOREIGN KEY (resident_id) REFERENCES residents(id)
+        ");
+
+        self::table('population_features')->createTableIfNotExists("
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            year INT NOT NULL,
+            total_population INT,
+            births INT DEFAULT 0,
+            deaths INT DEFAULT 0,
+            net_migration INT DEFAULT 0,
+            male_ratio DECIMAL(5,2),
+            female_ratio DECIMAL(5,2),
+            avg_household_size DECIMAL(5,2),
+            dependency_ratio DECIMAL(5,2),
+            employment_rate DECIMAL(5,2),
+            avg_income DECIMAL(10,2),
+            growth_rate DECIMAL(6,4),
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            UNIQUE KEY unique_year (year)
+        ");
     }
+
+    /**
+     * =========================
+     * DATA CONSISTENCY FIX
+     * =========================
+     */
+    private function syncDataConsistency(): void
+    {
+        $residents = self::table('residents')->get();
+
+        foreach ($residents as $resident) {
+
+            /* -------------------------
+               DECEASED SYNC
+            -------------------------- */
+            if ($resident['status'] === 'Deceased') {
+
+                $death = self::table('death_records')
+                    ->where('resident_id', $resident['id'])
+                    ->first();
+
+                if (!$death) {
+                    self::table('death_records')->insert([
+                        'resident_id'   => $resident['id'],
+                        'date_of_death' => date('Y-m-d'),
+                        'cause'         => 'Auto-synced from resident status'
+                    ]);
+                }
+            }
+
+            $deathExists = self::table('death_records')
+                ->where('resident_id', $resident['id'])
+                ->exists();
+
+            if ($deathExists && $resident['status'] !== 'Deceased') {
+                self::table('residents')
+                    ->where('id', $resident['id'])
+                    ->update(['status' => 'Deceased']);
+            }
+
+            /* -------------------------
+               TRANSFERRED SYNC
+            -------------------------- */
+            if ($resident['status'] === 'Transferred') {
+
+                $migration = self::table('migration_records')
+                    ->where('resident_id', $resident['id'])
+                    ->where('migration_type', 'OUT')
+                    ->first();
+
+                if (!$migration) {
+                    self::table('migration_records')->insert([
+                        'resident_id'      => $resident['id'],
+                        'migration_type'   => 'OUT',
+                        'date_of_migration' => date('Y-m-d'),
+                        'origin'           => 'Auto-synced',
+                        'destination'      => 'Unknown'
+                    ]);
+                }
+            }
+
+            $migrationExists = self::table('migration_records')
+                ->where('resident_id', $resident['id'])
+                ->where('migration_type', 'OUT')
+                ->exists();
+
+            if ($migrationExists && $resident['status'] !== 'Transferred') {
+                self::table('residents')
+                    ->where('id', $resident['id'])
+                    ->update(['status' => 'Transferred']);
+            }
+        }
+    }
+
+    /* =========================
+       SEED METHODS (UNCHANGED)
+    ========================= */
 
     /**
      * Seed default users if the table is empty.

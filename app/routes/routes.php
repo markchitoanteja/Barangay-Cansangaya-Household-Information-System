@@ -48,4 +48,7 @@ return function (Router $router) {
 
     // System Information Routes
     $router->post('/update-system-info', 'SystemInformationController@update_system_info');
+
+    // Sample Data Seeder Route
+    $router->post('/seed-sample-data', 'SeedSampleDataController@seed_sample_data');
 };
