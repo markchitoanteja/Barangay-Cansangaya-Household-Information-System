@@ -68,35 +68,35 @@
                 </a>
 
                 <!-- PROGRAMS BENEFICIARIES -->
-                <a class="nav-link loadable <?= ($title == 'Programs Beneficiaries') ? 'active' : '' ?>" href="programs-beneficiaries" title="Programs Beneficiaries">
+                <a class="nav-link loadable under-development <?= ($title == 'Programs Beneficiaries') ? 'active' : '' ?>" href="programs-beneficiaries" title="Programs Beneficiaries">
                     <i class="fa-solid fa-users"></i>
-                    <span class="nav-text"><s>Beneficiaries</s></span>
+                    <span class="nav-text">Beneficiaries</span>
                 </a>
 
                 <div class="nav-section">Health</div>
                 <!-- HEALTH RECORDS -->
-                <a class="nav-link loadable <?= ($title == 'Health Records') ? 'active' : '' ?>" href="health-records" title="Health Records">
+                <a class="nav-link loadable under-development <?= ($title == 'Health Records') ? 'active' : '' ?>" href="health-records" title="Health Records">
                     <i class="fa-solid fa-heart-pulse"></i>
-                    <span class="nav-text"><s>Health Records</s></span>
+                    <span class="nav-text">Health Records</span>
                 </a>
 
                 <div class="nav-section">Vital & Civil Records</div>
                 <!-- BIRTH RECORDS -->
-                <a class="nav-link loadable <?= ($title == 'Birth Records') ? 'active' : '' ?>" href="birth-records" title="Birth Records">
+                <a class="nav-link loadable under-development <?= ($title == 'Birth Records') ? 'active' : '' ?>" href="birth-records" title="Birth Records">
                     <i class="fa-solid fa-baby"></i>
-                    <span class="nav-text"><s>Birth Records</s></span>
+                    <span class="nav-text">Birth Records</span>
                 </a>
 
                 <!-- MIGRATION RECORDS -->
-                <a class="nav-link loadable <?= ($title == 'Migration Records') ? 'active' : '' ?>" href="migration-records" title="Migration Records">
+                <a class="nav-link loadable under-development <?= ($title == 'Migration Records') ? 'active' : '' ?>" href="migration-records" title="Migration Records">
                     <i class="fa-solid fa-truck"></i>
-                    <span class="nav-text"><s>Migration Records</s></span>
+                    <span class="nav-text">Migration Records</span>
                 </a>
 
                 <!-- DEATH RECORDS -->
-                <a class="nav-link loadable <?= ($title == 'Death Records') ? 'active' : '' ?>" href="death-records" title="Death Records">
+                <a class="nav-link loadable under-development <?= ($title == 'Death Records') ? 'active' : '' ?>" href="death-records" title="Death Records">
                     <i class="fa-solid fa-heart-crack"></i>
-                    <span class="nav-text"><s>Death Records</s></span>
+                    <span class="nav-text">Death Records</span>
                 </a>
 
                 <!-- ADMIN ONLY -->

@@ -16,6 +16,12 @@ body {
     background: var(--content-bg);
 }
 
+.under-development {
+    text-decoration: line-through;
+    color: #6b7280;
+    opacity: .75;
+}
+
 /* App shell */
 .app {
     min-height: 100vh;
