@@ -50,18 +50,18 @@
                     </div>
                 </a>
             </div>
-            <!-- Health Records -->
+            <!-- Beneficiaries -->
             <div class="col-md-3">
-                <a href="health-records" class="gov-stat-link loadable">
+                <a href="programs-beneficiaries" class="gov-stat-link loadable">
                     <div class="card gov-stat-card">
                         <div class="gov-stat-header">
-                            <i class="fa-solid fa-heart-pulse"></i>
-                            <span>Health Records</span>
+                            <i class="fa-solid fa-user-friends"></i>
+                            <span>Beneficiaries</span>
                             <i class="fa-solid fa-arrow-right ms-auto gov-arrow"></i>
                         </div>
                         <div class="gov-stat-body">
-                            <h3><?= number_format($total_health_records ?? 0) ?></h3>
-                            <small>Health profiles tracked</small>
+                            <h3><?= number_format($total_beneficiaries ?? 0) ?></h3>
+                            <small>Registered beneficiaries</small>
                         </div>
                     </div>
                 </a>

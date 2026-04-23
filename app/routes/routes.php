@@ -20,9 +20,12 @@ return function (Router $router) {
     $router->get('/households', 'AdminController@households');
     $router->get('/residents', 'AdminController@residents');
     $router->get('/socio-economic', 'AdminController@socio_economic');
-    $router->get('/health-records', 'AdminController@health_records');
     $router->get('/programs', 'AdminController@programs');
-    $router->get('/reports', 'AdminController@reports');
+    $router->get('/programs-beneficiaries', 'AdminController@programs_beneficiaries');
+    $router->get('/health-records', 'AdminController@health_records');
+    $router->get('/birth-records', 'AdminController@birth_records');
+    $router->get('/migration-records', 'AdminController@migration_records');
+    $router->get('/death-records', 'AdminController@death_records');
     $router->get('/user-management', 'AdminController@user_management');
     $router->get('/export-logs', 'AdminController@export_logs');
     $router->post('/add-user-account', 'AdminController@add_user_account');
@@ -41,6 +44,8 @@ return function (Router $router) {
     $router->post('/edit-resident', 'AdminController@edit_resident');
     $router->post('/add-socio-economic-profile', 'AdminController@add_socio_economic_profile');
     $router->post('/edit-socio-economic-profile', 'AdminController@edit_socio_economic_profile');
+    $router->post('/add-program', 'AdminController@add_program');
+    $router->post('/edit-program', 'AdminController@edit_program');
 
     // System Update Routes
     $router->get('/check-updates', 'UpdateController@check');

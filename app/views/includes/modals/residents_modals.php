@@ -100,7 +100,7 @@
 
                                     <tr>
                                         <td class="text-muted" style="width:40%;">Household</td>
-                                        <td id="view_resident_household" class="fw-semibold">PRK01-0001</td>
+                                        <td id="view_resident_household_code" class="fw-semibold">PRK01-0001</td>
                                     </tr>
 
                                     <tr>

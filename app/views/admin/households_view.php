@@ -81,14 +81,14 @@
                                 <td><?= esc($household['comfort_room']) ?></td>
                                 <td><?= esc($household['water_system']) ?></td>
                                 <td class="text-center">
-                                    <button class="btn btn-sm btn-soft btn-view-household"
+                                    <button class="btn btn-sm btn-outline-success btn-view-household"
                                         title="View Household Details"
                                         data-bs-toggle="modal"
                                         data-bs-target="#viewHouseholdModal"
                                         data-household='<?= json_encode($household) ?>'>
                                         <i class="fa-solid fa-eye"></i>
                                     </button>
-                                    <button class="btn btn-sm btn-soft btn-edit-household"
+                                    <button class="btn btn-sm btn-outline-primary btn-edit-household"
                                         title="Edit Household"
                                         data-bs-toggle="modal"
                                         data-bs-target="#editHouseholdModal"

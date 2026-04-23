@@ -1183,6 +1183,8 @@ $((): void => {
         $('#view_resident_birthdate').html(new Date(resident.birthdate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }));
         $('#view_resident_age').html(`${age} ${age < 2 ? 'year old' : 'years old'}`);
         $('#view_resident_civil_status').html(resident.civil_status);
+        $('#view_resident_household_code').html(resident.household_code);
+        $('#view_resident_purok').html(resident.purok);
         $('#view_resident_relationship').html(resident.relationship);
         $('#view_resident_status').html(resident.status);
         $('#view_resident_status_pill').html(resident.status);
@@ -1473,6 +1475,79 @@ $((): void => {
                         console.log(xhr.responseText);
                     }
                 });
+            }
+        });
+    });
+
+    $('#add_program_form').on('submit', function (e) {
+        e.preventDefault();
+
+        const program_name = $('#add_program_name').val()?.toString().trim();
+        const description = $('#add_program_description').val()?.toString().trim();
+
+        showLoading();
+
+        const formData = { program_name, description };
+
+        $.ajax({
+            url: 'add-program',
+            method: 'POST',
+            data: formData,
+            dataType: 'JSON',
+            success: (response) => {
+                setTimeout(() => {
+                    if (response.success) {
+                        location.reload();
+                    } else {
+                        hideLoading();
+                    }
+                }, 250);
+            },
+            error: (xhr, status, error) => {
+                hideLoading();
+                console.error('AJAX Error:', error);
+                console.log(xhr.responseText);
+            }
+        });
+    });
+
+    $(document).on('click', '.btn-edit-program', function () {
+        const program = $(this).data('program');
+
+        $('#edit_program_id').val(program.id);
+        $('#edit_program_name').val(program.program_name);
+        $('#edit_program_description').val(program.description);
+    });
+
+    $('#edit_program_form').on('submit', function (e) {
+        e.preventDefault();
+
+        const id = $('#edit_program_id').val()?.toString().trim();
+        const program_name = $('#edit_program_name').val()?.toString().trim();
+        const description = $('#edit_program_description').val()?.toString().trim();
+
+        showLoading();
+
+        const formData = { id, program_name, description };
+
+        $.ajax({
+            url: 'edit-program',
+            method: 'POST',
+            data: formData,
+            dataType: 'JSON',
+            success: (response) => {
+                setTimeout(() => {
+                    if (response.success) {
+                        location.reload();
+                    } else {
+                        hideLoading();
+                    }
+                }, 250);
+            },
+            error: (xhr, status, error) => {
+                hideLoading();
+                console.error('AJAX Error:', error);
+                console.log(xhr.responseText);
             }
         });
     });

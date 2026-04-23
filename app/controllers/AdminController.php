@@ -90,8 +90,11 @@ class AdminController extends Controller
         $household_model = $this->model('Household_Model');
         $total_households = count($household_model->MOD_GET_HOUSEHOLDS());
 
-        $Resident_Model = $this->model('Resident_Model');
-        $total_residents = count($Resident_Model->MOD_GET_RESIDENTS());
+        $resident_model = $this->model('Resident_Model');
+        $total_residents = count($resident_model->MOD_GET_RESIDENTS());
+        
+        $program_model = $this->model('Program_Model');
+        $total_programs = count($program_model->MOD_GET_PROGRAMS());
 
         // Prepare data for view
         $data = [
@@ -104,7 +107,7 @@ class AdminController extends Controller
             'security_questions' => $security_questions,
             'total_households' => $total_households,
             'total_residents' => $total_residents,
-            'total_beneficiaries' => 0,
+            'total_programs' => $total_programs,
             'total_health_records' => 0,
             'system_information' => $system_information
         ];
@@ -214,7 +217,7 @@ class AdminController extends Controller
         $this->view([
             'includes/header',
             'admin/households_view',
-            'includes/modals/household_modals',
+            'includes/modals/households_modals',
             'includes/modals/global_modals',
             'includes/overlays/loading_overlay',
             'includes/footer'
@@ -437,36 +440,6 @@ class AdminController extends Controller
         ], $data);
     }
 
-    public function health_records()
-    {
-        $current_user = session_get('user', null);
-
-        write_log('ACCESS_PAGE', 'health_records', null, 'Accessed health records page');
-
-        $user_model = $this->model('User_Model');
-
-        $security_questions = $user_model->MOD_GET_QUESTIONS_BY_ID($current_user['id']);
-
-        $system_information_model = $this->model('System_Information_Model');
-
-        $system_information = $system_information_model->MOD_GET_SYSTEM_INFORMATION();
-
-        $data = [
-            'title' => 'Health Records',
-            'user' => $current_user,
-            'security_questions' => $security_questions,
-            'system_information' => $system_information
-        ];
-
-        $this->view([
-            'includes/header',
-            'admin/health_records_view',
-            'includes/modals/global_modals',
-            'includes/overlays/loading_overlay',
-            'includes/footer'
-        ], $data);
-    }
-
     public function programs()
     {
         // ==============================
@@ -479,7 +452,7 @@ class AdminController extends Controller
         // 2. LOAD MODELS
         // ==============================
         $user_model = $this->model('User_Model');
-        $program_model = $this->model('Programs_Model');
+        $program_model = $this->model('Program_Model');
         $system_information_model = $this->model('System_Information_Model');
 
         // ==============================
@@ -546,18 +519,18 @@ class AdminController extends Controller
         $this->view([
             'includes/header',
             'admin/programs_view',
-            // 'includes/modals/socio_economic_modals',
+            'includes/modals/programs_modals',
             'includes/modals/global_modals',
             'includes/overlays/loading_overlay',
             'includes/footer'
         ], $data);
     }
 
-    public function reports()
+    public function programs_beneficiaries()
     {
         $current_user = session_get('user', null);
 
-        write_log('ACCESS_PAGE', 'reports', null, 'Accessed reports page');
+        write_log('ACCESS_PAGE', 'programs_beneficiaries', null, 'Accessed programs beneficiaries page');
 
         $user_model = $this->model('User_Model');
 
@@ -568,7 +541,7 @@ class AdminController extends Controller
         $system_information = $system_information_model->MOD_GET_SYSTEM_INFORMATION();
 
         $data = [
-            'title' => 'Reports & Analytics',
+            'title' => 'Programs Beneficiaries',
             'user' => $current_user,
             'security_questions' => $security_questions,
             'system_information' => $system_information
@@ -576,7 +549,127 @@ class AdminController extends Controller
 
         $this->view([
             'includes/header',
-            'admin/reports_view',
+            'admin/programs_beneficiaries_view',
+            'includes/modals/global_modals',
+            'includes/overlays/loading_overlay',
+            'includes/footer'
+        ], $data);
+    }
+    
+    public function health_records()
+    {
+        $current_user = session_get('user', null);
+
+        write_log('ACCESS_PAGE', 'health_records', null, 'Accessed health records page');
+
+        $user_model = $this->model('User_Model');
+
+        $security_questions = $user_model->MOD_GET_QUESTIONS_BY_ID($current_user['id']);
+
+        $system_information_model = $this->model('System_Information_Model');
+
+        $system_information = $system_information_model->MOD_GET_SYSTEM_INFORMATION();
+
+        $data = [
+            'title' => 'Health Records',
+            'user' => $current_user,
+            'security_questions' => $security_questions,
+            'system_information' => $system_information
+        ];
+
+        $this->view([
+            'includes/header',
+            'admin/health_records_view',
+            'includes/modals/global_modals',
+            'includes/overlays/loading_overlay',
+            'includes/footer'
+        ], $data);
+    }
+    
+    public function birth_records()
+    {
+        $current_user = session_get('user', null);
+
+        write_log('ACCESS_PAGE', 'birth_records', null, 'Accessed birth records page');
+
+        $user_model = $this->model('User_Model');
+
+        $security_questions = $user_model->MOD_GET_QUESTIONS_BY_ID($current_user['id']);
+
+        $system_information_model = $this->model('System_Information_Model');
+
+        $system_information = $system_information_model->MOD_GET_SYSTEM_INFORMATION();
+
+        $data = [
+            'title' => 'Birth Records',
+            'user' => $current_user,
+            'security_questions' => $security_questions,
+            'system_information' => $system_information
+        ];
+
+        $this->view([
+            'includes/header',
+            'admin/birth_records_view',
+            'includes/modals/global_modals',
+            'includes/overlays/loading_overlay',
+            'includes/footer'
+        ], $data);
+    }
+    
+    public function migration_records()
+    {
+        $current_user = session_get('user', null);
+
+        write_log('ACCESS_PAGE', 'migration_records', null, 'Accessed migration records page');
+
+        $user_model = $this->model('User_Model');
+
+        $security_questions = $user_model->MOD_GET_QUESTIONS_BY_ID($current_user['id']);
+
+        $system_information_model = $this->model('System_Information_Model');
+
+        $system_information = $system_information_model->MOD_GET_SYSTEM_INFORMATION();
+
+        $data = [
+            'title' => 'Migration Records',
+            'user' => $current_user,
+            'security_questions' => $security_questions,
+            'system_information' => $system_information
+        ];
+
+        $this->view([
+            'includes/header',
+            'admin/migration_records_view',
+            'includes/modals/global_modals',
+            'includes/overlays/loading_overlay',
+            'includes/footer'
+        ], $data);
+    }
+    
+    public function death_records()
+    {
+        $current_user = session_get('user', null);
+
+        write_log('ACCESS_PAGE', 'death_records', null, 'Accessed death records page');
+
+        $user_model = $this->model('User_Model');
+
+        $security_questions = $user_model->MOD_GET_QUESTIONS_BY_ID($current_user['id']);
+
+        $system_information_model = $this->model('System_Information_Model');
+
+        $system_information = $system_information_model->MOD_GET_SYSTEM_INFORMATION();
+
+        $data = [
+            'title' => 'Death Records',
+            'user' => $current_user,
+            'security_questions' => $security_questions,
+            'system_information' => $system_information
+        ];
+
+        $this->view([
+            'includes/header',
+            'admin/death_records_view',
             'includes/modals/global_modals',
             'includes/overlays/loading_overlay',
             'includes/footer'
@@ -1413,6 +1506,77 @@ class AdminController extends Controller
         return json([
             'success' => true,
             'message' => 'Socio-economic profile updated successfully.'
+        ]);
+    }
+
+    public function add_program()
+    {
+        $program_name = input('program_name', null);
+        $description = input('description', null);
+
+        $program_model = $this->model('Program_Model');
+
+        $data = [
+            'program_name' => $program_name,
+            'description' => $description
+        ];
+
+        $new_program_id = $program_model->MOD_INSERT_PROGRAM($data);
+
+        // Log
+        write_log(
+            'ADD_PROGRAM',
+            'programs',
+            $new_program_id,
+            "Added new program: $program_name",
+            session_get('user')['id']
+        );
+
+        flash('flash_notif', [
+            'title' => 'Program Added',
+            'text' => 'The program has been successfully added.',
+            'icon' => 'success',
+        ]);
+
+        return json([
+            'success' => true,
+            'message' => 'Program added successfully.'
+        ]);
+    }
+    
+    public function edit_program()
+    {
+        $id = input('id', null);
+        $program_name = input('program_name', null);
+        $description = input('description', null);
+
+        $program_model = $this->model('Program_Model');
+
+        $data = [
+            'program_name' => $program_name,
+            'description' => $description
+        ];
+
+        $program_model->MOD_UPDATE_PROGRAM($id, $data);
+
+        // Log
+        write_log(
+            'EDIT_PROGRAM',
+            'programs',
+            $id,
+            "Edited program: $program_name",
+            session_get('user')['id']
+        );
+
+        flash('flash_notif', [
+            'title' => 'Program Updated',
+            'text' => 'The program has been successfully updated.',
+            'icon' => 'success',
+        ]);
+
+        return json([
+            'success' => true,
+            'message' => 'Program updated successfully.'
         ]);
     }
 }

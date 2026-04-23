@@ -123,7 +123,7 @@
                                         </button>
 
                                         <!-- EDIT -->
-                                        <button class="btn btn-sm btn-soft me-1 btn-user-management btn-edit-user" title="Update User Account"
+                                        <button class="btn btn-sm btn-outline-primary me-1 btn-user-management btn-edit-user" title="Update User Account"
                                             data-title="UPDATE USER ACCOUNT"
                                             data-submit-text="Save Changes"
                                             data-bs-toggle="modal"

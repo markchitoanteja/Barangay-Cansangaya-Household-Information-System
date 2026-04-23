@@ -55,7 +55,7 @@
                                 <td><?= esc($program['program_name'] ?? 'N/A') ?></td>
                                 <td><?= esc($program['description'] ?? 'N/A') ?></td>
                                 <td class="text-center">
-                                    <button class="btn btn-sm btn-soft btn-edit-program"
+                                    <button class="btn btn-sm btn-outline-success btn-edit-program"
                                         title="Edit Program"
                                         data-bs-toggle="modal"
                                         data-bs-target="#edit_program_modal"

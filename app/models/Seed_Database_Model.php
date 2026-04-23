@@ -99,7 +99,7 @@ class Seed_Database_Model extends Query
             birthdate DATE NOT NULL,
             civil_status ENUM('Single','Married','Widowed','Separated'),
             relationship ENUM('Head','Spouse','Child','Relative','Other'),
-            status ENUM('Active','Deceased','Transferred','Inactive') DEFAULT 'Active',
+            status ENUM('Active','Deceased','Transferred') DEFAULT 'Active',
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             INDEX idx_household (household_id),
@@ -219,7 +219,8 @@ class Seed_Database_Model extends Query
             id INT AUTO_INCREMENT PRIMARY KEY,
             resident_id INT NOT NULL,
             date_of_death DATE NOT NULL,
-            cause VARCHAR(255),
+            cause_of_death VARCHAR(255),
+            manner_of_death VARCHAR(255),
             FOREIGN KEY (resident_id) REFERENCES residents(id)
         ");
 

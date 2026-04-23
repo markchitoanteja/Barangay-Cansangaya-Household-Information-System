@@ -94,14 +94,14 @@
                                 <td><?= isset($profile['monthly_income']) ? '₱' . number_format($profile['monthly_income'], 2) : 'N/A' ?></td>
                                 <td><?= esc($profile['education_level'] ?? 'N/A') ?></td>
                                 <td class="text-center">
-                                    <button class="btn btn-sm btn-soft btn-view-socio-economic-profile"
+                                    <button class="btn btn-sm btn-outline-success btn-view-socio-economic-profile"
                                         title="View Socio-Economic Profile"
                                         data-bs-toggle="modal"
                                         data-bs-target="#view_socio_economic_modal"
                                         data-profile='<?= json_encode($profile) ?>'>
                                         <i class="fa-solid fa-eye"></i>
                                     </button>
-                                    <button class="btn btn-sm btn-soft btn-edit-socio-economic-profile"
+                                    <button class="btn btn-sm btn-outline-primary btn-edit-socio-economic-profile"
                                         title="Edit Socio-Economic Profile"
                                         data-bs-toggle="modal"
                                         data-bs-target="#editSocioEconomicModal"
