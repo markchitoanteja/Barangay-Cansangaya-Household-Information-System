@@ -13,7 +13,7 @@ class AdminController extends Controller
 
         // 2️⃣ Check remember-me via cookies (FIXED)
         $remember_username = $_COOKIE['remember_username'] ?? null;
-        $remember_token    = $_COOKIE['remember_token'] ?? null;
+        $remember_token = $_COOKIE['remember_token'] ?? null;
 
         if ($remember_username && $remember_token) {
             $user = $user_model->MOD_GET_USER_BY_USERNAME($remember_username);
@@ -23,7 +23,7 @@ class AdminController extends Controller
                 session_set('is_login', true);
                 session_set('user', $user);
 
-                $security_questions = $user_model->MOD_GET_QUESTIONS_BY_USER_ID((int)$user['id']);
+                $security_questions = $user_model->MOD_GET_QUESTIONS_BY_USER_ID((int) $user['id']);
                 session_set('security_questions', $security_questions);
 
                 write_log('LOGIN_SUCCESS', 'users', $user['id'], 'User auto-logged in via remember token');
@@ -38,8 +38,8 @@ class AdminController extends Controller
         // 3️⃣ Not authenticated → redirect
         flash('login_notif', [
             'title' => 'Login Required',
-            'text'  => 'You must be logged in to access this page.',
-            'icon'  => 'warning',
+            'text' => 'You must be logged in to access this page.',
+            'icon' => 'warning',
         ]);
 
         redirect('login');
@@ -62,8 +62,9 @@ class AdminController extends Controller
 
         // --- Pagination setup ---
         $per_page = 10;
-        $current_page = (int)(input('page') ?? 1);
-        if ($current_page < 1) $current_page = 1;
+        $current_page = (int) (input('page') ?? 1);
+        if ($current_page < 1)
+            $current_page = 1;
 
         // --- Search filter ---
         $search = trim((string) input('search'));
@@ -92,7 +93,7 @@ class AdminController extends Controller
 
         $resident_model = $this->model('Resident_Model');
         $total_residents = count($resident_model->MOD_GET_RESIDENTS());
-        
+
         $program_model = $this->model('Program_Model');
         $total_programs = count($program_model->MOD_GET_PROGRAMS());
 
@@ -173,8 +174,9 @@ class AdminController extends Controller
         // ==============================
         $per_page = 10;
 
-        $current_page = (int)(input('page') ?? 1);
-        if ($current_page < 1) $current_page = 1;
+        $current_page = (int) (input('page') ?? 1);
+        if ($current_page < 1)
+            $current_page = 1;
 
         $total_households = count($filtered_households);
         $total_pages = (int) ceil($total_households / $per_page);
@@ -277,8 +279,9 @@ class AdminController extends Controller
         // ==============================
         $per_page = 10;
 
-        $current_page = (int)(input('page') ?? 1);
-        if ($current_page < 1) $current_page = 1;
+        $current_page = (int) (input('page') ?? 1);
+        if ($current_page < 1)
+            $current_page = 1;
 
         $total_residents = count($filtered_residents);
         $total_pages = (int) ceil($total_residents / $per_page);
@@ -387,8 +390,9 @@ class AdminController extends Controller
         // ==============================
         $per_page = 10;
 
-        $current_page = (int)(input('page') ?? 1);
-        if ($current_page < 1) $current_page = 1;
+        $current_page = (int) (input('page') ?? 1);
+        if ($current_page < 1)
+            $current_page = 1;
 
         $total_socio_economic_profiles = count($filtered_socio_economic_profiles);
         $total_pages = (int) ceil($total_socio_economic_profiles / $per_page);
@@ -480,8 +484,9 @@ class AdminController extends Controller
         // ==============================
         $per_page = 10;
 
-        $current_page = (int)(input('page') ?? 1);
-        if ($current_page < 1) $current_page = 1;
+        $current_page = (int) (input('page') ?? 1);
+        if ($current_page < 1)
+            $current_page = 1;
 
         $total_programs = count($filtered_programs);
         $total_pages = (int) ceil($total_programs / $per_page);
@@ -503,12 +508,12 @@ class AdminController extends Controller
             'user' => $current_user,
 
             'programs' => $programs,
-            
+
             'current_page' => $current_page,
             'total_pages' => $total_pages,
 
             'search_input' => $search_input,
-            
+
             'security_questions' => $security_questions,
             'system_information' => $system_information
         ];
@@ -528,34 +533,92 @@ class AdminController extends Controller
 
     public function programs_beneficiaries()
     {
+        // ==============================
+        // 1. SESSION & ACCESS LOGGING
+        // ==============================
         $current_user = session_get('user', null);
-
         write_log('ACCESS_PAGE', 'programs_beneficiaries', null, 'Accessed programs beneficiaries page');
 
+        // ==============================
+        // 2. LOAD MODELS
+        // ==============================
         $user_model = $this->model('User_Model');
-
-        $security_questions = $user_model->MOD_GET_QUESTIONS_BY_ID($current_user['id']);
-
+        $program_beneficiary_model = $this->model('Program_Beneficiary_Model');
         $system_information_model = $this->model('System_Information_Model');
 
+        // ==============================
+        // 3. FETCH RAW DATA
+        // ==============================
+        $all_beneficiaries = $program_beneficiary_model->MOD_GET_BENEFICIARIES();
+        $all_residents = $program_beneficiary_model->MOD_GET_RESIDENTS();
+
+        // ==============================
+        // 4. GET FILTER INPUTS
+        // ==============================
+        $search_input = trim((string) input('search_input'));
+
+        // ==============================
+        // 5. APPLY FILTERING
+        // ==============================
+        $filtered_beneficiaries = array_filter($all_beneficiaries, function ($beneficiary) use ($search_input) {
+            return empty($search_input)
+                || stripos($beneficiary['beneficiary_name'], $search_input) !== false
+                || stripos($beneficiary['program_name'], $search_input) !== false;
+        });
+
+        // ==============================
+        // 6. PAGINATION
+        // ==============================
+        $per_page = 10;
+
+        $current_page = (int) (input('page') ?? 1);
+        if ($current_page < 1)
+            $current_page = 1;
+
+        $total_beneficiaries = count($filtered_beneficiaries);
+        $total_pages = (int) ceil($total_beneficiaries / $per_page);
+        $offset = ($current_page - 1) * $per_page;
+
+        $beneficiaries = array_slice($filtered_beneficiaries, $offset, $per_page);
+
+        // ==============================
+        // 7. FETCH AUXILIARY DATA
+        // ==============================
+        $security_questions = $user_model->MOD_GET_QUESTIONS_BY_ID($current_user['id']);
         $system_information = $system_information_model->MOD_GET_SYSTEM_INFORMATION();
 
+        // ==============================
+        // 8. PREPARE VIEW DATA
+        // ==============================
         $data = [
             'title' => 'Programs Beneficiaries',
             'user' => $current_user,
+
+            'beneficiaries' => $beneficiaries,
+            'all_residents' => $all_residents,
+
+            'current_page' => $current_page,
+            'total_pages' => $total_pages,
+
+            'search_input' => $search_input,
+
             'security_questions' => $security_questions,
             'system_information' => $system_information
         ];
 
+        // ==============================
+        // 9. LOAD VIEW
+        // ==============================
         $this->view([
             'includes/header',
             'admin/programs_beneficiaries_view',
+            'includes/modals/programs_beneficiaries_modals',
             'includes/modals/global_modals',
             'includes/overlays/loading_overlay',
             'includes/footer'
         ], $data);
     }
-    
+
     public function health_records()
     {
         $current_user = session_get('user', null);
@@ -585,7 +648,7 @@ class AdminController extends Controller
             'includes/footer'
         ], $data);
     }
-    
+
     public function birth_records()
     {
         $current_user = session_get('user', null);
@@ -615,7 +678,7 @@ class AdminController extends Controller
             'includes/footer'
         ], $data);
     }
-    
+
     public function migration_records()
     {
         $current_user = session_get('user', null);
@@ -645,7 +708,7 @@ class AdminController extends Controller
             'includes/footer'
         ], $data);
     }
-    
+
     public function death_records()
     {
         $current_user = session_get('user', null);
@@ -681,8 +744,8 @@ class AdminController extends Controller
         if (session_get('user')['role'] != 'ADMIN' && session_get('user')['role'] != 'SUPER_ADMIN') {
             flash('flash_notif', [
                 'title' => 'Unauthorized',
-                'text'  => 'You are not authorized to access this page.',
-                'icon'  => 'error',
+                'text' => 'You are not authorized to access this page.',
+                'icon' => 'error',
             ]);
 
             redirect('dashboard');
@@ -697,8 +760,9 @@ class AdminController extends Controller
 
         // --- Pagination setup ---
         $per_page = 10; // max users per page
-        $current_page = (int)(input('page') ?? 1);
-        if ($current_page < 1) $current_page = 1;
+        $current_page = (int) (input('page') ?? 1);
+        if ($current_page < 1)
+            $current_page = 1;
 
         // --- Get search filters from URL ---
         $search_input = trim((string) input('search_input'));
@@ -716,7 +780,7 @@ class AdminController extends Controller
 
         // Pagination calculations
         $total_users = count($all_users);
-        $total_pages = (int)ceil($total_users / $per_page);
+        $total_pages = (int) ceil($total_users / $per_page);
         $offset = ($current_page - 1) * $per_page;
 
         // Slice users for current page
@@ -757,9 +821,9 @@ class AdminController extends Controller
 
     public function update_security_questions()
     {
-        $user_id   = trim(input('user_id'));
+        $user_id = trim(input('user_id'));
         $questions = input('questions'); // array of 3 questions
-        $answers   = input('answers');   // array of 3 answers
+        $answers = input('answers');   // array of 3 answers
 
         $response = ['success' => false, 'message' => 'Failed to update security questions.'];
 
@@ -772,7 +836,7 @@ class AdminController extends Controller
 
         try {
             // Fetch existing questions
-            $existing = $user_model->MOD_GET_QUESTIONS_BY_USER_ID((int)$user_id);
+            $existing = $user_model->MOD_GET_QUESTIONS_BY_USER_ID((int) $user_id);
             if (count($existing) !== 3) {
                 $response['error'] = 'User must already have exactly 3 security questions.';
                 return json($response);
@@ -787,26 +851,26 @@ class AdminController extends Controller
                 $newAnswer = trim($answers[$i] ?? '');
 
                 $user_model->MOD_UPDATE_SECURITY_QUESTION_BY_ID(
-                    (int)$user_id,
-                    (int)$oldId,
+                    (int) $user_id,
+                    (int) $oldId,
                     $newQuestion,
                     $newAnswer
                 );
             }
 
-            write_log('UPDATE_SECURITY', 'security_questions', (int)$user_id, "Updated security questions for user ID {$user_id}");
+            write_log('UPDATE_SECURITY', 'security_questions', (int) $user_id, "Updated security questions for user ID {$user_id}");
 
             flash('flash_notif', [
                 'title' => 'Security Questions Updated',
-                'text'  => 'The user\'s security questions have been successfully updated.',
-                'icon'  => 'success',
+                'text' => 'The user\'s security questions have been successfully updated.',
+                'icon' => 'success',
             ]);
 
             $response['success'] = true;
             $response['message'] = 'Security questions updated successfully.';
         } catch (\Exception $e) {
             $response['error'] = $e->getMessage();
-            write_log('ERROR', 'security_questions', (int)$user_id, "Failed to update security questions: " . $e->getMessage());
+            write_log('ERROR', 'security_questions', (int) $user_id, "Failed to update security questions: " . $e->getMessage());
         }
 
         return json($response);
@@ -965,7 +1029,7 @@ class AdminController extends Controller
         $user_model = $this->model('User_Model');
 
         $data = [
-            'is_active'  => 0, // Deactivate account
+            'is_active' => 0, // Deactivate account
             'updated_at' => $this->current_date()
         ];
 
@@ -978,8 +1042,8 @@ class AdminController extends Controller
             // Flash message for front-end notifications (optional)
             flash('flash_notif', [
                 'title' => 'Account Disabled',
-                'text'  => "The account for $username has been successfully disabled.",
-                'icon'  => 'success',
+                'text' => "The account for $username has been successfully disabled.",
+                'icon' => 'success',
             ]);
 
             $response = [
@@ -1004,7 +1068,7 @@ class AdminController extends Controller
         $user_model = $this->model('User_Model');
 
         $data = [
-            'is_active'  => 1,
+            'is_active' => 1,
             'updated_at' => $this->current_date()
         ];
 
@@ -1017,8 +1081,8 @@ class AdminController extends Controller
             // Flash message for front-end notifications (optional)
             flash('flash_notif', [
                 'title' => 'Account Enabled',
-                'text'  => "The account for $username has been successfully enabled.",
-                'icon'  => 'success',
+                'text' => "The account for $username has been successfully enabled.",
+                'icon' => 'success',
             ]);
 
             $response = [
@@ -1170,8 +1234,8 @@ class AdminController extends Controller
 
             flash('flash_notif', [
                 'title' => 'Logs Cleared',
-                'text'  => 'All system logs have been successfully removed.',
-                'icon'  => 'success',
+                'text' => 'All system logs have been successfully removed.',
+                'icon' => 'success',
             ]);
         } else {
             $response = [
@@ -1202,7 +1266,7 @@ class AdminController extends Controller
             // Extract the numeric part after the dash
             $parts = explode('-', $last_record['household_code']);
             if (isset($parts[1])) {
-                $last_number = (int)$parts[1];
+                $last_number = (int) $parts[1];
                 $new_number = $last_number + 1;
             }
         }
@@ -1543,7 +1607,7 @@ class AdminController extends Controller
             'message' => 'Program added successfully.'
         ]);
     }
-    
+
     public function edit_program()
     {
         $id = input('id', null);

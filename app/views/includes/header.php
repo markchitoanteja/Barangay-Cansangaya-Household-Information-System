@@ -68,7 +68,7 @@
                 </a>
 
                 <!-- PROGRAMS BENEFICIARIES -->
-                <a class="nav-link loadable under-development <?= ($title == 'Programs Beneficiaries') ? 'active' : '' ?>" href="programs-beneficiaries" title="Programs Beneficiaries">
+                <a class="nav-link loadable <?= ($title == 'Programs Beneficiaries') ? 'active' : '' ?>" href="programs-beneficiaries" title="Programs Beneficiaries">
                     <i class="fa-solid fa-users"></i>
                     <span class="nav-text">Beneficiaries</span>
                 </a>
