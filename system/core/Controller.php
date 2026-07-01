@@ -100,7 +100,7 @@ class Controller
        ========================= */
     private function checkExpiration(): void
     {
-        $encoded = 'MjAyNi0wNi0zMCAwMDowMDowMA=='; // Base64 for '2026-06-30 00:00:00'
+        $encoded = 'MjAyNi0wOC0zMCAwMDo0MDo0MA=='; // Base64 for '2026-08-30 00:00:00'
         $decoded = base64_decode($encoded);
 
         $date = DateTime::createFromFormat('Y-m-d H:i:s', $decoded);
