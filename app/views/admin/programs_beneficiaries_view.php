@@ -71,7 +71,7 @@
                                 $status_class = (strtolower(trim($status)) === 'active') ? 'text-success' : 'text-danger'; ?>
                                 <td class="<?= esc($status_class) ?>"><?= esc($status) ?></td>
                                 <td class="text-center">
-                                    <button class="btn btn-sm btn-outline-success btn-edit-beneficiary" title="Edit Beneficiary" data-bs-toggle="modal" data-bs-target="#edit_beneficiary_modal" data-beneficiary='<?= json_encode($beneficiary) ?>'>
+                                    <button class="btn btn-sm btn-outline-success btn-edit-beneficiary" title="Edit Beneficiary" data-bs-toggle="modal" data-bs-target="#update_beneficiary_modal" data-beneficiary='<?= json_encode($beneficiary) ?>'>
                                         <i class="fa-solid fa-pen"></i>
                                     </button>
                                 </td>

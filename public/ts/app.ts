@@ -1510,6 +1510,73 @@ $((): void => {
             }
         });
     });
+    
+    $('#update_beneficiary_form').on('submit', function (e) {
+        e.preventDefault();
+
+        const id = $('#update_beneficiary_id').val()?.toString().trim();
+        const program_id = $('#update_program_id').val()?.toString().trim();
+        const resident_id = $('#update_resident_id').val()?.toString().trim();
+        const status = $('#update_status').val()?.toString().trim();
+
+        showLoading();
+
+        const formData = { id, program_id, resident_id, status };
+
+        $.ajax({
+            url: 'update-beneficiary',
+            method: 'POST',
+            data: formData,
+            dataType: 'JSON',
+            success: (response) => {
+                setTimeout(() => {
+                    if (response.success) {
+                        location.reload();
+                    } else {
+                        hideLoading();
+                    }
+                }, 250);
+            },
+            error: (xhr, status, error) => {
+                hideLoading();
+                console.error('AJAX Error:', error);
+                console.log(xhr.responseText);
+            }
+        });
+    });
+    
+    $('#add_beneficiary_form').on('submit', function (e) {
+        e.preventDefault();
+
+        const program_id = $('#add_program_id').val()?.toString().trim();
+        const resident_id = $('#add_resident_id').val()?.toString().trim();
+        const status = $('#add_status').val()?.toString().trim();
+
+        showLoading();
+
+        const formData = { program_id, resident_id, status };
+
+        $.ajax({
+            url: 'add-program-beneficiary',
+            method: 'POST',
+            data: formData,
+            dataType: 'JSON',
+            success: (response) => {
+                setTimeout(() => {
+                    if (response.success) {
+                        location.reload();
+                    } else {
+                        hideLoading();
+                    }
+                }, 250);
+            },
+            error: (xhr, status, error) => {
+                hideLoading();
+                console.error('AJAX Error:', error);
+                console.log(xhr.responseText);
+            }
+        });
+    });
 
     $(document).on('click', '.btn-edit-program', function () {
         const program = $(this).data('program');
@@ -1517,6 +1584,15 @@ $((): void => {
         $('#edit_program_id').val(program.id);
         $('#edit_program_name').val(program.program_name);
         $('#edit_program_description').val(program.description);
+    });
+    
+    $(document).on('click', '.btn-edit-beneficiary', function () {
+        const beneficiary = $(this).data('beneficiary');
+
+        $('#update_beneficiary_id').val(beneficiary.id);
+        $('#update_program_id').val(beneficiary.program_id);
+        $('#update_resident_id').val(beneficiary.resident_id);
+        $('#update_status').val(beneficiary.status);
     });
 
     $('#edit_program_form').on('submit', function (e) {

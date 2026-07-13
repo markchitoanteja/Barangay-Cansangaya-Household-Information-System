@@ -551,6 +551,7 @@ class AdminController extends Controller
         // ==============================
         $all_beneficiaries = $program_beneficiary_model->MOD_GET_BENEFICIARIES();
         $all_residents = $program_beneficiary_model->MOD_GET_RESIDENTS();
+        $all_programs = $program_beneficiary_model->MOD_GET_PROGRAMS();
 
         // ==============================
         // 4. GET FILTER INPUTS
@@ -596,6 +597,7 @@ class AdminController extends Controller
 
             'beneficiaries' => $beneficiaries,
             'all_residents' => $all_residents,
+            'all_programs' => $all_programs,
 
             'current_page' => $current_page,
             'total_pages' => $total_pages,
@@ -1642,5 +1644,121 @@ class AdminController extends Controller
             'success' => true,
             'message' => 'Program updated successfully.'
         ]);
+    }
+
+    public function add_program_beneficiary()
+    {
+        $program_id = input('program_id', null);
+        $resident_id = input('resident_id', null);
+        $status = input('status', null);
+
+        $program_beneficiary_model = $this->model('Program_Beneficiary_Model');
+
+        $data = [
+            'program_id' => $program_id,
+            'resident_id' => $resident_id,
+            'status' => $status,
+            'date_enrolled' => $this->current_date()
+        ];
+
+        if ($program_beneficiary_model->MOD_CHECK_IF_BENEFICIARY_EXISTS($program_id, $resident_id)) {
+            flash('flash_notif', [
+                'title' => 'Duplicate Enrollment',
+                'text' => 'This resident is already enrolled in the selected program.',
+                'icon' => 'error',
+            ]);
+
+            return json([
+                'success' => true,
+                'error' => 'This resident is already enrolled in the selected program.'
+            ]);
+        } else {
+            $new_program_beneficiary_id = $program_beneficiary_model->MOD_INSERT_PROGRAM_BENEFICIARY($data);
+
+            // Log
+            write_log(
+                'ADD_PROGRAM_BENEFICIARY',
+                'program_beneficiaries',
+                $new_program_beneficiary_id,
+                "Added new program beneficiary: $program_id - $resident_id",
+                session_get('user')['id']
+            );
+
+            flash('flash_notif', [
+                'title' => 'Program Beneficiary Added',
+                'text' => 'The program beneficiary has been successfully added.',
+                'icon' => 'success',
+            ]);
+
+            return json([
+                'success' => true,
+                'message' => 'Program beneficiary added successfully.'
+            ]);
+        }
+    }
+
+    public function update_beneficiary()
+    {
+        $id = input('id', null);
+        $program_id = input('program_id', null);
+        $resident_id = input('resident_id', null);
+        $status = input('status', null);
+
+        $program_beneficiary_model = $this->model('Program_Beneficiary_Model');
+
+        $data = [
+            'program_id' => $program_id,
+            'resident_id' => $resident_id,
+            'status' => $status
+        ];
+
+        if ($program_beneficiary_model->MOD_CHECK_IF_BENEFICIARY_EXISTS_EXCEPT_CURRENT($id, $program_id, $resident_id)) {
+            flash('flash_notif', [
+                'title' => 'Duplicate Enrollment',
+                'text' => 'This resident is already enrolled in the selected program.',
+                'icon' => 'error',
+            ]);
+
+            return json([
+                'success' => true,
+                'error' => 'This resident is already enrolled in the selected program.'
+            ]);
+        } else {
+            $update_success = $program_beneficiary_model->MOD_UPDATE_BENEFICIARY($id, $data);
+
+            if ($update_success) {
+                // Log
+                write_log(
+                    'UPDATE_PROGRAM_BENEFICIARY',
+                    'program_beneficiaries',
+                    $id,
+                    "Updated program beneficiary: $program_id - $resident_id",
+                    session_get('user')['id']
+                );
+
+                flash('flash_notif', [
+                    'title' => 'Program Beneficiary Updated',
+                    'text' => 'The program beneficiary has been successfully updated.',
+                    'icon' => 'success',
+                ]);
+
+                return json([
+                    'success' => true,
+                    'message' => 'Program beneficiary updated successfully.'
+                ]);
+            } else {
+                flash('flash_notif', [
+                    'title' => 'Update Failed',
+                    'text' => 'Failed to update the program beneficiary.',
+                    'icon' => 'error',
+                ]);
+
+                return json([
+                    'success' => true,
+                    'message' => 'Failed to update the program beneficiary.'
+                ]);
+            }
+
+        }
     }
 }

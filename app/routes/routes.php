@@ -46,6 +46,8 @@ return function (Router $router) {
     $router->post('/edit-socio-economic-profile', 'AdminController@edit_socio_economic_profile');
     $router->post('/add-program', 'AdminController@add_program');
     $router->post('/edit-program', 'AdminController@edit_program');
+    $router->post('/add-program-beneficiary', 'AdminController@add_program_beneficiary');
+    $router->post('/update-beneficiary', 'AdminController@update_beneficiary');
 
     // System Update Routes
     $router->get('/check-updates', 'UpdateController@check');

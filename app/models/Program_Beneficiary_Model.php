@@ -7,6 +7,11 @@ class Program_Beneficiary_Model extends Query
         return $this->table('residents')->orderBy('last_name', 'ASC')->get();
     }
 
+    public function MOD_GET_PROGRAMS(): array
+    {
+        return $this->table('programs')->orderBy('program_name', 'ASC')->get();
+    }
+
     public function MOD_GET_BENEFICIARIES(): array
     {
         return $this->table('program_beneficiaries')
@@ -41,7 +46,17 @@ class Program_Beneficiary_Model extends Query
             ->get();
     }
 
-    public function MOD_INSERT_BENEFICIARY(array $data): string
+    public function MOD_CHECK_IF_BENEFICIARY_EXISTS($program_id, $resident_id): bool
+    {
+        return $this->table('program_beneficiaries')->where('program_id', $program_id)->where('resident_id', $resident_id)->exists();
+    }
+
+    public function MOD_CHECK_IF_BENEFICIARY_EXISTS_EXCEPT_CURRENT($id, $program_id, $resident_id): bool
+    {
+        return $this->table('program_beneficiaries')->where('id', '!=', $id)->where('program_id', $program_id)->where('resident_id', $resident_id)->exists();
+    }
+
+    public function MOD_INSERT_PROGRAM_BENEFICIARY(array $data): string
     {
         return $this->table('program_beneficiaries')->insert($data);
     }
