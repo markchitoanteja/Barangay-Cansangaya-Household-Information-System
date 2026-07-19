@@ -623,28 +623,86 @@ class AdminController extends Controller
 
     public function health_records()
     {
+        // ==============================
+        // 1. SESSION & ACCESS LOGGING
+        // ==============================
         $current_user = session_get('user', null);
-
         write_log('ACCESS_PAGE', 'health_records', null, 'Accessed health records page');
 
+        // ==============================
+        // 2. LOAD MODELS
+        // ==============================
         $user_model = $this->model('User_Model');
-
-        $security_questions = $user_model->MOD_GET_QUESTIONS_BY_ID($current_user['id']);
-
+        $health_record_model = $this->model('Health_Record_Model');
         $system_information_model = $this->model('System_Information_Model');
 
+        // ==============================
+        // 3. FETCH RAW DATA
+        // ==============================
+        $all_health_records = $health_record_model->MOD_GET_HEALTH_RECORDS();
+        $all_residents = $health_record_model->MOD_GET_RESIDENTS();
+        
+        // ==============================
+        // 4. GET FILTER INPUTS
+        // ==============================
+        $search_input = trim((string) input('search_input'));
+
+        // ==============================
+        // 5. APPLY FILTERING
+        // ==============================
+        $filtered_health_records = array_filter($all_health_records, function ($health_record) use ($search_input) {
+            return empty($search_input)
+                || stripos($health_record['resident_name'], $search_input) !== false
+                || stripos($health_record['condition'], $search_input) !== false;
+        });
+
+        // ==============================
+        // 6. PAGINATION
+        // ==============================
+        $per_page = 10;
+
+        $current_page = (int) (input('page') ?? 1);
+        if ($current_page < 1)
+            $current_page = 1;
+
+        $total_health_records = count($filtered_health_records);
+        $total_pages = (int) ceil($total_health_records / $per_page);
+        $offset = ($current_page - 1) * $per_page;
+
+        $health_records = array_slice($filtered_health_records, $offset, $per_page);
+
+        // ==============================
+        // 7. FETCH AUXILIARY DATA
+        // ==============================
+        $security_questions = $user_model->MOD_GET_QUESTIONS_BY_ID($current_user['id']);
         $system_information = $system_information_model->MOD_GET_SYSTEM_INFORMATION();
 
+        // ==============================
+        // 8. PREPARE VIEW DATA
+        // ==============================
         $data = [
             'title' => 'Health Records',
             'user' => $current_user,
+
+            'health_records' => $health_records,
+            'all_residents' => $all_residents,
+            
+            'current_page' => $current_page,
+            'total_pages' => $total_pages,
+
+            'search_input' => $search_input,
+
             'security_questions' => $security_questions,
             'system_information' => $system_information
         ];
 
+        // ==============================
+        // 9. LOAD VIEW
+        // ==============================
         $this->view([
             'includes/header',
             'admin/health_records_view',
+            'includes/modals/health_records_modals',
             'includes/modals/global_modals',
             'includes/overlays/loading_overlay',
             'includes/footer'

@@ -75,7 +75,7 @@
 
                 <div class="nav-section">Health</div>
                 <!-- HEALTH RECORDS -->
-                <a class="nav-link loadable under-development <?= ($title == 'Health Records') ? 'active' : '' ?>" href="health-records" title="Health Records">
+                <a class="nav-link loadable <?= ($title == 'Health Records') ? 'active' : '' ?>" href="health-records" title="Health Records">
                     <i class="fa-solid fa-heart-pulse"></i>
                     <span class="nav-text">Health Records</span>
                 </a>
