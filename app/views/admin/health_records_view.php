@@ -102,10 +102,10 @@
                                     <?php endif; ?>
                                 </td>
                                 <td class="text-center">
-                                    <button class="btn btn-sm btn-outline-success btn-view-household" title="View Household Details" data-bs-toggle="modal" data-bs-target="#viewHouseholdModal" data-health_record='<?= json_encode($health_records) ?>'>
+                                    <button class="btn btn-sm btn-outline-success btn-view-health-record" title="View Health Record" data-bs-toggle="modal" data-bs-target="#viewHealthRecordModal" data-health_record='<?= json_encode($record) ?>'>
                                         <i class="fa-solid fa-eye"></i>
                                     </button>
-                                    <button class="btn btn-sm btn-outline-primary btn-edit-household" title="Edit Household" data-bs-toggle="modal" data-bs-target="#editHouseholdModal" data-health_record='<?= json_encode($health_records) ?>'>
+                                    <button class="btn btn-sm btn-outline-primary btn-edit-health-record" title="Edit Health Record" data-bs-toggle="modal" data-bs-target="#editHealthRecordModal" data-health_record='<?= json_encode($record) ?>'>
                                         <i class="fa-solid fa-pen"></i>
                                     </button>
                                 </td>

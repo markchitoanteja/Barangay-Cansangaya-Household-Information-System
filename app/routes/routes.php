@@ -48,6 +48,8 @@ return function (Router $router) {
     $router->post('/edit-program', 'AdminController@edit_program');
     $router->post('/add-program-beneficiary', 'AdminController@add_program_beneficiary');
     $router->post('/update-beneficiary', 'AdminController@update_beneficiary');
+    $router->post('/add-health-record', 'AdminController@add_health_record');
+    $router->post('/edit-health-record', 'AdminController@edit_health_record');
 
     // System Update Routes
     $router->get('/check-updates', 'UpdateController@check');

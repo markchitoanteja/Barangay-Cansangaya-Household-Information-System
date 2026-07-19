@@ -39,23 +39,23 @@ class Health_Record_Model extends Query
             ->get();
     }
 
-    public function MOD_CHECK_IF_BENEFICIARY_EXISTS($program_id, $resident_id): bool
+    public function MOD_CHECK_IF_RESIDENT_EXISTS($resident_id): bool
     {
-        return $this->table('program_beneficiaries')->where('program_id', $program_id)->where('resident_id', $resident_id)->exists();
+        return $this->table('health_records')->where('resident_id', $resident_id)->exists();
     }
 
-    public function MOD_CHECK_IF_BENEFICIARY_EXISTS_EXCEPT_CURRENT($id, $program_id, $resident_id): bool
+    public function MOD_CHECK_IF_RESIDENT_EXISTS_EXCEPT_ID($resident_id, $id): bool
     {
-        return $this->table('program_beneficiaries')->where('id', '!=', $id)->where('program_id', $program_id)->where('resident_id', $resident_id)->exists();
+        return $this->table('health_records')->where('resident_id', $resident_id)->where('id', '!=', $id)->exists();
     }
 
-    public function MOD_INSERT_PROGRAM_BENEFICIARY(array $data): string
+    public function MOD_INSERT_HEALTH_RECORD(array $data): string
     {
-        return $this->table('program_beneficiaries')->insert($data);
+        return $this->table('health_records')->insert($data);
     }
 
-    public function MOD_UPDATE_BENEFICIARY(int $id, array $data): int
+    public function MOD_UPDATE_HEALTH_RECORD(int $id, array $data): int
     {
-        return $this->table('program_beneficiaries')->where('id', $id)->update($data);
+        return $this->table('health_records')->where('id', $id)->update($data);
     }
 }

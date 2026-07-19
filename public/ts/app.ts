@@ -1510,7 +1510,7 @@ $((): void => {
             }
         });
     });
-    
+
     $('#update_beneficiary_form').on('submit', function (e) {
         e.preventDefault();
 
@@ -1544,7 +1544,7 @@ $((): void => {
             }
         });
     });
-    
+
     $('#add_beneficiary_form').on('submit', function (e) {
         e.preventDefault();
 
@@ -1585,7 +1585,7 @@ $((): void => {
         $('#edit_program_name').val(program.program_name);
         $('#edit_program_description').val(program.description);
     });
-    
+
     $(document).on('click', '.btn-edit-beneficiary', function () {
         const beneficiary = $(this).data('beneficiary');
 
@@ -1627,7 +1627,198 @@ $((): void => {
             }
         });
     });
+
+    $('#add_health_record_has_chronic_illness').on('change', function () {
+        const hasChronicIllness = $(this).val()?.toString().trim();
+        const $details = $('#add_health_record_chronic_illness_details');
+
+        if (hasChronicIllness === '1') {
+            $details.prop('disabled', false).prop('required', true);
+        } else {
+            $details.prop('disabled', true).prop('required', false).val('');
+        }
+    });
+
+    $('#add_health_record_form').on('submit', function (e) {
+        e.preventDefault();
+
+        const resident_id = $('#add_health_record_resident_id').val()?.toString().trim();
+        const is_pwd = $('#add_health_record_is_pwd').val()?.toString().trim();
+        const is_senior = $('#add_health_record_is_senior').val()?.toString().trim();
+        const vaccinated = $('#add_health_record_vaccinated').val()?.toString().trim();
+        const blood_type = $('#add_health_record_blood_type').val()?.toString().trim();
+        const has_chronic_illness = $('#add_health_record_has_chronic_illness').val()?.toString().trim();
+        const chronic_illness_details = $('#add_health_record_chronic_illness_details').val()?.toString().trim();
+
+        showLoading();
+
+        const formData = { resident_id, is_pwd, is_senior, vaccinated, blood_type, has_chronic_illness, chronic_illness_details };
+
+        $.ajax({
+            url: 'add-health-record',
+            method: 'POST',
+            data: formData,
+            dataType: 'JSON',
+            success: (response) => {
+                setTimeout(() => {
+                    if (response.success) {
+                        location.reload();
+                    } else {
+                        hideLoading();
+                    }
+                }, 250);
+            },
+            error: (xhr, status, error) => {
+                hideLoading();
+                console.error('AJAX Error:', error);
+                console.log(xhr.responseText);
+            }
+        });
+    });
+
+    $("#healthRecordSearchForm").on("submit", (): void => {
+        const search_input = $("#search_input").val()?.toString().trim();
+
+        // Build URL parameters
+        const params = new URLSearchParams();
+
+        if (search_input) params.set("search_input", search_input);
+
+        // Reset page to 1 on new search
+        params.set("page", "1");
+
+        // Reload page with query string
+        const baseUrl = window.location.pathname; // keeps /user-management
+
+        showLoading();
+
+        setTimeout(() => {
+            window.location.href = `${baseUrl}?${params.toString()}`;
+        }, 250);
+    });
+
+    $(document).on('click', '.btn-view-health-record', function () {
+        const health_record = $(this).data('health_record');
+
+        const fullname = health_record.resident_name ? health_record.resident_name : 'N/A';
+        const formatted_resident_id = health_record.resident_id != null && health_record.resident_id !== ''
+            ? String(health_record.resident_id).padStart(5, '0')
+            : 'N/A';
+
+        // Header / identity
+        $('#view_health_resident_name').text(fullname);
+        $('#view_health_resident_id').text(formatted_resident_id);
+        $('#view_health_blood_type').text(health_record.blood_type || 'N/A');
+        $('#view_health_is_pwd').text(health_record.is_pwd === 1 ? 'Yes' : 'No');
+        $('#view_health_is_senior').text(health_record.is_senior === 1 ? 'Yes' : 'No');
+        $('#view_health_has_chronic_illness').text(health_record.has_chronic_illness === 1 ? 'Yes' : 'No');
+        $('#view_health_chronic_illness_details').text(health_record.chronic_illness_details || 'N/A');
+        $('#view_health_vaccinated').text(health_record.vaccinated === 1 ? 'Yes' : 'No');
+
+        $('#view_health_created_at').text(formatDateTime(health_record.created_at));
+        $('#view_health_updated_at').text(formatDateTime(health_record.updated_at));
+    });
+
+    $(document).on('click', '.btn-edit-health-record', function () {
+        const health_record = $(this).data('health_record');
+
+        $('#edit_health_record_id').val(health_record.id);
+        $('#edit_health_record_resident_id').val(health_record.resident_id);
+        $('#edit_health_record_blood_type').val(health_record.blood_type);
+        $('#edit_health_record_is_pwd').val(health_record.is_pwd);
+        $('#edit_health_record_is_senior').val(health_record.is_senior);
+        $('#edit_health_record_has_chronic_illness').val(health_record.has_chronic_illness);
+        $('#edit_health_record_chronic_illness_details').val(health_record.chronic_illness_details);
+        $('#edit_health_record_vaccinated').val(health_record.vaccinated);
+
+        if (health_record.has_chronic_illness === 1) {
+            $('#edit_health_record_chronic_illness_details').prop('disabled', false).prop('required', true);
+        }
+    });
+
+    $('#edit_health_record_has_chronic_illness').on('change', function () {
+        const hasChronicIllness = $(this).val()?.toString().trim();
+        const $details = $('#edit_health_record_chronic_illness_details');
+
+        if (hasChronicIllness === '1') {
+            $details.prop('disabled', false).prop('required', true);
+        } else {
+            $details.prop('disabled', true).prop('required', false).val('');
+        }
+    });
+
+    $('#edit_health_record_form').on('submit', function (e) {
+        e.preventDefault();
+
+        const id = $('#edit_health_record_id').val()?.toString().trim();
+        const resident_id = $('#edit_health_record_resident_id').val()?.toString().trim();
+        const is_pwd = $('#edit_health_record_is_pwd').val()?.toString().trim();
+        const is_senior = $('#edit_health_record_is_senior').val()?.toString().trim();
+        const vaccinated = $('#edit_health_record_vaccinated').val()?.toString().trim();
+        const blood_type = $('#edit_health_record_blood_type').val()?.toString().trim();
+        const has_chronic_illness = $('#edit_health_record_has_chronic_illness').val()?.toString().trim();
+        const chronic_illness_details = $('#edit_health_record_chronic_illness_details').val()?.toString().trim();
+
+        showLoading();
+
+        const formData = { id, resident_id, is_pwd, is_senior, vaccinated, blood_type, has_chronic_illness, chronic_illness_details };
+
+        $.ajax({
+            url: 'edit-health-record',
+            method: 'POST',
+            data: formData,
+            dataType: 'JSON',
+            success: (response) => {
+                setTimeout(() => {
+                    if (response.success) {
+                        location.reload();
+                    } else {
+                        hideLoading();
+                    }
+                }, 250);
+            },
+            error: (xhr, status, error) => {
+                hideLoading();
+                console.error('AJAX Error:', error);
+                console.log(xhr.responseText);
+            }
+        });
+    });
 });
+
+function formatDateTime(dateInput: string | null | undefined): string {
+    if (!dateInput) {
+        return 'N/A';
+    }
+
+    const normalized = String(dateInput).trim().replace(' ', 'T');
+    const date = new Date(normalized);
+
+    if (!isFinite(date.getTime())) {
+        return String(dateInput);
+    }
+
+    const months = [
+        'January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+
+    const month = months[date.getMonth()];
+    const day = date.getDate();
+    const year = date.getFullYear();
+    let hours = date.getHours();
+    const minutes = date.getMinutes();
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+
+    hours = hours % 12;
+    if (hours === 0) {
+        hours = 12;
+    }
+
+    const minuteString = String(minutes).padStart(2, '0');
+
+    return `${month} ${day}, ${year} ${hours}:${minuteString} ${ampm}`;
+}
 
 function getStatusClass(status: string | null | undefined, isPill: boolean): string {
     let bgClass = '';

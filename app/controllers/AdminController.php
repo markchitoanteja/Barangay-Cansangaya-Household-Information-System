@@ -96,6 +96,9 @@ class AdminController extends Controller
 
         $program_model = $this->model('Program_Model');
         $total_programs = count($program_model->MOD_GET_PROGRAMS());
+        
+        $beneficiary_model = $this->model('Program_Beneficiary_Model');
+        $total_beneficiaries = count($beneficiary_model->MOD_GET_BENEFICIARIES());
 
         // Prepare data for view
         $data = [
@@ -109,7 +112,7 @@ class AdminController extends Controller
             'total_households' => $total_households,
             'total_residents' => $total_residents,
             'total_programs' => $total_programs,
-            'total_health_records' => 0,
+            'total_beneficiaries' => $total_beneficiaries,
             'system_information' => $system_information
         ];
 
@@ -641,7 +644,7 @@ class AdminController extends Controller
         // ==============================
         $all_health_records = $health_record_model->MOD_GET_HEALTH_RECORDS();
         $all_residents = $health_record_model->MOD_GET_RESIDENTS();
-        
+
         // ==============================
         // 4. GET FILTER INPUTS
         // ==============================
@@ -651,9 +654,7 @@ class AdminController extends Controller
         // 5. APPLY FILTERING
         // ==============================
         $filtered_health_records = array_filter($all_health_records, function ($health_record) use ($search_input) {
-            return empty($search_input)
-                || stripos($health_record['resident_name'], $search_input) !== false
-                || stripos($health_record['condition'], $search_input) !== false;
+            return empty($search_input) || stripos($health_record['resident_name'], $search_input) !== false;
         });
 
         // ==============================
@@ -686,7 +687,7 @@ class AdminController extends Controller
 
             'health_records' => $health_records,
             'all_residents' => $all_residents,
-            
+
             'current_page' => $current_page,
             'total_pages' => $total_pages,
 
@@ -1818,5 +1819,113 @@ class AdminController extends Controller
             }
 
         }
+    }
+
+    public function add_health_record()
+    {
+        $resident_id = input('resident_id', null);
+        $is_pwd = input('is_pwd', null);
+        $is_senior = input('is_senior', null);
+        $vaccinated = input('vaccinated', null);
+        $blood_type = input('blood_type', null);
+        $has_chronic_illness = input('has_chronic_illness', null);
+        $chronic_illness_details = input('chronic_illness_details', null);
+
+        $health_record_model = $this->model('Health_Record_Model');
+
+        $data = [
+            'resident_id' => $resident_id,
+            'is_pwd' => $is_pwd,
+            'is_senior' => $is_senior,
+            'vaccinated' => $vaccinated,
+            'blood_type' => $blood_type,
+            'has_chronic_illness' => $has_chronic_illness,
+            'chronic_illness_details' => $chronic_illness_details
+        ];
+
+        if (!$health_record_model->MOD_CHECK_IF_RESIDENT_EXISTS($resident_id)) {
+            $new_health_record_id = $health_record_model->MOD_INSERT_HEALTH_RECORD($data);
+
+            // Log
+            write_log(
+                'ADD_HEALTH_RECORD',
+                'health_records',
+                $new_health_record_id,
+                "Added new health record for resident: $resident_id",
+                session_get('user')['id']
+            );
+
+            flash('flash_notif', [
+                'title' => 'Health Record Added',
+                'text' => 'The health record has been successfully added.',
+                'icon' => 'success',
+            ]);
+        } else {
+            flash('flash_notif', [
+                'title' => 'Health Record Exists',
+                'text' => 'The health record already exists for this resident.',
+                'icon' => 'error',
+            ]);
+        }
+
+        return json([
+            'success' => true,
+            'message' => 'Health record added successfully.'
+        ]);
+    }
+    
+    public function edit_health_record()
+    {
+        $id = input('id', null);
+        $resident_id = input('resident_id', null);
+        $is_pwd = input('is_pwd', null);
+        $is_senior = input('is_senior', null);
+        $vaccinated = input('vaccinated', null);
+        $blood_type = input('blood_type', null);
+        $has_chronic_illness = input('has_chronic_illness', null);
+        $chronic_illness_details = input('chronic_illness_details', null);
+
+        $health_record_model = $this->model('Health_Record_Model');
+
+        $data = [
+            'resident_id' => $resident_id,
+            'is_pwd' => $is_pwd,
+            'is_senior' => $is_senior,
+            'vaccinated' => $vaccinated,
+            'blood_type' => $blood_type,
+            'has_chronic_illness' => $has_chronic_illness,
+            'chronic_illness_details' => $chronic_illness_details,
+            'updated_at' => $this->current_date()
+        ];
+
+        if (!$health_record_model->MOD_CHECK_IF_RESIDENT_EXISTS_EXCEPT_ID($resident_id, $id)) {
+            $new_health_record_id = $health_record_model->MOD_UPDATE_HEALTH_RECORD($id, $data);
+
+            // Log
+            write_log(
+                'EDIT_HEALTH_RECORD',
+                'health_records',
+                $new_health_record_id,
+                "Updated health record for resident: $resident_id",
+                session_get('user')['id']
+            );
+
+            flash('flash_notif', [
+                'title' => 'Health Record Updated',
+                'text' => 'The health record has been successfully updated.',
+                'icon' => 'success',
+            ]);
+        } else {
+            flash('flash_notif', [
+                'title' => 'Health Record Exists',
+                'text' => 'The health record already exists for this resident.',
+                'icon' => 'error',
+            ]);
+        }
+
+        return json([
+            'success' => true,
+            'message' => 'Health record updated successfully.'
+        ]);
     }
 }

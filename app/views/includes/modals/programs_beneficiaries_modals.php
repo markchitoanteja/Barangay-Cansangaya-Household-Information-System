@@ -114,7 +114,7 @@
                 <div class="d-flex align-items-center gap-3">
                     <img src="<?= base_url('public/assets/img/') . ($system_information['official_logo'] ?? 'default_logo.png') . '?v=' . env('APP_VERSION') ?>" class="gov-modal-logo">
                     <div>
-                        <h5 class="modal-title mb-0">ADD BENEFICIARY</h5>
+                        <h5 class="modal-title mb-0">EDIT BENEFICIARY</h5>
                         <small class="gov-modal-subtitle">
                             Barangay <?= ucfirst($system_information['barangay_name']) ?> Management System
                         </small>
