@@ -222,7 +222,7 @@
                                 <div class="form-floating">
                                     <select class="form-select gov-input" id="add_health_record_resident_id" name="resident_id" required>
 
-                                        <option value="" disabled selected>-- Select Resident --</option>
+                                        <option value="" disabled selected>-- Select One --</option>
 
                                         <?php foreach ($all_residents as $resident): ?>
                                             <option value="<?= $resident['id'] ?>">
@@ -426,9 +426,6 @@
                             <div class="col-md-12">
                                 <div class="form-floating">
                                     <select class="form-select gov-input" id="edit_health_record_resident_id" name="resident_id" required>
-
-                                        <option value="" disabled selected>-- Select Resident --</option>
-
                                         <?php foreach ($all_residents as $resident): ?>
                                             <option value="<?= $resident['id'] ?>">
                                                 <?= $resident['last_name'] ?>,
@@ -466,11 +463,8 @@
                             <div class="col-md-6">
                                 <div class="form-floating">
                                     <select class="form-select gov-input" id="edit_health_record_is_pwd" name="is_pwd" required>
-
-                                        <option value="" selected disabled>-- Select One --</option>
                                         <option value="0">No</option>
                                         <option value="1">Yes</option>
-
                                     </select>
 
                                     <label>Person With Disability (PWD)</label>
@@ -481,11 +475,8 @@
                             <div class="col-md-6">
                                 <div class="form-floating">
                                     <select class="form-select gov-input" id="edit_health_record_is_senior" name="is_senior" required>
-
-                                        <option value="" selected disabled>-- Select One --</option>
                                         <option value="0">No</option>
                                         <option value="1">Yes</option>
-
                                     </select>
 
                                     <label>Senior Citizen</label>
@@ -496,11 +487,8 @@
                             <div class="col-md-4">
                                 <div class="form-floating">
                                     <select class="form-select gov-input" id="edit_health_record_vaccinated" name="vaccinated" required>
-
-                                        <option value="" selected disabled>-- Select One --</option>
                                         <option value="1">Yes</option>
                                         <option value="0">No</option>
-
                                     </select>
 
                                     <label>Vaccinated</label>
@@ -511,8 +499,6 @@
                             <div class="col-md-4">
                                 <div class="form-floating">
                                     <select class="form-select gov-input" id="edit_health_record_blood_type" name="blood_type" required>
-
-                                        <option value="" selected disabled>-- Select One --</option>
                                         <option value="Unknown">Unknown</option>
                                         <option value="A+">A+</option>
                                         <option value="A-">A-</option>
@@ -522,7 +508,6 @@
                                         <option value="AB-">AB-</option>
                                         <option value="O+">O+</option>
                                         <option value="O-">O-</option>
-
                                     </select>
 
                                     <label>Blood Type</label>
@@ -533,11 +518,8 @@
                             <div class="col-md-4">
                                 <div class="form-floating">
                                     <select class="form-select gov-input" id="edit_health_record_has_chronic_illness" name="has_chronic_illness" required>
-
-                                        <option value="" selected disabled>-- Select One --</option>
                                         <option value="0">No</option>
                                         <option value="1">Yes</option>
-
                                     </select>
 
                                     <label>Has Chronic Illness</label>

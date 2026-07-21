@@ -82,7 +82,7 @@
 
                 <div class="nav-section">Vital & Civil Records</div>
                 <!-- BIRTH RECORDS -->
-                <a class="nav-link loadable under-development <?= ($title == 'Birth Records') ? 'active' : '' ?>" href="birth-records" title="Birth Records">
+                <a class="nav-link loadable <?= ($title == 'Birth Records') ? 'active' : '' ?>" href="birth-records" title="Birth Records">
                     <i class="fa-solid fa-baby"></i>
                     <span class="nav-text">Birth Records</span>
                 </a>

@@ -141,7 +141,6 @@
                             <div class="col-md-12">
                                 <div class="form-floating">
                                     <select class="form-select gov-input" id="update_program_id" required>
-                                        <option value="" disabled selected>-- Select One --</option>
                                         <!-- Populate dynamically -->
                                         <?php foreach ($all_programs as $program): ?>
                                             <option value="<?= $program['id'] ?>"><?= $program['program_name'] ?></option>
@@ -157,7 +156,6 @@
                             <div class="col-md-6">
                                 <div class="form-floating">
                                     <select class="form-select gov-input" id="update_resident_id" required>
-                                        <option value="" disabled selected>-- Select One --</option>
                                         <!-- Populate dynamically -->
                                         <?php foreach ($all_residents as $resident): ?>
                                             <option value="<?= $resident['id'] ?>"><?= $resident['last_name'] ?>, <?= $resident['first_name'] ?>     <?= $resident['middle_name'] ? ucfirst($resident['middle_name'][0]) . '.' : '' ?></option>
@@ -173,7 +171,6 @@
                             <div class="col-md-6">
                                 <div class="form-floating">
                                     <select class="form-select gov-input" id="update_status">
-                                        <option value="" disabled selected>-- Select One --</option>
                                         <option value="Active">Active</option>
                                         <option value="Inactive">Inactive</option>
                                     </select>

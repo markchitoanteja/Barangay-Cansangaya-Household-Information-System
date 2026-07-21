@@ -50,6 +50,9 @@ return function (Router $router) {
     $router->post('/update-beneficiary', 'AdminController@update_beneficiary');
     $router->post('/add-health-record', 'AdminController@add_health_record');
     $router->post('/edit-health-record', 'AdminController@edit_health_record');
+    $router->post('/add-birth-record', 'AdminController@add_birth_record');
+    $router->post('/edit-birth-record', 'AdminController@edit_birth_record');
+    $router->post('/get-child-resident-date-of-birth-and-sex', 'AdminController@get_child_resident_date_of_birth_and_sex');
 
     // System Update Routes
     $router->get('/check-updates', 'UpdateController@check');

@@ -96,7 +96,7 @@ class AdminController extends Controller
 
         $program_model = $this->model('Program_Model');
         $total_programs = count($program_model->MOD_GET_PROGRAMS());
-        
+
         $beneficiary_model = $this->model('Program_Beneficiary_Model');
         $total_beneficiaries = count($beneficiary_model->MOD_GET_BENEFICIARIES());
 
@@ -712,28 +712,86 @@ class AdminController extends Controller
 
     public function birth_records()
     {
+        // ==============================
+        // 1. SESSION & ACCESS LOGGING
+        // ==============================
         $current_user = session_get('user', null);
-
         write_log('ACCESS_PAGE', 'birth_records', null, 'Accessed birth records page');
 
+        // ==============================
+        // 2. LOAD MODELS
+        // ==============================
         $user_model = $this->model('User_Model');
-
-        $security_questions = $user_model->MOD_GET_QUESTIONS_BY_ID($current_user['id']);
-
+        $birth_record_model = $this->model('Birth_Record_Model');
         $system_information_model = $this->model('System_Information_Model');
 
+        // ==============================
+        // 3. FETCH RAW DATA
+        // ==============================
+        $all_birth_records = $birth_record_model->MOD_GET_BIRTH_RECORDS();
+        $all_residents = $birth_record_model->MOD_GET_RESIDENTS();
+
+        // ==============================
+        // 4. GET FILTER INPUTS
+        // ==============================
+        $search_input = trim((string) input('search_input'));
+
+        // ==============================
+        // 5. APPLY FILTERING
+        // ==============================
+        $filtered_birth_records = array_filter($all_birth_records, function ($birth_record) use ($search_input) {
+            return empty($search_input)
+                || stripos($birth_record['child_name'], $search_input) !== false
+                || stripos($birth_record['mother_name'], $search_input) !== false;
+        });
+
+        // ==============================
+        // 6. PAGINATION
+        // ==============================
+        $per_page = 10;
+
+        $current_page = (int) (input('page') ?? 1);
+        if ($current_page < 1)
+            $current_page = 1;
+
+        $total_beneficiaries = count($filtered_birth_records);
+        $total_pages = (int) ceil($total_beneficiaries / $per_page);
+        $offset = ($current_page - 1) * $per_page;
+
+        $birth_records = array_slice($filtered_birth_records, $offset, $per_page);
+
+        // ==============================
+        // 7. FETCH AUXILIARY DATA
+        // ==============================
+        $security_questions = $user_model->MOD_GET_QUESTIONS_BY_ID($current_user['id']);
         $system_information = $system_information_model->MOD_GET_SYSTEM_INFORMATION();
 
+        // ==============================
+        // 8. PREPARE VIEW DATA
+        // ==============================
         $data = [
             'title' => 'Birth Records',
             'user' => $current_user,
+
+            'birth_records' => $birth_records,
+            'all_residents' => $all_residents,
+
+            'current_page' => $current_page,
+            'total_pages' => $total_pages,
+
+            'search_input' => $search_input,
+
             'security_questions' => $security_questions,
             'system_information' => $system_information
         ];
 
+        // ==============================
+        // 9. LOAD VIEW
+        // ==============================
         $this->view([
             'includes/header',
             'admin/birth_records_view',
+            'includes/modals/birth_records_modals',
             'includes/modals/global_modals',
             'includes/overlays/loading_overlay',
             'includes/footer'
@@ -1525,6 +1583,15 @@ class AdminController extends Controller
 
         $new_resident_id = $resident_model->MOD_UPDATE_RESIDENT($id, $data);
 
+        if ($resident_model->MOD_CHECK_IF_BIRTH_RECORD_EXISTS($id)) {
+            $child_data = [
+                'date_of_birth' => $birthdate,
+                'sex' => $sex
+            ];
+
+            $resident_model->MOD_UPDATE_BIRTH_RECORD_DATE_OF_BIRTH_AND_SEX($id, $child_data);
+        }
+
         // Log resident update
         write_log('UPDATE_RESIDENT', 'residents', $new_resident_id, "Updated resident: $first_name $last_name", session_get('user')['id']);
 
@@ -1873,7 +1940,7 @@ class AdminController extends Controller
             'message' => 'Health record added successfully.'
         ]);
     }
-    
+
     public function edit_health_record()
     {
         $id = input('id', null);
@@ -1926,6 +1993,117 @@ class AdminController extends Controller
         return json([
             'success' => true,
             'message' => 'Health record updated successfully.'
+        ]);
+    }
+
+    public function add_birth_record()
+    {
+        $child_resident_id = input('child_resident_id', null);
+        $mother_resident_id = input('mother_resident_id', null);
+        $date_of_birth = input('date_of_birth', null);
+        $sex = input('sex', null);
+
+        $birth_record_model = $this->model('Birth_Record_Model');
+
+        $data = [
+            'child_resident_id' => $child_resident_id,
+            'mother_resident_id' => $mother_resident_id,
+            'date_of_birth' => $date_of_birth,
+            'sex' => $sex
+        ];
+
+        if (!$birth_record_model->MOD_CHECK_IF_CHILD_EXISTS($child_resident_id)) {
+            $new_birth_record_id = $birth_record_model->MOD_INSERT_BIRTH_RECORD($data);
+
+            // Log
+            write_log(
+                'ADD_BIRTH_RECORD',
+                'birth_records',
+                $new_birth_record_id,
+                "Added new birth record for child: $child_resident_id",
+                session_get('user')['id']
+            );
+
+            flash('flash_notif', [
+                'title' => 'Birth Record Added',
+                'text' => 'The birth record has been successfully added.',
+                'icon' => 'success',
+            ]);
+        } else {
+            flash('flash_notif', [
+                'title' => 'Birth Record Exists',
+                'text' => 'The birth record already exists for this child.',
+                'icon' => 'error',
+            ]);
+        }
+
+        return json([
+            'success' => true,
+            'message' => 'Birth record added successfully.'
+        ]);
+    }
+    
+    public function edit_birth_record()
+    {
+        $id = input('id', null);
+        $child_resident_id = input('child_resident_id', null);
+        $mother_resident_id = input('mother_resident_id', null);
+        $date_of_birth = input('date_of_birth', null);
+        $sex = input('sex', null);
+
+        $birth_record_model = $this->model('Birth_Record_Model');
+
+        $data = [
+            'child_resident_id' => $child_resident_id,
+            'mother_resident_id' => $mother_resident_id,
+            'date_of_birth' => $date_of_birth,
+            'sex' => $sex
+        ];
+
+        if (!$birth_record_model->MOD_CHECK_IF_CHILD_EXISTS_EXCEPT_ID($child_resident_id, $id)) {
+            $new_birth_record_id = $birth_record_model->MOD_UPDATE_BIRTH_RECORD($id, $data);
+
+            // Log
+            write_log(
+                'EDIT_BIRTH_RECORD',
+                'birth_records',
+                $new_birth_record_id,
+                "Updated birth record for child: $child_resident_id",
+                session_get('user')['id']
+            );
+
+            flash('flash_notif', [
+                'title' => 'Birth Record Updated',
+                'text' => 'The birth record has been successfully updated.',
+                'icon' => 'success',
+            ]);
+        } else {
+            flash('flash_notif', [
+                'title' => 'Birth Record Exists',
+                'text' => 'The birth record already exists for this child.',
+                'icon' => 'error',
+            ]);
+        }
+
+        return json([
+            'success' => true,
+            'message' => 'Birth record updated successfully.'
+        ]);
+    }
+    
+    public function get_child_resident_date_of_birth_and_sex()
+    {
+        $child_resident_id = input('child_resident_id', null);
+
+        $resident_model = $this->model('Resident_Model');
+
+        $date_of_birth = $resident_model->MOD_GET_RESIDENT_DATE_OF_BIRTH_AND_SEX($child_resident_id);
+
+        return json([
+            'success' => true,
+            'message' => 'Date of birth and sex retrieved successfully.',
+            'date_of_birth' => $date_of_birth['date_of_birth'],
+            'sex' => $date_of_birth['sex']
         ]);
     }
 }

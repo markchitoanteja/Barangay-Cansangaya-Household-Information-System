@@ -1784,6 +1784,158 @@ $((): void => {
             }
         });
     });
+
+    $("#birthRecordSearchForm").on("submit", (): void => {
+        const search_input = $("#search_input").val()?.toString().trim();
+
+        // Build URL parameters
+        const params = new URLSearchParams();
+
+        if (search_input) params.set("search_input", search_input);
+
+        // Reset page to 1 on new search
+        params.set("page", "1");
+
+        // Reload page with query string
+        const baseUrl = window.location.pathname; // keeps /user-management
+
+        showLoading();
+
+        setTimeout(() => {
+            window.location.href = `${baseUrl}?${params.toString()}`;
+        }, 250);
+    });
+
+    $('#add_birth_record_form').on('submit', function (e) {
+        e.preventDefault();
+
+        const child_resident_id = $('#add_birth_record_child_resident_id').val()?.toString().trim();
+        const mother_resident_id = $('#add_birth_record_mother_resident_id').val()?.toString().trim();
+        const date_of_birth = $('#add_birth_record_date_of_birth').val()?.toString().trim();
+        const sex = $('#add_birth_record_sex').val()?.toString().trim();
+
+        showLoading();
+
+        const formData = { child_resident_id, mother_resident_id, date_of_birth, sex };
+
+        $.ajax({
+            url: 'add-birth-record',
+            method: 'POST',
+            data: formData,
+            dataType: 'JSON',
+            success: (response) => {
+                setTimeout(() => {
+                    if (response.success) {
+                        location.reload();
+                    } else {
+                        hideLoading();
+                    }
+                }, 250);
+            },
+            error: (xhr, status, error) => {
+                hideLoading();
+                console.error('AJAX Error:', error);
+                console.log(xhr.responseText);
+            }
+        });
+    });
+
+    $('#add_birth_record_child_resident_id').on('change', function () {
+        const child_resident_id = $(this).val()?.toString().trim();
+
+        const formData = { child_resident_id };
+
+        $.ajax({
+            url: 'get-child-resident-date-of-birth-and-sex',
+            method: 'POST',
+            data: formData,
+            dataType: 'JSON',
+            success: (response) => {
+                setTimeout(() => {
+                    if (response.success) {
+                        $('#add_birth_record_date_of_birth').val(response.date_of_birth);
+                        $('#add_birth_record_sex').val(response.sex);
+                    }
+                }, 250);
+            },
+            error: (xhr, status, error) => {
+                hideLoading();
+                console.error('AJAX Error:', error);
+                console.log(xhr.responseText);
+            }
+        });
+    });
+
+    $(document).on('click', '.btn-edit-birth-record', function () {
+        const birth_record = $(this).data('birth_record');
+
+        $('#edit_birth_record_id').val(birth_record.id);
+        $('#edit_birth_record_child_resident_id').val(birth_record.child_resident_id);
+        $('#edit_birth_record_mother_resident_id').val(birth_record.mother_resident_id);
+        $('#edit_birth_record_date_of_birth').val(birth_record.date_of_birth);
+        $('#edit_birth_record_sex').val(birth_record.sex);
+    });
+
+    $('#edit_birth_record_child_resident_id').on('change', function () {
+        const child_resident_id = $(this).val()?.toString().trim();
+
+        const formData = { child_resident_id };
+
+        $.ajax({
+            url: 'get-child-resident-date-of-birth-and-sex',
+            method: 'POST',
+            data: formData,
+            dataType: 'JSON',
+            success: (response) => {
+                setTimeout(() => {
+                    if (response.success) {
+                        $('#edit_birth_record_date_of_birth').val(response.date_of_birth);
+                        $('#edit_birth_record_sex').val(response.sex);
+                    }
+                }, 250);
+            },
+            error: (xhr, status, error) => {
+                hideLoading();
+                console.error('AJAX Error:', error);
+                console.log(xhr.responseText);
+            }
+        });
+    });
+
+    $('#edit_birth_record_form').on('submit', function (e) {
+        e.preventDefault();
+
+        const id = $('#edit_birth_record_id').val()?.toString().trim();
+        const child_resident_id = $('#edit_birth_record_child_resident_id').val()?.toString().trim();
+        const mother_resident_id = $('#edit_birth_record_mother_resident_id').val()?.toString().trim();
+        const date_of_birth = $('#edit_birth_record_date_of_birth').val()?.toString().trim();
+        const sex = $('#edit_birth_record_sex').val()?.toString().trim();
+
+        showLoading();
+
+        const formData = { id, child_resident_id, mother_resident_id, date_of_birth, sex };
+
+        $.ajax({
+            url: 'edit-birth-record',
+            method: 'POST',
+            data: formData,
+            dataType: 'JSON',
+            success: (response) => {
+                setTimeout(() => {
+                    if (response.success) {
+                        location.reload();
+                    } else {
+                        hideLoading();
+                    }
+                }, 250);
+            },
+            error: (xhr, status, error) => {
+                hideLoading();
+                console.error('AJAX Error:', error);
+                console.log(xhr.responseText);
+            }
+        });
+    });
 });
 
 function formatDateTime(dateInput: string | null | undefined): string {
