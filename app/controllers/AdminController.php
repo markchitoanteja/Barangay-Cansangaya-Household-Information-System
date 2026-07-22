@@ -804,7 +804,7 @@ class AdminController extends Controller
             'includes/footer'
         ], $data);
     }
-    
+
     public function migration_records()
     {
         // ==============================
@@ -895,28 +895,86 @@ class AdminController extends Controller
 
     public function death_records()
     {
+        // ==============================
+        // 1. SESSION & ACCESS LOGGING
+        // ==============================
         $current_user = session_get('user', null);
-
         write_log('ACCESS_PAGE', 'death_records', null, 'Accessed death records page');
 
+        // ==============================
+        // 2. LOAD MODELS
+        // ==============================
         $user_model = $this->model('User_Model');
-
-        $security_questions = $user_model->MOD_GET_QUESTIONS_BY_ID($current_user['id']);
-
+        $death_record_model = $this->model('Death_Record_Model');
         $system_information_model = $this->model('System_Information_Model');
 
+        // ==============================
+        // 3. FETCH RAW DATA
+        // ==============================
+        $all_death_records = $death_record_model->MOD_GET_DEATH_RECORDS();
+        $all_residents = $death_record_model->MOD_GET_RESIDENTS();
+
+        // ==============================
+        // 4. GET FILTER INPUTS
+        // ==============================
+        $search_input = trim((string) input('search_input'));
+
+        // ==============================
+        // 5. APPLY FILTERING
+        // ==============================
+        $filtered_death_records = array_filter($all_death_records, function ($death_record) use ($search_input) {
+            return empty($search_input)
+                || stripos($death_record['resident_name'], $search_input) !== false;
+        });
+
+        // ==============================
+        // 6. PAGINATION
+        // ==============================
+        $per_page = 10;
+
+        $current_page = (int) (input('page') ?? 1);
+        if ($current_page < 1)
+            $current_page = 1;
+
+        $total_records = count($filtered_death_records);
+        $total_pages = (int) ceil($total_records / $per_page);
+        $offset = ($current_page - 1) * $per_page;
+
+        $death_records = array_slice($filtered_death_records, $offset, $per_page);
+
+        // ==============================
+        // 7. FETCH AUXILIARY DATA
+        // ==============================
+        $security_questions = $user_model->MOD_GET_QUESTIONS_BY_ID($current_user['id']);
         $system_information = $system_information_model->MOD_GET_SYSTEM_INFORMATION();
 
+        // ==============================
+        // 8. PREPARE VIEW DATA
+        // ==============================
         $data = [
             'title' => 'Death Records',
             'user' => $current_user,
+
+            'death_records' => $death_records,
+            'all_residents' => $all_residents,
+
+            'current_page' => $current_page,
+            'total_pages' => $total_pages,
+
+            'search_input' => $search_input,
+
             'security_questions' => $security_questions,
             'system_information' => $system_information
         ];
 
+        // ==============================
+        // 9. LOAD VIEW
+        // ==============================
         $this->view([
             'includes/header',
             'admin/death_records_view',
+            'includes/pagination/pagination',
+            'includes/modals/death_records_modals',
             'includes/modals/global_modals',
             'includes/overlays/loading_overlay',
             'includes/footer'
@@ -2108,7 +2166,7 @@ class AdminController extends Controller
             'message' => 'Birth record added successfully.'
         ]);
     }
-    
+
     public function edit_birth_record()
     {
         $id = input('id', null);
@@ -2156,7 +2214,7 @@ class AdminController extends Controller
             'message' => 'Birth record updated successfully.'
         ]);
     }
-    
+
     public function get_child_resident_date_of_birth_and_sex()
     {
         $child_resident_id = input('child_resident_id', null);
@@ -2230,7 +2288,7 @@ class AdminController extends Controller
             'message' => 'Migration record added successfully.'
         ]);
     }
-    
+
     public function edit_migration_record()
     {
         $id = input('id', null);
@@ -2287,6 +2345,109 @@ class AdminController extends Controller
         return json([
             'success' => true,
             'message' => 'Migration record updated successfully.'
+        ]);
+    }
+
+    public function add_death_record()
+    {
+        $resident_id = input('resident_id', null);
+        $date_of_death = input('date_of_death', null);
+        $cause_of_death = input('cause_of_death', null);
+        $manner_of_death = input('manner_of_death', null);
+
+        $death_record_model = $this->model('Death_Record_Model');
+        $resident_model = $this->model('Resident_Model');
+
+        $data = [
+            'resident_id' => $resident_id,
+            'date_of_death' => $date_of_death,
+            'cause_of_death' => $cause_of_death,
+            'manner_of_death' => $manner_of_death
+        ];
+
+        if (!$death_record_model->MOD_CHECK_IF_DEATH_RECORD_EXISTS($resident_id)) {
+            $new_death_record_id = $death_record_model->MOD_INSERT_DEATH_RECORD($data);
+
+            // Update resident status to "Deceased"
+            $resident_model->MOD_UPDATE_RESIDENT_STATUS($resident_id, 'Deceased');
+
+            // Log
+            write_log(
+                'ADD_DEATH_RECORD',
+                'death_records',
+                $new_death_record_id,
+                "Added new death record for resident: $resident_id",
+                session_get('user')['id']
+            );
+
+            flash('flash_notif', [
+                'title' => 'Death Record Added',
+                'text' => 'The death record has been successfully added.',
+                'icon' => 'success',
+            ]);
+        } else {
+            flash('flash_notif', [
+                'title' => 'Death Record Exists',
+                'text' => 'The death record already exists for this resident.',
+                'icon' => 'error',
+            ]);
+        }
+
+        return json([
+            'success' => true,
+            'message' => 'Death record added successfully.'
+        ]);
+    }
+
+    public function edit_death_record()
+    {
+        $id = input('id', null);
+        $resident_id = input('resident_id', null);
+        $date_of_death = input('date_of_death', null);
+        $cause_of_death = input('cause_of_death', null);
+        $manner_of_death = input('manner_of_death', null);
+
+        $death_record_model = $this->model('Death_Record_Model');
+        $resident_model = $this->model('Resident_Model');
+
+        $data = [
+            'resident_id' => $resident_id,
+            'date_of_death' => $date_of_death,
+            'cause_of_death' => $cause_of_death,
+            'manner_of_death' => $manner_of_death
+        ];
+
+        if (!$death_record_model->MOD_CHECK_IF_DEATH_RECORD_EXISTS_EXCEPT_CURRENT($id, $resident_id)) {
+            $death_record_model->MOD_UPDATE_DEATH_RECORD($id, $data);
+
+            // Update resident status to "Deceased"
+            $resident_model->MOD_UPDATE_RESIDENT_STATUS($resident_id, 'Deceased');
+
+            // Log
+            write_log(
+                'EDIT_DEATH_RECORD',
+                'death_records',
+                $id,
+                "Edited death record for resident: $resident_id",
+                session_get('user')['id']
+            );
+
+            flash('flash_notif', [
+                'title' => 'Death Record Updated',
+                'text' => 'The death record has been successfully updated.',
+                'icon' => 'success',
+            ]);
+        } else {
+            flash('flash_notif', [
+                'title' => 'Death Record Exists',
+                'text' => 'The death record already exists for this resident.',
+                'icon' => 'error',
+            ]);
+        }
+
+        return json([
+            'success' => true,
+            'message' => 'Death record added successfully.'
         ]);
     }
 }

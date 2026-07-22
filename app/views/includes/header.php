@@ -94,7 +94,7 @@
                 </a>
 
                 <!-- DEATH RECORDS -->
-                <a class="nav-link loadable under-development <?= ($title == 'Death Records') ? 'active' : '' ?>" href="death-records" title="Death Records">
+                <a class="nav-link loadable <?= ($title == 'Death Records') ? 'active' : '' ?>" href="death-records" title="Death Records">
                     <i class="fa-solid fa-heart-crack"></i>
                     <span class="nav-text">Death Records</span>
                 </a>

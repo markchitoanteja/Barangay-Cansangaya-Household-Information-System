@@ -2048,6 +2048,85 @@ $((): void => {
             }
         });
     });
+    
+    $('#add_death_record_form').on('submit', function (e) {
+        e.preventDefault();
+
+        const resident_id = $('#add_death_record_resident_id').val()?.toString().trim();
+        const date_of_death = $('#add_death_record_date_of_death').val()?.toString().trim();
+        const cause_of_death = $('#add_death_record_cause_of_death').val()?.toString().trim();
+        const manner_of_death = $('#add_death_record_manner_of_death').val()?.toString().trim();
+
+        showLoading();
+
+        const formData = { resident_id, date_of_death, cause_of_death, manner_of_death };
+
+        $.ajax({
+            url: 'add-death-record',
+            method: 'POST',
+            data: formData,
+            dataType: 'JSON',
+            success: (response) => {
+                setTimeout(() => {
+                    if (response.success) {
+                        location.reload();
+                    } else {
+                        hideLoading();
+                    }
+                }, 250);
+            },
+            error: (xhr, status, error) => {
+                hideLoading();
+                console.error('AJAX Error:', error);
+                console.log(xhr.responseText);
+            }
+        });
+    });
+
+    $(document).on('click', '.btn-edit-death-record', function () {
+        const death_record = $(this).data('death_record');
+
+        $('#edit_death_record_id').val(death_record.id);
+        $('#edit_death_record_resident_id').val(death_record.resident_id);
+        $('#edit_death_record_date_of_death').val(death_record.date_of_death);
+        $('#edit_death_record_cause_of_death').val(death_record.cause_of_death);
+        $('#edit_death_record_manner_of_death').val(death_record.manner_of_death);
+    });
+
+    $('#edit_death_record_form').on('submit', function (e) {
+        e.preventDefault();
+
+        const id = $('#edit_death_record_id').val()?.toString().trim();
+        const resident_id = $('#edit_death_record_resident_id').val()?.toString().trim();
+        const date_of_death = $('#edit_death_record_date_of_death').val()?.toString().trim();
+        const cause_of_death = $('#edit_death_record_cause_of_death').val()?.toString().trim();
+        const manner_of_death = $('#edit_death_record_manner_of_death').val()?.toString().trim();
+
+        showLoading();
+
+        const formData = { id, resident_id, date_of_death, cause_of_death, manner_of_death };
+
+        $.ajax({
+            url: 'edit-death-record',
+            method: 'POST',
+            data: formData,
+            dataType: 'JSON',
+            success: (response) => {
+                setTimeout(() => {
+                    if (response.success) {
+                        location.reload();
+                    } else {
+                        hideLoading();
+                    }
+                }, 250);
+            },
+            error: (xhr, status, error) => {
+                hideLoading();
+                console.error('AJAX Error:', error);
+                console.log(xhr.responseText);
+            }
+        });
+    });
 });
 
 function formatDateTime(dateInput: string | null | undefined): string {
