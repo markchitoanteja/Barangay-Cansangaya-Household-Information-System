@@ -34,7 +34,7 @@ return function (Router $router) {
     $router->post('/update-user-account-super-admin-mode', 'AdminController@update_user_account_super_admin_mode');
     $router->post('/disable-user-account', 'AdminController@disable_user_account');
     $router->post('/enable-user-account', 'AdminController@enable_user_account');
-    $router->post('/update-account', 'AdminController@update_account'); 
+    $router->post('/update-account', 'AdminController@update_account');
     $router->post('/search-user', 'AdminController@search_user');
     $router->post('/clear-logs', 'AdminController@clear_logs');
     $router->post('/generate-household-code', 'AdminController@generate_household_code');
@@ -53,6 +53,8 @@ return function (Router $router) {
     $router->post('/add-birth-record', 'AdminController@add_birth_record');
     $router->post('/edit-birth-record', 'AdminController@edit_birth_record');
     $router->post('/get-child-resident-date-of-birth-and-sex', 'AdminController@get_child_resident_date_of_birth_and_sex');
+    $router->post('/add-migration-record', 'AdminController@add_migration_record');
+    $router->post('/edit-migration-record', 'AdminController@edit_migration_record');
 
     // System Update Routes
     $router->get('/check-updates', 'UpdateController@check');

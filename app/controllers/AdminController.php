@@ -222,6 +222,7 @@ class AdminController extends Controller
         $this->view([
             'includes/header',
             'admin/households_view',
+            'includes/pagination/pagination',
             'includes/modals/households_modals',
             'includes/modals/global_modals',
             'includes/overlays/loading_overlay',
@@ -331,6 +332,7 @@ class AdminController extends Controller
         $this->view([
             'includes/header',
             'admin/residents_view',
+            'includes/pagination/pagination',
             'includes/modals/residents_modals',
             'includes/modals/global_modals',
             'includes/overlays/loading_overlay',
@@ -440,6 +442,7 @@ class AdminController extends Controller
         $this->view([
             'includes/header',
             'admin/socio_economic_view',
+            'includes/pagination/pagination',
             'includes/modals/socio_economic_modals',
             'includes/modals/global_modals',
             'includes/overlays/loading_overlay',
@@ -527,6 +530,7 @@ class AdminController extends Controller
         $this->view([
             'includes/header',
             'admin/programs_view',
+            'includes/pagination/pagination',
             'includes/modals/programs_modals',
             'includes/modals/global_modals',
             'includes/overlays/loading_overlay',
@@ -617,6 +621,7 @@ class AdminController extends Controller
         $this->view([
             'includes/header',
             'admin/programs_beneficiaries_view',
+            'includes/pagination/pagination',
             'includes/modals/programs_beneficiaries_modals',
             'includes/modals/global_modals',
             'includes/overlays/loading_overlay',
@@ -703,6 +708,7 @@ class AdminController extends Controller
         $this->view([
             'includes/header',
             'admin/health_records_view',
+            'includes/pagination/pagination',
             'includes/modals/health_records_modals',
             'includes/modals/global_modals',
             'includes/overlays/loading_overlay',
@@ -791,37 +797,96 @@ class AdminController extends Controller
         $this->view([
             'includes/header',
             'admin/birth_records_view',
+            'includes/pagination/pagination',
             'includes/modals/birth_records_modals',
             'includes/modals/global_modals',
             'includes/overlays/loading_overlay',
             'includes/footer'
         ], $data);
     }
-
+    
     public function migration_records()
     {
+        // ==============================
+        // 1. SESSION & ACCESS LOGGING
+        // ==============================
         $current_user = session_get('user', null);
-
         write_log('ACCESS_PAGE', 'migration_records', null, 'Accessed migration records page');
 
+        // ==============================
+        // 2. LOAD MODELS
+        // ==============================
         $user_model = $this->model('User_Model');
-
-        $security_questions = $user_model->MOD_GET_QUESTIONS_BY_ID($current_user['id']);
-
+        $migration_record_model = $this->model('Migration_Record_Model');
         $system_information_model = $this->model('System_Information_Model');
 
+        // ==============================
+        // 3. FETCH RAW DATA
+        // ==============================
+        $all_migration_records = $migration_record_model->MOD_GET_MIGRATION_RECORDS();
+        $all_residents = $migration_record_model->MOD_GET_RESIDENTS();
+
+        // ==============================
+        // 4. GET FILTER INPUTS
+        // ==============================
+        $search_input = trim((string) input('search_input'));
+
+        // ==============================
+        // 5. APPLY FILTERING
+        // ==============================
+        $filtered_migration_records = array_filter($all_migration_records, function ($migration_record) use ($search_input) {
+            return empty($search_input)
+                || stripos($migration_record['resident_name'], $search_input) !== false;
+        });
+
+        // ==============================
+        // 6. PAGINATION
+        // ==============================
+        $per_page = 10;
+
+        $current_page = (int) (input('page') ?? 1);
+        if ($current_page < 1)
+            $current_page = 1;
+
+        $total_records = count($filtered_migration_records);
+        $total_pages = (int) ceil($total_records / $per_page);
+        $offset = ($current_page - 1) * $per_page;
+
+        $migration_records = array_slice($filtered_migration_records, $offset, $per_page);
+
+        // ==============================
+        // 7. FETCH AUXILIARY DATA
+        // ==============================
+        $security_questions = $user_model->MOD_GET_QUESTIONS_BY_ID($current_user['id']);
         $system_information = $system_information_model->MOD_GET_SYSTEM_INFORMATION();
 
+        // ==============================
+        // 8. PREPARE VIEW DATA
+        // ==============================
         $data = [
             'title' => 'Migration Records',
             'user' => $current_user,
+
+            'migration_records' => $migration_records,
+            'all_residents' => $all_residents,
+
+            'current_page' => $current_page,
+            'total_pages' => $total_pages,
+
+            'search_input' => $search_input,
+
             'security_questions' => $security_questions,
             'system_information' => $system_information
         ];
 
+        // ==============================
+        // 9. LOAD VIEW
+        // ==============================
         $this->view([
             'includes/header',
             'admin/migration_records_view',
+            'includes/pagination/pagination',
+            'includes/modals/migration_records_modals',
             'includes/modals/global_modals',
             'includes/overlays/loading_overlay',
             'includes/footer'
@@ -929,6 +994,7 @@ class AdminController extends Controller
         $this->view([
             'includes/header',
             'admin/user_management_view',
+            'includes/pagination/pagination',
             'includes/modals/user_management_modals',
             'includes/modals/global_modals',
             'includes/overlays/loading_overlay',
@@ -1512,7 +1578,7 @@ class AdminController extends Controller
         $birthdate = input('birthdate', null);
         $civil_status = input('civil_status', null);
         $relationship = input('relationship', null);
-        $status = input('status', null);
+        $status = 'Active'; // Default status for new residents
 
         $response = [
             'success' => true,
@@ -2104,6 +2170,123 @@ class AdminController extends Controller
             'message' => 'Date of birth and sex retrieved successfully.',
             'date_of_birth' => $date_of_birth['date_of_birth'],
             'sex' => $date_of_birth['sex']
+        ]);
+    }
+
+    public function add_migration_record()
+    {
+        $resident_id = input('resident_id', null);
+        $migration_type = input('migration_type', null);
+        $date_of_migration = input('date_of_migration', null);
+        $origin = input('origin', null);
+        $destination = input('destination', null);
+
+        $migration_record_model = $this->model('Migration_Record_Model');
+        $resident_model = $this->model('Resident_Model');
+
+        $data = [
+            'resident_id' => $resident_id,
+            'migration_type' => $migration_type,
+            'date_of_migration' => $date_of_migration,
+            'origin' => $origin,
+            'destination' => $destination
+        ];
+
+        if (!$migration_record_model->MOD_CHECK_IF_MIGRATION_RECORD_EXISTS($resident_id, $migration_type, $date_of_migration)) {
+            $new_migration_record_id = $migration_record_model->MOD_INSERT_MIGRATION_RECORD($data);
+
+            if ($migration_type === 'OUT') {
+                // Update resident status to "Inactive"
+                $resident_model->MOD_UPDATE_RESIDENT_STATUS($resident_id, 'Transferred');
+            } elseif ($migration_type === 'IN') {
+                // Update resident status to "Active"
+                $resident_model->MOD_UPDATE_RESIDENT_STATUS($resident_id, 'Active');
+            }
+
+            // Log
+            write_log(
+                'ADD_MIGRATION_RECORD',
+                'migration_records',
+                $new_migration_record_id,
+                "Added new migration record for resident: $resident_id",
+                session_get('user')['id']
+            );
+
+            flash('flash_notif', [
+                'title' => 'Migration Record Added',
+                'text' => 'The migration record has been successfully added.',
+                'icon' => 'success',
+            ]);
+        } else {
+            flash('flash_notif', [
+                'title' => 'Migration Record Exists',
+                'text' => 'The migration record already exists for this resident.',
+                'icon' => 'error',
+            ]);
+        }
+
+        return json([
+            'success' => true,
+            'message' => 'Migration record added successfully.'
+        ]);
+    }
+    
+    public function edit_migration_record()
+    {
+        $id = input('id', null);
+        $resident_id = input('resident_id', null);
+        $migration_type = input('migration_type', null);
+        $date_of_migration = input('date_of_migration', null);
+        $origin = input('origin', null);
+        $destination = input('destination', null);
+
+        $migration_record_model = $this->model('Migration_Record_Model');
+        $resident_model = $this->model('Resident_Model');
+
+        $data = [
+            'resident_id' => $resident_id,
+            'migration_type' => $migration_type,
+            'date_of_migration' => $date_of_migration,
+            'origin' => $origin,
+            'destination' => $destination
+        ];
+
+        if (!$migration_record_model->MOD_CHECK_IF_MIGRATION_RECORD_EXISTS_EXCEPT_CURRENT($id, $resident_id, $migration_type, $date_of_migration)) {
+            $new_migration_record_id = $migration_record_model->MOD_UPDATE_MIGRATION_RECORD($id, $data);
+
+            if ($migration_type === 'OUT') {
+                // Update resident status to "Inactive"
+                $resident_model->MOD_UPDATE_RESIDENT_STATUS($resident_id, 'Transferred');
+            } elseif ($migration_type === 'IN') {
+                // Update resident status to "Active"
+                $resident_model->MOD_UPDATE_RESIDENT_STATUS($resident_id, 'Active');
+            }
+
+            // Log
+            write_log(
+                'EDIT_MIGRATION_RECORD',
+                'migration_records',
+                $new_migration_record_id,
+                "Updated migration record for resident: $resident_id",
+                session_get('user')['id']
+            );
+
+            flash('flash_notif', [
+                'title' => 'Migration Record Updated',
+                'text' => 'The migration record has been successfully updated.',
+                'icon' => 'success',
+            ]);
+        } else {
+            flash('flash_notif', [
+                'title' => 'Migration Record Exists',
+                'text' => 'The migration record already exists for this resident.',
+                'icon' => 'error',
+            ]);
+        }
+
+        return json([
+            'success' => true,
+            'message' => 'Migration record updated successfully.'
         ]);
     }
 }

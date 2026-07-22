@@ -88,7 +88,7 @@
                 </a>
 
                 <!-- MIGRATION RECORDS -->
-                <a class="nav-link loadable under-development <?= ($title == 'Migration Records') ? 'active' : '' ?>" href="migration-records" title="Migration Records">
+                <a class="nav-link loadable <?= ($title == 'Migration Records') ? 'active' : '' ?>" href="migration-records" title="Migration Records">
                     <i class="fa-solid fa-truck"></i>
                     <span class="nav-text">Migration Records</span>
                 </a>

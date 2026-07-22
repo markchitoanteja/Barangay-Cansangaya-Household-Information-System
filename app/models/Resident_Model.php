@@ -57,4 +57,9 @@ class Resident_Model extends Query
     {
         return $this->table('birth_records')->where('child_resident_id', $id)->update($data);
     }
+
+    public function MOD_UPDATE_RESIDENT_STATUS(string $id, string $status): string
+    {
+        return $this->table('residents')->where('id', $id)->update(['status' => $status]);
+    }
 }

@@ -1936,6 +1936,118 @@ $((): void => {
             }
         });
     });
+
+    $('#add_migration_record_migration_type').on('change', function () {
+        const migration_type = $(this).val()?.toString().trim();
+
+        if (migration_type === 'IN') {
+            $('#add_migration_record_origin').val('').prop('readonly', false);
+            $('#add_migration_record_destination').val('Barangay (Local)').prop('readonly', true);
+        } else if (migration_type === 'OUT') {
+            $('#add_migration_record_origin').val('Barangay (Local)').prop('readonly', true);
+            $('#add_migration_record_destination').val('').prop('readonly', false);
+        }
+    });
+
+    $('#add_migration_record_form').on('submit', function (e) {
+        e.preventDefault();
+
+        const resident_id = $('#add_migration_record_resident_id').val()?.toString().trim();
+        const migration_type = $('#add_migration_record_migration_type').val()?.toString().trim();
+        const date_of_migration = $('#add_migration_record_date_of_migration').val()?.toString().trim();
+        const origin = $('#add_migration_record_origin').val()?.toString().trim();
+        const destination = $('#add_migration_record_destination').val()?.toString().trim();
+
+        showLoading();
+
+        const formData = { resident_id, migration_type, date_of_migration, origin, destination };
+
+        $.ajax({
+            url: 'add-migration-record',
+            method: 'POST',
+            data: formData,
+            dataType: 'JSON',
+            success: (response) => {
+                setTimeout(() => {
+                    if (response.success) {
+                        location.reload();
+                    } else {
+                        hideLoading();
+                    }
+                }, 250);
+            },
+            error: (xhr, status, error) => {
+                hideLoading();
+                console.error('AJAX Error:', error);
+                console.log(xhr.responseText);
+            }
+        });
+    });
+
+    $('#edit_migration_record_migration_type').on('change', function () {
+        const migration_type = $(this).val()?.toString().trim();
+
+        if (migration_type === 'IN') {
+            $('#edit_migration_record_origin').val('').prop('readonly', false);
+            $('#edit_migration_record_destination').val('Barangay (Local)').prop('readonly', true);
+        } else if (migration_type === 'OUT') {
+            $('#edit_migration_record_origin').val('Barangay (Local)').prop('readonly', true);
+            $('#edit_migration_record_destination').val('').prop('readonly', false);
+        }
+    });
+
+    $(document).on('click', '.btn-edit-migration-record', function () {
+        const migration_record = $(this).data('migration_record');
+
+        $('#edit_migration_record_id').val(migration_record.id);
+        $('#edit_migration_record_resident_id').val(migration_record.resident_id);
+        $('#edit_migration_record_migration_type').val(migration_record.migration_type);
+        $('#edit_migration_record_date_of_migration').val(migration_record.date_of_migration);
+
+        if (migration_record.migration_type === 'IN') {
+            $('#edit_migration_record_origin').val(migration_record.origin).prop('readonly', false);
+            $('#edit_migration_record_destination').val('Barangay (Local)').prop('readonly', true);
+        } else if (migration_record.migration_type === 'OUT') {
+            $('#edit_migration_record_origin').val('Barangay (Local)').prop('readonly', true);
+            $('#edit_migration_record_destination').val(migration_record.destination).prop('readonly', false);
+        }
+    });
+
+    $('#edit_migration_record_form').on('submit', function (e) {
+        e.preventDefault();
+
+        const id = $('#edit_migration_record_id').val()?.toString().trim();
+        const resident_id = $('#edit_migration_record_resident_id').val()?.toString().trim();
+        const migration_type = $('#edit_migration_record_migration_type').val()?.toString().trim();
+        const date_of_migration = $('#edit_migration_record_date_of_migration').val()?.toString().trim();
+        const origin = $('#edit_migration_record_origin').val()?.toString().trim();
+        const destination = $('#edit_migration_record_destination').val()?.toString().trim();
+
+        showLoading();
+
+        const formData = { id, resident_id, migration_type, date_of_migration, origin, destination };
+
+        $.ajax({
+            url: 'edit-migration-record',
+            method: 'POST',
+            data: formData,
+            dataType: 'JSON',
+            success: (response) => {
+                setTimeout(() => {
+                    if (response.success) {
+                        location.reload();
+                    } else {
+                        hideLoading();
+                    }
+                }, 250);
+            },
+            error: (xhr, status, error) => {
+                hideLoading();
+                console.error('AJAX Error:', error);
+                console.log(xhr.responseText);
+            }
+        });
+    });
 });
 
 function formatDateTime(dateInput: string | null | undefined): string {
