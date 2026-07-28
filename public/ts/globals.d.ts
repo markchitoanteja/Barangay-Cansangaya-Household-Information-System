@@ -7,3 +7,5 @@ declare const ROLE: String;
 declare const BASE_URL: string;
 declare const Swal: any;
 declare const flashData: { title: string; text: string; icon: string } | undefined;
+declare const Chart: any;
+declare const dashboardData: any;

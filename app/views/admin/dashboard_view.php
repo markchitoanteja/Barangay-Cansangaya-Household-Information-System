@@ -1,7 +1,7 @@
 <!-- Cards -->
 <section class="panel">
     <div class="panel-body">
-        <div class="row g-3">
+        <div class="row g-3 mb-3">
             <!-- Households -->
             <div class="col-md-3">
                 <a href="households" class="gov-stat-link loadable">
@@ -34,7 +34,7 @@
                     </div>
                 </a>
             </div>
-             <!-- Programs -->
+            <!-- Programs -->
             <div class="col-md-3">
                 <a href="programs" class="gov-stat-link loadable">
                     <div class="card gov-stat-card">
@@ -67,6 +67,142 @@
                 </a>
             </div>
         </div>
+        <div class="row g-3">
+            <!-- Birth Records -->
+            <div class="col-md-3">
+                <a href="birth-records" class="gov-stat-link loadable">
+                    <div class="card gov-stat-card">
+                        <div class="gov-stat-header">
+                            <i class="fa-solid fa-baby"></i>
+                            <span>Birth Records</span>
+                            <i class="fa-solid fa-arrow-right ms-auto gov-arrow"></i>
+                        </div>
+                        <div class="gov-stat-body">
+                            <h3><?= number_format($total_birth_records ?? 0) ?></h3>
+                            <small>Registered births</small>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <!-- Death Records -->
+            <div class="col-md-3">
+                <a href="death-records" class="gov-stat-link loadable">
+                    <div class="card gov-stat-card">
+                        <div class="gov-stat-header">
+                            <i class="fa-solid fa-cross"></i>
+                            <span>Death Records</span>
+                            <i class="fa-solid fa-arrow-right ms-auto gov-arrow"></i>
+                        </div>
+                        <div class="gov-stat-body">
+                            <h3><?= number_format($total_death_records ?? 0) ?></h3>
+                            <small>Recorded deaths</small>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <!-- Migration In -->
+            <div class="col-md-3">
+                <a href="migration-records" class="gov-stat-link loadable">
+                    <div class="card gov-stat-card">
+                        <div class="gov-stat-header">
+                            <i class="fa-solid fa-right-to-bracket"></i>
+                            <span>Migration In</span>
+                            <i class="fa-solid fa-arrow-right ms-auto gov-arrow"></i>
+                        </div>
+                        <div class="gov-stat-body">
+                            <h3><?= number_format($total_migration_in_records ?? 0) ?></h3>
+                            <small>Residents moved in</small>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <!-- Migration Out -->
+            <div class="col-md-3">
+                <a href="migration-records" class="gov-stat-link loadable">
+                    <div class="card gov-stat-card">
+                        <div class="gov-stat-header">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                            <span>Migration Out</span>
+                            <i class="fa-solid fa-arrow-right ms-auto gov-arrow"></i>
+                        </div>
+                        <div class="gov-stat-body">
+                            <h3><?= number_format($total_migration_out_records ?? 0) ?></h3>
+                            <small>Residents moved out</small>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Charts -->
+<section class="panel mt-4">
+    <div class="panel-header mb-3">
+        <h5>
+            <i class="fa-solid fa-chart-column me-2"></i>
+            Population Analytics
+        </h5>
+    </div>
+
+    <div class="panel-body">
+
+        <div class="row g-4">
+
+            <!-- Population by Sex -->
+            <div class="col-lg-6">
+                <div class="card shadow-sm h-100">
+                    <div class="card-header">
+                        <strong>Population by Sex</strong>
+                    </div>
+
+                    <div class="card-body">
+                        <canvas id="genderChart" height="220"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resident Status -->
+            <div class="col-lg-6">
+                <div class="card shadow-sm h-100">
+                    <div class="card-header">
+                        <strong>Resident Status</strong>
+                    </div>
+
+                    <div class="card-body">
+                        <canvas id="residentStatusChart" height="220"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Births vs Deaths -->
+            <div class="col-lg-6">
+                <div class="card shadow-sm h-100">
+                    <div class="card-header">
+                        <strong>Births vs Deaths (Current Year)</strong>
+                    </div>
+
+                    <div class="card-body">
+                        <canvas id="birthDeathChart" height="220"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Employment -->
+            <div class="col-lg-6">
+                <div class="card shadow-sm h-100">
+                    <div class="card-header">
+                        <strong>Employment Status</strong>
+                    </div>
+
+                    <div class="card-body">
+                        <canvas id="employmentChart" height="220"></canvas>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
     </div>
 </section>
 
@@ -142,79 +278,5 @@
                 </tbody>
             </table>
         </div>
-
-        <!-- Pagination -->
-        <?php if ($total_pages > 1): ?>
-            <nav aria-label="Logs pagination">
-                <ul class="pagination justify-content-center mt-3">
-                    <?php $params = $_GET; ?>
-
-                    <!-- Previous button -->
-                    <li class="page-item <?= ($current_page <= 1) ? 'disabled' : '' ?>">
-                        <?php $params['page'] = $current_page - 1; ?>
-                        <a class="page-link loadable" href="?<?= http_build_query($params) ?>">&laquo; Prev</a>
-                    </li>
-
-                    <?php
-                    $max_visible = 5; // total numbers including current
-                    $side = 1;         // pages shown on either side of current
-
-                    $start = max(2, $current_page - $side);
-                    $end = min($total_pages - 1, $current_page + $side);
-
-                    // adjust if near the start
-                    if ($current_page <= $side + 2) {
-                        $start = 2;
-                        $end = min($total_pages - 1, $max_visible);
-                    }
-
-                    // adjust if near the end
-                    if ($current_page >= $total_pages - ($side + 1)) {
-                        $start = max(2, $total_pages - $max_visible);
-                        $end = $total_pages - 1;
-                    }
-
-                    // First page
-                    $params['page'] = 1;
-                    ?>
-                    <li class="page-item <?= ($current_page == 1) ? 'active' : '' ?>">
-                        <a class="page-link loadable" href="?<?= http_build_query($params) ?>">1</a>
-                    </li>
-
-                    <!-- Ellipsis before start -->
-                    <?php if ($start > 2): ?>
-                        <li class="page-item disabled"><span class="page-link">…</span></li>
-                    <?php endif; ?>
-
-                    <!-- Middle pages -->
-                    <?php for ($p = $start; $p <= $end; $p++):
-                        $params['page'] = $p;
-                    ?>
-                        <li class="page-item <?= ($current_page == $p) ? 'active' : '' ?>">
-                            <a class="page-link loadable" href="?<?= http_build_query($params) ?>"><?= $p ?></a>
-                        </li>
-                    <?php endfor; ?>
-
-                    <!-- Ellipsis after end -->
-                    <?php if ($end < $total_pages - 1): ?>
-                        <li class="page-item disabled"><span class="page-link">…</span></li>
-                    <?php endif; ?>
-
-                    <!-- Last page -->
-                    <?php if ($total_pages > 1):
-                        $params['page'] = $total_pages; ?>
-                        <li class="page-item <?= ($current_page == $total_pages) ? 'active' : '' ?>">
-                            <a class="page-link loadable" href="?<?= http_build_query($params) ?>"><?= $total_pages ?></a>
-                        </li>
-                    <?php endif; ?>
-
-                    <!-- Next button -->
-                    <li class="page-item <?= ($current_page >= $total_pages) ? 'disabled' : '' ?>">
-                        <?php $params['page'] = $current_page + 1; ?>
-                        <a class="page-link loadable" href="?<?= http_build_query($params) ?>">Next &raquo;</a>
-                    </li>
-                </ul>
-            </nav>
-        <?php endif; ?>
     </div>
 </section>

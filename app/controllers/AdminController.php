@@ -99,6 +99,16 @@ class AdminController extends Controller
 
         $beneficiary_model = $this->model('Program_Beneficiary_Model');
         $total_beneficiaries = count($beneficiary_model->MOD_GET_BENEFICIARIES());
+        
+        $birth_record_model = $this->model('Birth_Record_Model');
+        $total_birth_records = count($birth_record_model->MOD_GET_BIRTH_RECORDS());
+        
+        $death_record_model = $this->model('Death_Record_Model');
+        $total_death_records = count($death_record_model->MOD_GET_DEATH_RECORDS());
+        
+        $migration_record_model = $this->model('Migration_Record_Model');
+        $total_migration_in_records = count($migration_record_model->MOD_GET_MIGRATION_IN_RECORDS());
+        $total_migration_out_records = count($migration_record_model->MOD_GET_MIGRATION_OUT_RECORDS());
 
         // Prepare data for view
         $data = [
@@ -113,12 +123,17 @@ class AdminController extends Controller
             'total_residents' => $total_residents,
             'total_programs' => $total_programs,
             'total_beneficiaries' => $total_beneficiaries,
+            'total_birth_records' => $total_birth_records,
+            'total_death_records' => $total_death_records,
+            'total_migration_in_records' => $total_migration_in_records,
+            'total_migration_out_records' => $total_migration_out_records,
             'system_information' => $system_information
         ];
 
         $this->view([
             'includes/header',
             'admin/dashboard_view',
+            'includes/pagination/pagination',
             'includes/modals/global_modals',
             'includes/overlays/loading_overlay',
             'includes/footer'

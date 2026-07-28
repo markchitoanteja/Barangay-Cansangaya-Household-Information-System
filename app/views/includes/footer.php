@@ -10,7 +10,10 @@
         <script src="<?= base_url('public/plugins/jquery/jquery-4.0.0.min.js') ?>"></script>
         <!-- SweetAlert2 -->
         <script src="<?= base_url('public/plugins/sweetalert2/sweetalert2.all.min.js') ?>"></script>
+        <!-- Chart.js -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <!-- Custom Script -->
         <script src="<?= base_url('public/assets/js/app.min.js?v=') . env('APP_VERSION', '1.0.0') ?>"></script>
+        <script src="<?= base_url('public/assets/js/dashboard.min.js?v=') . env('APP_VERSION', '1.0.0') ?>"></script>
     </body>
 </html>

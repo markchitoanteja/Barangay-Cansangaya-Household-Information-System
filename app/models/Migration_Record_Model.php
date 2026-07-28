@@ -34,6 +34,16 @@ class Migration_Record_Model extends Query
             ->get();
     }
 
+    public function MOD_GET_MIGRATION_IN_RECORDS(): array
+    {
+        return $this->table('migration_records')->where('migration_type', 'in')->get();
+    }
+
+    public function MOD_GET_MIGRATION_OUT_RECORDS(): array
+    {
+        return $this->table('migration_records')->where('migration_type', 'out')->get();
+    }
+
     public function MOD_CHECK_IF_MIGRATION_RECORD_EXISTS($resident_id, $migration_type, $date_of_migration): bool
     {
         return $this->table('migration_records')->where('resident_id', $resident_id)->where('migration_type', $migration_type)->where('date_of_migration', $date_of_migration)->exists();
