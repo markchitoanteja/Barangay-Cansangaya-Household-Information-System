@@ -35,4 +35,9 @@ class Socio_Economic_Model extends Query
     {
         return $this->table('socio_economic_profiles')->where('id', $id)->update($data);
     }
+    
+    public function MOD_GET_RESIDENT_BY_STATUS(string $status): array
+    {
+        return $this->table('socio_economic_profiles')->where('employment_status', $status)->get();
+    }
 }

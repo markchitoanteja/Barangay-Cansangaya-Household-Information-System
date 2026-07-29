@@ -110,6 +110,57 @@ class AdminController extends Controller
         $total_migration_in_records = count($migration_record_model->MOD_GET_MIGRATION_IN_RECORDS());
         $total_migration_out_records = count($migration_record_model->MOD_GET_MIGRATION_OUT_RECORDS());
 
+        $socio_economic_model = $this->model('Socio_Economic_Model');
+
+        $gender_data = [
+            'male' => count($resident_model->MOD_GET_RESIDENT_BY_SEX('male')),
+            'female' => count($resident_model->MOD_GET_RESIDENT_BY_SEX('female'))
+        ];
+        
+        $resident_status = [
+            'active' => count($resident_model->MOD_GET_RESIDENT_BY_STATUS('active')),
+            'deceased' => count($resident_model->MOD_GET_RESIDENT_BY_STATUS('deceased')),
+            'transferred' => count($resident_model->MOD_GET_RESIDENT_BY_STATUS('transferred'))
+        ];
+        
+        $employment_data = [
+            'employed' => count($socio_economic_model->MOD_GET_RESIDENT_BY_STATUS('Employed')),
+            'unemployed' => count($socio_economic_model->MOD_GET_RESIDENT_BY_STATUS('Unemployed')),
+            'self_employed' => count($socio_economic_model->MOD_GET_RESIDENT_BY_STATUS('Self-employed')),
+            'student' => count($socio_economic_model->MOD_GET_RESIDENT_BY_STATUS('Student')),
+            'retired' => count($socio_economic_model->MOD_GET_RESIDENT_BY_STATUS('Retired'))
+        ];
+
+        $births = [
+            'jan' => count($birth_record_model->MOD_GET_BIRTH_RECORDS_BY_MONTH(1)),
+            'feb' => count($birth_record_model->MOD_GET_BIRTH_RECORDS_BY_MONTH(2)),
+            'mar' => count($birth_record_model->MOD_GET_BIRTH_RECORDS_BY_MONTH(3)),
+            'apr' => count($birth_record_model->MOD_GET_BIRTH_RECORDS_BY_MONTH(4)),
+            'may' => count($birth_record_model->MOD_GET_BIRTH_RECORDS_BY_MONTH(5)),
+            'jun' => count($birth_record_model->MOD_GET_BIRTH_RECORDS_BY_MONTH(6)),
+            'jul' => count($birth_record_model->MOD_GET_BIRTH_RECORDS_BY_MONTH(7)),
+            'aug' => count($birth_record_model->MOD_GET_BIRTH_RECORDS_BY_MONTH(8)),
+            'sep' => count($birth_record_model->MOD_GET_BIRTH_RECORDS_BY_MONTH(9)),
+            'oct' => count($birth_record_model->MOD_GET_BIRTH_RECORDS_BY_MONTH(10)),
+            'nov' => count($birth_record_model->MOD_GET_BIRTH_RECORDS_BY_MONTH(11)),
+            'dec' => count($birth_record_model->MOD_GET_BIRTH_RECORDS_BY_MONTH(12))
+        ];
+
+        $deaths = [
+            'jan' => count($death_record_model->MOD_GET_DEATH_RECORDS_BY_MONTH(1)),
+            'feb' => count($death_record_model->MOD_GET_DEATH_RECORDS_BY_MONTH(2)),
+            'mar' => count($death_record_model->MOD_GET_DEATH_RECORDS_BY_MONTH(3)),
+            'apr' => count($death_record_model->MOD_GET_DEATH_RECORDS_BY_MONTH(4)),
+            'may' => count($death_record_model->MOD_GET_DEATH_RECORDS_BY_MONTH(5)),
+            'jun' => count($death_record_model->MOD_GET_DEATH_RECORDS_BY_MONTH(6)),
+            'jul' => count($death_record_model->MOD_GET_DEATH_RECORDS_BY_MONTH(7)),
+            'aug' => count($death_record_model->MOD_GET_DEATH_RECORDS_BY_MONTH(8)),
+            'sep' => count($death_record_model->MOD_GET_DEATH_RECORDS_BY_MONTH(9)),
+            'oct' => count($death_record_model->MOD_GET_DEATH_RECORDS_BY_MONTH(10)),
+            'nov' => count($death_record_model->MOD_GET_DEATH_RECORDS_BY_MONTH(11)),
+            'dec' => count($death_record_model->MOD_GET_DEATH_RECORDS_BY_MONTH(12))
+        ];
+
         // Prepare data for view
         $data = [
             'title' => 'Dashboard',
@@ -127,6 +178,11 @@ class AdminController extends Controller
             'total_death_records' => $total_death_records,
             'total_migration_in_records' => $total_migration_in_records,
             'total_migration_out_records' => $total_migration_out_records,
+            'gender_data' => $gender_data,
+            'resident_status' => $resident_status,
+            'employment_data' => $employment_data,
+            'births' => $births,
+            'deaths' => $deaths,
             'system_information' => $system_information
         ];
 

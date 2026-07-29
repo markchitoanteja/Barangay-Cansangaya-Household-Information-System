@@ -179,7 +179,7 @@
             <div class="col-lg-6">
                 <div class="card shadow-sm h-100">
                     <div class="card-header">
-                        <strong>Births vs Deaths (Current Year)</strong>
+                        <strong>Births vs Deaths (<span id="currentYear">Current Year</span>)</strong>
                     </div>
 
                     <div class="card-body">

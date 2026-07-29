@@ -79,4 +79,9 @@ class Birth_Record_Model extends Query
     {
         return $this->table('birth_records')->where('id', $id)->update($data);
     }
+
+    public function MOD_GET_BIRTH_RECORDS_BY_MONTH(int $month): array
+    {
+        return $this->table('birth_records')->where('MONTH(date_of_birth)', $month)->where('YEAR(date_of_birth)', date('Y'))->get();
+    }
 }

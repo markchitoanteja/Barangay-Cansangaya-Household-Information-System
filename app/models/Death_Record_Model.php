@@ -48,9 +48,14 @@ class Death_Record_Model extends Query
     {
         return $this->table('death_records')->insert($data);
     }
-    
+
     public function MOD_UPDATE_DEATH_RECORD($id, array $data): string
     {
         return $this->table('death_records')->where('id', $id)->update($data);
+    }
+
+    public function MOD_GET_DEATH_RECORDS_BY_MONTH(int $month): array
+    {
+        return $this->table('death_records')->where('MONTH(date_of_death)', $month)->where('YEAR(date_of_death)', date('Y'))->get();
     }
 }

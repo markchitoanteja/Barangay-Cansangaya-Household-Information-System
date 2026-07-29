@@ -62,4 +62,14 @@ class Resident_Model extends Query
     {
         return $this->table('residents')->where('id', $id)->update(['status' => $status]);
     }
+
+    public function MOD_GET_RESIDENT_BY_SEX(string $sex): array
+    {
+        return $this->table('residents')->where('sex', $sex)->get();
+    }
+    
+    public function MOD_GET_RESIDENT_BY_STATUS(string $status): array
+    {
+        return $this->table('residents')->where('status', $status)->get();
+    }
 }

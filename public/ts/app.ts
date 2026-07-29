@@ -1,6 +1,7 @@
 /// <reference types="jquery" />
 
 $((): void => {
+    const currentYear: number = new Date().getFullYear();
     const today: Date = new Date();
     let currentDate: Date = new Date(today.getFullYear(), today.getMonth(), 1);
 
@@ -14,6 +15,8 @@ $((): void => {
     if (typeof flashData !== 'undefined' && flashData) {
         showFlash(flashData.title, flashData.text, flashData.icon as "success" | "error" | "warning");
     }
+
+    $("#currentYear").text(currentYear);
 
     $("#calendarModal").on("shown.bs.modal", (): void => {
         renderCalendar(currentDate);

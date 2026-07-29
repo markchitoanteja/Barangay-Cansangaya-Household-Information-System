@@ -1,20 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-
-    // ===============================
-    // SAMPLE DATA
-    // ===============================
-
-    const genderData = {
-        male: 325,
-        female: 348
-    };
-
-    const residentStatus = {
-        active: 640,
-        deceased: 18,
-        transferred: 15
-    };
-
     const employmentData = {
         labels: [
             "Employed",
@@ -23,7 +7,13 @@ document.addEventListener("DOMContentLoaded", () => {
             "Student",
             "Retired"
         ],
-        values: [210, 72, 98, 180, 35]
+        values: [
+            employmentDataRaw.employed,
+            employmentDataRaw.unemployed,
+            employmentDataRaw.self_employed,
+            employmentDataRaw.student,
+            employmentDataRaw.retired
+        ]
     };
 
     const months = [
@@ -31,9 +21,15 @@ document.addEventListener("DOMContentLoaded", () => {
         "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
     ];
 
-    const births = [3, 5, 6, 4, 7, 5, 8, 6, 4, 7, 5, 3];
-    const deaths = [1, 0, 2, 1, 1, 2, 1, 3, 0, 1, 2, 1];
-
+    const births = [
+        birthsRaw.jan, birthsRaw.feb, birthsRaw.mar, birthsRaw.apr, birthsRaw.may, birthsRaw.jun,
+        birthsRaw.jul, birthsRaw.aug, birthsRaw.sep, birthsRaw.oct, birthsRaw.nov, birthsRaw.dec
+    ];
+    
+    const deaths = [
+        deathsRaw.jan, deathsRaw.feb, deathsRaw.mar, deathsRaw.apr, deathsRaw.may, deathsRaw.jun,
+        deathsRaw.jul, deathsRaw.aug, deathsRaw.sep, deathsRaw.oct, deathsRaw.nov, deathsRaw.dec
+    ];
 
     // ===============================
     // Population by Sex
@@ -60,7 +56,6 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
     });
-
 
     // ===============================
     // Resident Status
@@ -93,7 +88,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-
     // ===============================
     // Births vs Deaths
     // ===============================
@@ -122,7 +116,6 @@ document.addEventListener("DOMContentLoaded", () => {
             maintainAspectRatio: false
         }
     });
-
 
     // ===============================
     // Employment Status
@@ -153,5 +146,4 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
     });
-
 });

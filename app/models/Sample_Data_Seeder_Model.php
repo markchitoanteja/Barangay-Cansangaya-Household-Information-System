@@ -55,6 +55,8 @@ class Sample_Data_Seeder_Model extends Query
         $this->seedHouseholds();
         $this->seedResidentsStructured();
 
+        $this->seedBirthRecords();
+
         $this->seedSocioEconomic();
         $this->seedHealth();
 
@@ -102,13 +104,13 @@ class Sample_Data_Seeder_Model extends Query
             $code = sprintf('PRK%02d-%04d', $purok, $purokCounters[$purok]++);
 
             $rows[] = [
-                'household_code'     => $code,
-                'purok'              => "Purok $purok",
-                'address'            => "Generated Address $i",
-                'housing_type'       => $this->random(['Concrete', 'Semi-concrete', 'Wood']),
-                'ownership_status'   => $this->random(['Owned', 'Rented', 'Informal Settler']),
-                'comfort_room'       => $this->random(['Owned', 'Shared', 'None']),
-                'water_system'       => $this->random(['Level 1', 'Level 2', 'Level 3']),
+                'household_code' => $code,
+                'purok' => "Purok $purok",
+                'address' => "Generated Address $i",
+                'housing_type' => $this->random(['Concrete', 'Semi-concrete', 'Wood']),
+                'ownership_status' => $this->random(['Owned', 'Rented', 'Informal Settler']),
+                'comfort_room' => $this->random(['Owned', 'Shared', 'None']),
+                'water_system' => $this->random(['Level 1', 'Level 2', 'Level 3']),
                 'electricity_access' => rand(0, 1),
             ];
         }
@@ -121,7 +123,7 @@ class Sample_Data_Seeder_Model extends Query
     private function seedResidentsStructured(): void
     {
         $rows = [];
-        $id   = 1;
+        $id = 1;
 
         foreach ($this->householdIds as $householdId) {
 
@@ -137,20 +139,24 @@ class Sample_Data_Seeder_Model extends Query
             // 85% chance father is head, 15% mother is head
             // (solo parent, widow, separated, etc.)
             // -----------------------------------------------
-            $headIsMale   = rand(1, 100) <= 85;
-            $headSex      = $headIsMale ? 'Male' : 'Female';
-            $headAge      = rand(28, 65);
+            $headIsMale = rand(1, 100) <= 85;
+            $headSex = $headIsMale ? 'Male' : 'Female';
+            $headAge = rand(28, 65);
             $headLastName = $familyLastName;
 
             // Head civil status
             // Heads are usually Married, but sometimes Single/Widowed/Separated
             $headCivilRoll = rand(1, 100);
-            if ($headCivilRoll <= 70)       $headCivilStatus = 'Married';
-            elseif ($headCivilRoll <= 82)   $headCivilStatus = 'Widowed';
-            elseif ($headCivilRoll <= 92)   $headCivilStatus = 'Separated';
-            else                            $headCivilStatus = 'Single';
+            if ($headCivilRoll <= 70)
+                $headCivilStatus = 'Married';
+            elseif ($headCivilRoll <= 82)
+                $headCivilStatus = 'Widowed';
+            elseif ($headCivilRoll <= 92)
+                $headCivilStatus = 'Separated';
+            else
+                $headCivilStatus = 'Single';
 
-            $rows[]    = $this->createPerson($householdId, $headSex, $headAge, 'Head', $headCivilStatus, $headLastName);
+            $rows[] = $this->createPerson($householdId, $headSex, $headAge, 'Head', $headCivilStatus, $headLastName);
             $members[] = $id++;
 
             // -----------------------------------------------
@@ -160,13 +166,13 @@ class Sample_Data_Seeder_Model extends Query
 
             if ($headCivilStatus === 'Married') {
 
-                $spouseSex      = $headIsMale ? 'Female' : 'Male';
-                $spouseAge      = $headAge + rand(-6, 6);
-                $spouseAge      = max(18, $spouseAge);
+                $spouseSex = $headIsMale ? 'Female' : 'Male';
+                $spouseAge = $headAge + rand(-6, 6);
+                $spouseAge = max(18, $spouseAge);
                 // Spouse takes the family last name (Filipino tradition: wife takes husband's surname)
                 $spouseLastName = $familyLastName;
 
-                $rows[]    = $this->createPerson($householdId, $spouseSex, $spouseAge, 'Spouse', 'Married', $spouseLastName);
+                $rows[] = $this->createPerson($householdId, $spouseSex, $spouseAge, 'Spouse', 'Married', $spouseLastName);
                 $members[] = $id++;
                 $hasSpouse = true;
             }
@@ -176,12 +182,18 @@ class Sample_Data_Seeder_Model extends Query
             // Number of children weighted realistically
             // -----------------------------------------------
             $roll = rand(1, 100);
-            if ($roll <= 10)       $childCount = 0;
-            elseif ($roll <= 28)   $childCount = 1;
-            elseif ($roll <= 55)   $childCount = 2;
-            elseif ($roll <= 78)   $childCount = 3;
-            elseif ($roll <= 92)   $childCount = 4;
-            else                   $childCount = rand(5, 7);
+            if ($roll <= 10)
+                $childCount = 0;
+            elseif ($roll <= 28)
+                $childCount = 1;
+            elseif ($roll <= 55)
+                $childCount = 2;
+            elseif ($roll <= 78)
+                $childCount = 3;
+            elseif ($roll <= 92)
+                $childCount = 4;
+            else
+                $childCount = rand(5, 7);
 
             // Max child age is constrained by head age (can't be older than parent)
             $maxChildAge = max(1, $headAge - 18);
@@ -189,8 +201,8 @@ class Sample_Data_Seeder_Model extends Query
 
             for ($c = 0; $c < $childCount; $c++) {
 
-                $childAge      = rand(0, $maxChildAge);
-                $childSex      = rand(0, 1) ? 'Male' : 'Female';
+                $childAge = rand(0, $maxChildAge);
+                $childSex = rand(0, 1) ? 'Male' : 'Female';
                 $childLastName = $familyLastName; // children share family surname
 
                 // Children under 18 are Single; older ones may vary
@@ -200,7 +212,7 @@ class Sample_Data_Seeder_Model extends Query
                     $childCivilStatus = $this->random(['Single', 'Single', 'Single', 'Married', 'Separated']);
                 }
 
-                $rows[]    = $this->createPerson($householdId, $childSex, $childAge, 'Child', $childCivilStatus, $childLastName);
+                $rows[] = $this->createPerson($householdId, $childSex, $childAge, 'Child', $childCivilStatus, $childLastName);
                 $members[] = $id++;
             }
 
@@ -220,19 +232,19 @@ class Sample_Data_Seeder_Model extends Query
 
                     if ($relativeRoll <= 35) {
                         // Grandparent
-                        $relativeAge  = $headAge + rand(20, 35);
-                        $relativeSex  = rand(0, 1) ? 'Male' : 'Female';
+                        $relativeAge = $headAge + rand(20, 35);
+                        $relativeSex = rand(0, 1) ? 'Male' : 'Female';
                         $relativeCivil = $this->random(['Married', 'Widowed', 'Widowed']);
                     } elseif ($relativeRoll <= 65) {
                         // Sibling of head (close in age)
-                        $relativeAge  = $headAge + rand(-8, 8);
-                        $relativeAge  = max(15, $relativeAge);
-                        $relativeSex  = rand(0, 1) ? 'Male' : 'Female';
+                        $relativeAge = $headAge + rand(-8, 8);
+                        $relativeAge = max(15, $relativeAge);
+                        $relativeSex = rand(0, 1) ? 'Male' : 'Female';
                         $relativeCivil = $this->random(['Single', 'Married', 'Separated']);
                     } else {
                         // Younger relative / nephew / niece
-                        $relativeAge  = rand(5, 22);
-                        $relativeSex  = rand(0, 1) ? 'Male' : 'Female';
+                        $relativeAge = rand(5, 22);
+                        $relativeSex = rand(0, 1) ? 'Male' : 'Female';
                         $relativeCivil = $relativeAge < 18 ? 'Single' : $this->random(['Single', 'Single', 'Married']);
                     }
 
@@ -241,7 +253,7 @@ class Sample_Data_Seeder_Model extends Query
                         ? $familyLastName
                         : $this->randomLastName();
 
-                    $rows[]    = $this->createPerson($householdId, $relativeSex, $relativeAge, 'Relative', $relativeCivil, $relativeLastName);
+                    $rows[] = $this->createPerson($householdId, $relativeSex, $relativeAge, 'Relative', $relativeCivil, $relativeLastName);
                     $members[] = $id++;
                 }
             }
@@ -252,13 +264,13 @@ class Sample_Data_Seeder_Model extends Query
             // -----------------------------------------------
             if (rand(1, 100) <= 8) {
 
-                $otherAge      = rand(18, 45);
-                $otherSex      = rand(0, 1) ? 'Male' : 'Female';
-                $otherCivil    = $this->random(['Single', 'Single', 'Married', 'Separated']);
+                $otherAge = rand(18, 45);
+                $otherSex = rand(0, 1) ? 'Male' : 'Female';
+                $otherCivil = $this->random(['Single', 'Single', 'Married', 'Separated']);
                 // Boarders/helpers almost always have a different surname
                 $otherLastName = $this->randomLastName();
 
-                $rows[]    = $this->createPerson($householdId, $otherSex, $otherAge, 'Other', $otherCivil, $otherLastName);
+                $rows[] = $this->createPerson($householdId, $otherSex, $otherAge, 'Other', $otherCivil, $otherLastName);
                 $members[] = $id++;
             }
 
@@ -285,21 +297,20 @@ class Sample_Data_Seeder_Model extends Query
 
         return [
             'household_id' => $householdId,
-            'first_name'   => $firstName,
-            'middle_name'  => rand(0, 1) ? $middleName : null,
-            'last_name'    => $lastName,
-            'sex'          => $sex,
-            'birthdate'    => $birthdate,
+            'first_name' => $firstName,
+            'middle_name' => rand(0, 1) ? $middleName : null,
+            'last_name' => $lastName,
+            'sex' => $sex,
+            'birthdate' => $birthdate,
             'civil_status' => $civilStatus,
             'relationship' => $relationship,
-            'status'       => 'Active',
+            'status' => 'Active',
         ];
     }
 
-    // ================= DEATHS & MIGRATIONS =================
     private function applyDeathsAndMigrations(): void
     {
-        $deathRows     = [];
+        $deathRows = [];
         $migrationRows = [];
 
         $causesOfDeath = [
@@ -338,23 +349,35 @@ class Sample_Data_Seeder_Model extends Query
             'Ozamiz City',
         ];
 
+        // Choose mode: 'alternate' to alternate IN/OUT, 'random' to pick per-event randomly.
+        $migrationMode = 'random'; // or 'random'
+        $alternateToggle = rand(0, 1) === 1; // starting toggle (true => next migration will be IN)
+
         foreach ($this->residentIds as $rid) {
 
-            $r   = self::table('residents')->where('id', $rid)->first();
+            $r = self::table('residents')->where('id', $rid)->first();
             $age = $this->calculateAge($r['birthdate']);
 
             // -------------------------
             // DEATH PROBABILITY
             // -------------------------
             $deathChance = 0;
-            if ($age >= 75)      $deathChance = 20;
-            elseif ($age >= 70)  $deathChance = 15;
-            elseif ($age >= 60)  $deathChance = 10;
-            elseif ($age >= 50)  $deathChance = 5;
-            elseif ($age >= 18)  $deathChance = 2;
-            elseif ($age <= 1)   $deathChance = 5;
-            elseif ($age <= 5)   $deathChance = 2;
-            else                 $deathChance = 1;
+            if ($age >= 75)
+                $deathChance = 20;
+            elseif ($age >= 70)
+                $deathChance = 15;
+            elseif ($age >= 60)
+                $deathChance = 10;
+            elseif ($age >= 50)
+                $deathChance = 5;
+            elseif ($age >= 18)
+                $deathChance = 2;
+            elseif ($age <= 1)
+                $deathChance = 5;
+            elseif ($age <= 5)
+                $deathChance = 2;
+            else
+                $deathChance = 1;
 
             if (rand(1, 100) <= $deathChance) {
 
@@ -362,7 +385,7 @@ class Sample_Data_Seeder_Model extends Query
                     ->where('id', $rid)
                     ->update(['status' => 'Deceased']);
 
-                $daysAgo     = rand(1, 365 * 10);
+                $daysAgo = rand(1, 365 * 10);
                 $dateOfDeath = date('Y-m-d', strtotime("-{$daysAgo} days"));
 
                 $manner = ($age >= 50)
@@ -385,9 +408,9 @@ class Sample_Data_Seeder_Model extends Query
                     : $this->random($causesOfDeath);
 
                 $deathRows[] = [
-                    'resident_id'     => $rid,
-                    'date_of_death'   => $dateOfDeath,
-                    'cause_of_death'  => $cause,
+                    'resident_id' => $rid,
+                    'date_of_death' => $dateOfDeath,
+                    'cause_of_death' => $cause,
                     'manner_of_death' => $manner,
                 ];
 
@@ -395,35 +418,269 @@ class Sample_Data_Seeder_Model extends Query
             }
 
             // -------------------------
-            // MIGRATION (OUT) PROBABILITY
+            // MIGRATION (OUT / IN) PROBABILITY
             // -------------------------
             $migrateChance = 0;
-            if ($age >= 18 && $age <= 30)        $migrateChance = 10;
-            elseif ($age > 30 && $age <= 40)     $migrateChance = 6;
-            elseif ($age > 40 && $age <= 55)     $migrateChance = 3;
-            elseif ($age > 55)                   $migrateChance = 1;
+            if ($age >= 18 && $age <= 30)
+                $migrateChance = 10;
+            elseif ($age > 30 && $age <= 40)
+                $migrateChance = 6;
+            elseif ($age > 40 && $age <= 55)
+                $migrateChance = 3;
+            elseif ($age > 55)
+                $migrateChance = 1;
 
             if (rand(1, 100) <= $migrateChance) {
+                // Decide migration type based on mode
+                if ($migrationMode === 'alternate') {
+                    $migrationType = $alternateToggle ? 'IN' : 'OUT';
+                    $alternateToggle = !$alternateToggle;
+                } else { // 'random'
+                    $migrationType = rand(0, 1) ? 'IN' : 'OUT';
+                }
 
-                self::table('residents')
-                    ->where('id', $rid)
-                    ->update(['status' => 'Transferred']);
+                if ($migrationType === 'OUT') {
+                    // Existing resident moves out
+                    self::table('residents')
+                        ->where('id', $rid)
+                        ->update(['status' => 'Transferred']);
 
-                $daysAgo         = rand(1, 365 * 5);
-                $dateOfMigration = date('Y-m-d', strtotime("-{$daysAgo} days"));
+                    $daysAgo = rand(1, 365 * 5);
+                    $dateOfMigration = date('Y-m-d', strtotime("-{$daysAgo} days"));
 
-                $migrationRows[] = [
-                    'resident_id'       => $rid,
-                    'migration_type'    => 'OUT',
-                    'date_of_migration' => $dateOfMigration,
-                    'origin'            => 'Barangay (Local)',
-                    'destination'       => $this->random($destinations),
-                ];
+                    $migrationRows[] = [
+                        'resident_id' => $rid,
+                        'migration_type' => 'OUT',
+                        'date_of_migration' => $dateOfMigration,
+                        'origin' => 'Barangay (Local)',
+                        'destination' => $this->random($destinations),
+                    ];
+                } else {
+                    // Migration IN: create a new resident arriving to the barangay
+                    $sex = rand(0, 1) ? 'Male' : 'Female';
+                    $ageNew = rand(18, 55);
+
+                    [$firstName, $middleName] = $this->generateName($sex);
+
+                    $birthYear = date('Y') - $ageNew;
+                    $birthdate = date(
+                        'Y-m-d',
+                        strtotime($birthYear . '-' . rand(1, 12) . '-' . rand(1, 28))
+                    );
+
+                    $resident = [
+                        'household_id' => $this->random($this->householdIds),
+                        'first_name' => $firstName,
+                        'middle_name' => rand(0, 1) ? $middleName : null,
+                        'last_name' => $this->randomLastName(),
+                        'sex' => $sex,
+                        'birthdate' => $birthdate,
+                        'civil_status' => $this->random([
+                            'Single',
+                            'Married',
+                            'Separated',
+                            'Widowed'
+                        ]),
+                        'relationship' => 'Relative',
+                        'status' => 'Active',
+                    ];
+
+                    self::table('residents')->insert($resident);
+
+                    // best-effort id calculation consistent with your existing approach
+                    $newResidentId = count($this->residentIds) + 1;
+                    $this->residentIds[] = $newResidentId;
+
+                    $migrationRows[] = [
+                        'resident_id' => $newResidentId,
+                        'migration_type' => 'IN',
+                        'date_of_migration' => date('Y-m-d', strtotime('-' . rand(1, 365 * 5) . ' days')),
+                        'origin' => $this->random([
+                            'Cebu City',
+                            'Davao City',
+                            'Manila',
+                            'Quezon City',
+                            'Tacloban City',
+                            'Borongan City',
+                            'Ormoc City',
+                            'Catbalogan City',
+                            'Calbayog City',
+                            'Baybay City',
+                            'Guiuan',
+                            'Catarman',
+                            'Allen',
+                            'Sogod',
+                            'Basey',
+                            'Northern Samar',
+                            'Southern Leyte',
+                            'Biliran',
+                            'Leyte',
+                        ]),
+                        'destination' => 'Barangay (Local)',
+                    ];
+                }
             }
         }
 
-        $this->batchInsert('death_records',     $deathRows);
+        // -------------------------
+        // MIGRATION IN (additional newcomers)
+        // -------------------------
+
+        $origins = [
+            'Cebu City',
+            'Davao City',
+            'Manila',
+            'Quezon City',
+            'Tacloban City',
+            'Borongan City',
+            'Ormoc City',
+            'Catbalogan City',
+            'Calbayog City',
+            'Baybay City',
+            'Guiuan',
+            'Catarman',
+            'Allen',
+            'Sogod',
+            'Basey',
+            'Northern Samar',
+            'Southern Leyte',
+            'Biliran',
+            'Leyte',
+        ];
+
+        $migrationInCount = rand(
+            max(10, intval($this->householdCount * 0.05)),
+            max(20, intval($this->householdCount * 0.12))
+        );
+
+        $nextResidentId = count($this->residentIds) + 1;
+
+        for ($i = 0; $i < $migrationInCount; $i++) {
+
+            $householdId = $this->random($this->householdIds);
+
+            $sex = rand(0, 1) ? 'Male' : 'Female';
+            $age = rand(18, 55);
+
+            [$firstName, $middleName] = $this->generateName($sex);
+
+            $birthYear = date('Y') - $age;
+            $birthdate = date(
+                'Y-m-d',
+                strtotime($birthYear . '-' . rand(1, 12) . '-' . rand(1, 28))
+            );
+
+            $resident = [
+                'household_id' => $householdId,
+                'first_name' => $firstName,
+                'middle_name' => rand(0, 1) ? $middleName : null,
+                'last_name' => $this->randomLastName(),
+                'sex' => $sex,
+                'birthdate' => $birthdate,
+                'civil_status' => $this->random([
+                    'Single',
+                    'Married',
+                    'Separated',
+                    'Widowed'
+                ]),
+                'relationship' => 'Relative',
+                'status' => 'Active',
+            ];
+
+            self::table('residents')->insert($resident);
+
+            $residentId = $nextResidentId++;
+
+            $this->residentIds[] = $residentId;
+
+            $migrationRows[] = [
+                'resident_id' => $residentId,
+                'migration_type' => 'IN',
+                'date_of_migration' => date(
+                    'Y-m-d',
+                    strtotime('-' . rand(1, 365 * 5) . ' days')
+                ),
+                'origin' => $this->random($origins),
+                'destination' => 'Barangay (Local)',
+            ];
+        }
+
+        $this->batchInsert('death_records', $deathRows);
         $this->batchInsert('migration_records', $migrationRows);
+    }
+
+    // ================= BIRTH RECORDS =================
+    private function seedBirthRecords(): void
+    {
+        $rows = [];
+
+        // Female residents aged 18-45
+        $mothers = self::table('residents')
+            ->where('sex', 'Female')
+            ->get();
+
+        foreach ($mothers as $mother) {
+
+            $motherAge = $this->calculateAge($mother['birthdate']);
+
+            if ($motherAge < 18 || $motherAge > 45) {
+                continue;
+            }
+
+            // Probability of having birth records
+            if (rand(1, 100) > 45) {
+                continue;
+            }
+
+            // Number of children
+            $childCount = $this->weighted([
+                ['count' => 1, 'weight' => 35],
+                ['count' => 2, 'weight' => 30],
+                ['count' => 3, 'weight' => 18],
+                ['count' => 4, 'weight' => 10],
+                ['count' => 5, 'weight' => 5],
+                ['count' => 6, 'weight' => 2],
+            ])['count'];
+
+            // Find children in same household
+            $children = self::table('residents')
+                ->where('household_id', $mother['household_id'])
+                ->where('relationship', 'Child')
+                ->get();
+
+            if (empty($children)) {
+                continue;
+            }
+
+            shuffle($children);
+
+            $used = 0;
+
+            foreach ($children as $child) {
+
+                if ($used >= $childCount) {
+                    break;
+                }
+
+                // Child should be younger than mother by at least 15 years
+                $childAge = $this->calculateAge($child['birthdate']);
+
+                if (($motherAge - $childAge) < 15) {
+                    continue;
+                }
+
+                $rows[] = [
+                    'child_resident_id' => $child['id'],
+                    'mother_resident_id' => $mother['id'],
+                    'date_of_birth' => $child['birthdate'],
+                    'sex' => $child['sex'],
+                ];
+
+                $used++;
+            }
+        }
+
+        $this->batchInsert('birth_records', $rows);
     }
 
     // ================= SOCIO ECONOMIC =================
@@ -433,17 +690,17 @@ class Sample_Data_Seeder_Model extends Query
 
         foreach ($this->residentIds as $id) {
 
-            $r       = self::table('residents')->where('id', $id)->first();
-            $age     = $this->calculateAge($r['birthdate']);
+            $r = self::table('residents')->where('id', $id)->first();
+            $age = $this->calculateAge($r['birthdate']);
             $profile = $this->generateEconomicProfile($r['sex'], $age);
 
             $rows[] = [
-                'resident_id'       => $id,
-                'occupation'        => $profile['occupation'],
+                'resident_id' => $id,
+                'occupation' => $profile['occupation'],
                 'employment_status' => $profile['employment_status'],
-                'monthly_income'    => $profile['monthly_income'],
-                'education_level'   => $profile['education_level'],
-                'is_literate'       => $this->generateLiteracy($profile['education_level']),
+                'monthly_income' => $profile['monthly_income'],
+                'education_level' => $profile['education_level'],
+                'is_literate' => $this->generateLiteracy($profile['education_level']),
             ];
         }
 
@@ -454,10 +711,10 @@ class Sample_Data_Seeder_Model extends Query
     {
         if ($age < 18) {
             return [
-                'occupation'        => 'Student',
+                'occupation' => 'Student',
                 'employment_status' => 'Student',
-                'monthly_income'    => 0,
-                'education_level'   => $age < 12
+                'monthly_income' => 0,
+                'education_level' => $age < 12
                     ? 'Elementary'
                     : $this->random(['Elementary', 'High School']),
             ];
@@ -465,38 +722,38 @@ class Sample_Data_Seeder_Model extends Query
 
         if ($age >= 60 && rand(1, 100) <= 70) {
             return [
-                'occupation'        => 'Retired',
+                'occupation' => 'Retired',
                 'employment_status' => 'Retired',
-                'monthly_income'    => rand(2000, 15000),
-                'education_level'   => $this->random(['Elementary', 'High School', 'College']),
+                'monthly_income' => rand(2000, 15000),
+                'education_level' => $this->random(['Elementary', 'High School', 'College']),
             ];
         }
 
         $shared = [
-            ['occupation' => 'Vendor',        'employment_status' => 'Self-Employed', 'education' => ['Elementary', 'High School'],   'income' => [3000, 15000],  'weight' => 12],
-            ['occupation' => 'Office Clerk',   'employment_status' => 'Employed',      'education' => ['Senior High', 'College'],      'income' => [15000, 30000], 'weight' => 10],
-            ['occupation' => 'Teacher',        'employment_status' => 'Employed',      'education' => ['College'],                     'income' => [25000, 50000], 'weight' => 8],
-            ['occupation' => 'Factory Worker', 'employment_status' => 'Employed',      'education' => ['High School'],                 'income' => [12000, 22000], 'weight' => 8],
-            ['occupation' => 'Unemployed',     'employment_status' => 'Unemployed',    'education' => ['None'],                        'income' => [0, 0],         'weight' => 10],
+            ['occupation' => 'Vendor', 'employment_status' => 'Self-Employed', 'education' => ['Elementary', 'High School'], 'income' => [3000, 15000], 'weight' => 12],
+            ['occupation' => 'Office Clerk', 'employment_status' => 'Employed', 'education' => ['Senior High', 'College'], 'income' => [15000, 30000], 'weight' => 10],
+            ['occupation' => 'Teacher', 'employment_status' => 'Employed', 'education' => ['College'], 'income' => [25000, 50000], 'weight' => 8],
+            ['occupation' => 'Factory Worker', 'employment_status' => 'Employed', 'education' => ['High School'], 'income' => [12000, 22000], 'weight' => 8],
+            ['occupation' => 'Unemployed', 'employment_status' => 'Unemployed', 'education' => ['None'], 'income' => [0, 0], 'weight' => 10],
         ];
 
         $extra = $sex === 'Male'
             ? [
-                ['occupation' => 'Laborer',         'employment_status' => 'Employed',      'education' => ['Elementary'],  'income' => [8000, 16000],  'weight' => 10],
-                ['occupation' => 'Driver',           'employment_status' => 'Self-Employed', 'education' => ['Elementary'],  'income' => [6000, 18000],  'weight' => 8],
+                ['occupation' => 'Laborer', 'employment_status' => 'Employed', 'education' => ['Elementary'], 'income' => [8000, 16000], 'weight' => 10],
+                ['occupation' => 'Driver', 'employment_status' => 'Self-Employed', 'education' => ['Elementary'], 'income' => [6000, 18000], 'weight' => 8],
             ]
             : [
-                ['occupation' => 'Nurse',            'employment_status' => 'Employed',      'education' => ['College'],     'income' => [30000, 60000], 'weight' => 8],
-                ['occupation' => 'Home-based Worker', 'employment_status' => 'Self-Employed', 'education' => ['Elementary'],  'income' => [3000, 12000],  'weight' => 8],
+                ['occupation' => 'Nurse', 'employment_status' => 'Employed', 'education' => ['College'], 'income' => [30000, 60000], 'weight' => 8],
+                ['occupation' => 'Home-based Worker', 'employment_status' => 'Self-Employed', 'education' => ['Elementary'], 'income' => [3000, 12000], 'weight' => 8],
             ];
 
         $p = $this->weighted(array_merge($shared, $extra));
 
         return [
-            'occupation'        => $p['occupation'],
+            'occupation' => $p['occupation'],
             'employment_status' => $p['employment_status'],
-            'monthly_income'    => rand($p['income'][0], $p['income'][1]),
-            'education_level'   => $this->random($p['education']),
+            'monthly_income' => rand($p['income'][0], $p['income'][1]),
+            'education_level' => $this->random($p['education']),
         ];
     }
 
@@ -507,13 +764,13 @@ class Sample_Data_Seeder_Model extends Query
 
         foreach ($this->residentIds as $id) {
             $rows[] = [
-                'resident_id'             => $id,
-                'is_pwd'                  => rand(1, 100) <= 5  ? 1 : 0,
-                'is_senior'               => rand(1, 100) <= 10 ? 1 : 0,
-                'has_chronic_illness'     => rand(1, 100) <= 15 ? 1 : 0,
+                'resident_id' => $id,
+                'is_pwd' => rand(1, 100) <= 5 ? 1 : 0,
+                'is_senior' => rand(1, 100) <= 10 ? 1 : 0,
+                'has_chronic_illness' => rand(1, 100) <= 15 ? 1 : 0,
                 'chronic_illness_details' => null,
-                'blood_type'              => $this->random(['A+', 'B+', 'O+', 'AB+']),
-                'vaccinated'              => rand(1, 100) <= 80 ? 1 : 0,
+                'blood_type' => $this->random(['A+', 'B+', 'O+', 'AB+']),
+                'vaccinated' => rand(1, 100) <= 80 ? 1 : 0,
             ];
         }
 
@@ -526,35 +783,35 @@ class Sample_Data_Seeder_Model extends Query
         $this->batchInsert('programs', [
             [
                 'program_name' => 'Pantawid Pamilyang Pilipino Program (4Ps)',
-                'description'  => 'Conditional cash transfer program for low-income households provided by DSWD. Supports health, nutrition, and education of children aged 0–18 through compliance with school attendance and health check-up requirements.',
+                'description' => 'Conditional cash transfer program for low-income households provided by DSWD. Supports health, nutrition, and education of children aged 0–18 through compliance with school attendance and health check-up requirements.',
             ],
             [
                 'program_name' => 'Social Pension for Indigent Senior Citizens',
-                'description'  => 'Monthly financial assistance provided to senior citizens aged 60 and above who are frail, sickly, or without regular income or family support, implemented under the Social Welfare and Development programs.',
+                'description' => 'Monthly financial assistance provided to senior citizens aged 60 and above who are frail, sickly, or without regular income or family support, implemented under the Social Welfare and Development programs.',
             ],
             [
                 'program_name' => 'Assistance to Persons with Disabilities (PWD Assistance Program)',
-                'description'  => 'Support program providing financial aid, medical assistance, and priority access services to registered persons with disabilities to improve mobility, livelihood, and healthcare access.',
+                'description' => 'Support program providing financial aid, medical assistance, and priority access services to registered persons with disabilities to improve mobility, livelihood, and healthcare access.',
             ],
             [
                 'program_name' => 'Barangay Health and Medical Assistance Program',
-                'description'  => 'Local health initiative offering free basic consultations, maternal care services, immunization, and financial assistance for hospital referrals and emergency medical cases.',
+                'description' => 'Local health initiative offering free basic consultations, maternal care services, immunization, and financial assistance for hospital referrals and emergency medical cases.',
             ],
             [
                 'program_name' => 'Educational Assistance and Scholarship Program',
-                'description'  => 'Financial support for elementary, high school, and college students from low-income families, including tuition assistance, school supplies, and allowance subsidies based on academic performance and household income.',
+                'description' => 'Financial support for elementary, high school, and college students from low-income families, including tuition assistance, school supplies, and allowance subsidies based on academic performance and household income.',
             ],
             [
                 'program_name' => 'Livelihood Assistance and Skills Training Program',
-                'description'  => 'Capability-building program providing TESDA-accredited skills training, startup capital assistance, and livelihood kits for unemployed and underemployed residents to promote self-sufficiency.',
+                'description' => 'Capability-building program providing TESDA-accredited skills training, startup capital assistance, and livelihood kits for unemployed and underemployed residents to promote self-sufficiency.',
             ],
             [
                 'program_name' => 'Emergency Shelter Assistance Program',
-                'description'  => 'Disaster-response housing support for families affected by fires, typhoons, and other emergencies, including temporary shelter aid, construction materials, and relocation assistance.',
+                'description' => 'Disaster-response housing support for families affected by fires, typhoons, and other emergencies, including temporary shelter aid, construction materials, and relocation assistance.',
             ],
             [
                 'program_name' => 'Solo Parent Welfare Assistance Program',
-                'description'  => 'Support program for registered solo parents providing monthly financial aid, counseling services, and priority access to livelihood and educational assistance programs.',
+                'description' => 'Support program for registered solo parents providing monthly financial aid, counseling services, and priority access to livelihood and educational assistance programs.',
             ],
         ]);
 
@@ -568,7 +825,7 @@ class Sample_Data_Seeder_Model extends Query
         foreach ($this->householdMembers as $householdId => $members) {
 
             $householdIncome = 0;
-            $hasChild        = false;
+            $hasChild = false;
 
             foreach ($members as $rid) {
 
@@ -592,11 +849,13 @@ class Sample_Data_Seeder_Model extends Query
             foreach ($members as $rid) {
 
                 $r = self::table('residents')->where('id', $rid)->first();
-                if (!$r) continue;
+                if (!$r)
+                    continue;
 
-                if (in_array($r['status'], ['Deceased', 'Transferred'])) continue;
+                if (in_array($r['status'], ['Deceased', 'Transferred']))
+                    continue;
 
-                $age     = $this->calculateAge($r['birthdate']);
+                $age = $this->calculateAge($r['birthdate']);
                 $profile = self::table('health_records')->where('resident_id', $rid)->first();
 
                 // 1. 4Ps
@@ -637,10 +896,10 @@ class Sample_Data_Seeder_Model extends Query
     private function beneficiaryRow($rid, $pid): array
     {
         return [
-            'resident_id'   => $rid,
-            'program_id'    => $pid,
+            'resident_id' => $rid,
+            'program_id' => $pid,
             'date_enrolled' => date('Y-m-d'),
-            'status'        => 'Active',
+            'status' => 'Active',
         ];
     }
 
@@ -851,7 +1110,7 @@ class Sample_Data_Seeder_Model extends Query
             'Sison',
         ];
 
-        $firstName  = $sex === 'Male'
+        $firstName = $sex === 'Male'
             ? $male[array_rand($male)]
             : $female[array_rand($female)];
 
