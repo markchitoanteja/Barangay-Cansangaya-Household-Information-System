@@ -115,7 +115,7 @@ $((): void => {
                 hideLoading();
                 console.error(errorThrown);
                 console.log(jqXHR.responseText);
-                showAlert("Something went wrong. Please try again.");
+                showAlert("The username could not be found in the database.");
             }
         });
     });

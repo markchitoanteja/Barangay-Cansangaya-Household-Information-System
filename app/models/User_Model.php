@@ -14,7 +14,7 @@ class User_Model extends Query
      * @param int $expiry_seconds Optional expiration time in seconds (default 30 days)
      * @return bool
      */
-    public function MOD_STORE_REMEMBER_TOKEN(int $user_id, string $token, int $expiry_seconds = 2592000): bool
+    public function MOD_STORE_REMEMBER_TOKEN(int $user_id, string $token, int $expiry_seconds = 2592000): string
     {
         $expires_at = date('Y-m-d H:i:s', time() + $expiry_seconds);
 
@@ -72,9 +72,7 @@ class User_Model extends Query
     // ✅ NEW (used for SUPER_ADMIN login bypass)
     public function MOD_GET_USER_BY_USERNAME(string $username): ?array
     {
-        return $this->table('users')
-            ->where('username', '=', $username)
-            ->first();
+        return $this->table('users')->where('username', '=', $username)->first();
     }
 
     // =========================================
