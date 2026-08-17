@@ -27,6 +27,7 @@ return function (Router $router) {
     $router->get('/migration-records', 'AdminController@migration_records');
     $router->get('/death-records', 'AdminController@death_records');
     $router->get('/user-management', 'AdminController@user_management');
+    $router->get('/system-logs', 'AdminController@system_logs');
     $router->get('/export-logs', 'AdminController@export_logs');
     $router->post('/add-user-account', 'AdminController@add_user_account');
     $router->post('/update-security-questions', 'AdminController@update_security_questions');

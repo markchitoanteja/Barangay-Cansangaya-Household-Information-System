@@ -56,7 +56,7 @@ class AdminController extends Controller
     {
         $current_user = session_get('user', null);
 
-        write_log('ACCESS_PAGE', 'logs_dashboard', null, 'Accessed logs dashboard');
+        write_log('ACCESS_PAGE', 'dashboard', null, 'Accessed dashboard');
 
         $log_model = $this->model('Log_Model');
 
@@ -1125,6 +1125,64 @@ class AdminController extends Controller
             'admin/user_management_view',
             'includes/pagination/pagination',
             'includes/modals/user_management_modals',
+            'includes/modals/global_modals',
+            'includes/overlays/loading_overlay',
+            'includes/footer'
+        ], $data);
+    }
+
+    public function system_logs()
+    {
+        $current_user = session_get('user', null);
+
+        write_log('ACCESS_PAGE', 'system_logs', null, 'Accessed system logs');
+
+        $log_model = $this->model('Log_Model');
+
+        // --- Pagination setup ---
+        $per_page = 10;
+        $current_page = (int) (input('page') ?? 1);
+        if ($current_page < 1)
+            $current_page = 1;
+
+        // --- Search filter ---
+        $search = trim((string) input('search'));
+
+        // Fetch logs with search
+        $all_logs = $log_model->MOD_GET_LOGS($search);
+
+        // Pagination calculations
+        $total_logs = count($all_logs);
+        $total_pages = (int) ceil($total_logs / $per_page);
+        $offset = ($current_page - 1) * $per_page;
+
+        // Slice logs for current page
+        $logs = array_slice($all_logs, $offset, $per_page);
+
+        $user_model = $this->model('User_Model');
+
+        $security_questions = $user_model->MOD_GET_QUESTIONS_BY_ID($current_user['id']);
+
+        $system_information_model = $this->model('System_Information_Model');
+
+        $system_information = $system_information_model->MOD_GET_SYSTEM_INFORMATION();
+
+        // Prepare data for view
+        $data = [
+            'title' => 'System Logs',
+            'user' => $current_user,
+            'logs' => $logs,
+            'current_page' => $current_page,
+            'total_pages' => $total_pages,
+            'search' => $search,
+            'security_questions' => $security_questions,
+            'system_information' => $system_information
+        ];
+
+        $this->view([
+            'includes/header',
+            'admin/system_logs_view',
+            'includes/pagination/pagination',
             'includes/modals/global_modals',
             'includes/overlays/loading_overlay',
             'includes/footer'

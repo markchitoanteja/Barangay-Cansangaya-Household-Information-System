@@ -106,6 +106,12 @@
                         <i class="fa-solid fa-id-badge"></i>
                         <span class="nav-text">User Management</span>
                     </a>
+
+                    <!-- SYSTEM LOGS -->
+                    <a class="nav-link loadable <?= ($title == 'System Logs') ? 'active' : '' ?>" href="system-logs" title="System Logs">
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                        <span class="nav-text">System Logs</span>
+                    </a>
                 <?php endif; ?>
             </nav>
         </aside>
@@ -182,12 +188,7 @@
                                 </a>
                             </li>
                             <li>
-                                <a class="dropdown-item btn-security-questions" href="javascript:void(0)"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#securityQuestionsModal"
-                                    data-user_id="<?= $user['id'] ?>"
-                                    data-username="<?= esc($user['username']) ?>"
-                                    data-security_questions='<?= json_encode($security_questions, JSON_HEX_APOS | JSON_HEX_QUOT) ?>'>
+                                <a class="dropdown-item btn-security-questions" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#securityQuestionsModal" data-user_id="<?= $user['id'] ?>" data-username="<?= esc($user['username']) ?>" data-security_questions='<?= json_encode($security_questions, JSON_HEX_APOS | JSON_HEX_QUOT) ?>'>
                                     <i class="fa-solid fa-shield-halved me-2"></i> Update Security Questions
                                 </a>
                             </li>

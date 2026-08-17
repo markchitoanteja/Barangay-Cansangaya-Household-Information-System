@@ -398,7 +398,7 @@ $((): void => {
         showLoading();
 
         setTimeout(() => {
-            location.href = "dashboard";
+            location.href = "system-logs";
         }, 250);
     });
 
@@ -423,7 +423,7 @@ $((): void => {
                         dataType: "json",
                         success: (response: { success: boolean; message: string }) => {
                             if (response.success) {
-                                location.href = "dashboard";
+                                location.href = "system-logs";
                             } else {
                                 hideLoading();
 
