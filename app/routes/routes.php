@@ -17,6 +17,7 @@ return function (Router $router) {
 
     // Admin routes
     $router->get('/dashboard', 'AdminController@dashboard');
+    $router->get('/population-forecast', 'AdminController@population_forecast');
     $router->get('/households', 'AdminController@households');
     $router->get('/residents', 'AdminController@residents');
     $router->get('/socio-economic', 'AdminController@socio_economic');
@@ -29,6 +30,7 @@ return function (Router $router) {
     $router->get('/user-management', 'AdminController@user_management');
     $router->get('/system-logs', 'AdminController@system_logs');
     $router->get('/export-logs', 'AdminController@export_logs');
+    
     $router->post('/add-user-account', 'AdminController@add_user_account');
     $router->post('/update-security-questions', 'AdminController@update_security_questions');
     $router->post('/update-user-account', 'AdminController@update_user_account');

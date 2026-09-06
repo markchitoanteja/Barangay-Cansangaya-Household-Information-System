@@ -1,4 +1,0 @@
-[2026-07-21 19:12:02] E_WARNING: Undefined array key "resident_name" | File: C:\xampp\htdocs\Barangay-Cansangaya-Household-Information-System\app\controllers\AdminController.php | Line: 744
-[2026-08-01 16:39:34] E_WARNING: Trying to access array offset on value of type null | File: C:\xampp\htdocs\Barangay-Cansangaya-Household-Information-System\app\controllers\AuthController.php | Line: 162
-[2026-08-01 16:42:35] E_WARNING: Trying to access array offset on value of type null | File: C:\xampp\htdocs\Barangay-Cansangaya-Household-Information-System\app\controllers\AuthController.php | Line: 162
-[2026-08-01 16:44:55] E_WARNING: Trying to access array offset on value of type null | File: C:\xampp\htdocs\Barangay-Cansangaya-Household-Information-System\app\controllers\AuthController.php | Line: 162

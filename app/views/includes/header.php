@@ -39,6 +39,16 @@
                     <span class="nav-text">Dashboard</span>
                 </a>
 
+                <!-- POPULATION FORECAST -->
+                <a class="nav-link loadable position-relative <?= ($title == 'Population Forecast') ? 'active' : '' ?>" href="population-forecast" title="Population Forecast">
+
+                    <i class="fa-solid fa-chart-line"></i>
+
+                    <span class="nav-text">Population Forecast</span>
+
+                    <span class="new-badge">NEW</span>
+                </a>
+
                 <div class="nav-section">Core Data</div>
 
                 <!-- HOUSEHOLDS -->

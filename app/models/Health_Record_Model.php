@@ -58,4 +58,18 @@ class Health_Record_Model extends Query
     {
         return $this->table('health_records')->where('id', $id)->update($data);
     }
+
+    public function MOD_GET_PWD(): array
+    {
+        return $this->table('health_records')
+            ->where('is_pwd', 1)
+            ->get();
+    }
+
+    public function MOD_GET_CHRONIC_ILLNESS(): array
+    {
+        return $this->table('health_records')
+            ->where('has_chronic_illness', 1)
+            ->get();
+    }
 }

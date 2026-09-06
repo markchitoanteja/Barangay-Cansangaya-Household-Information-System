@@ -35,9 +35,32 @@ class Socio_Economic_Model extends Query
     {
         return $this->table('socio_economic_profiles')->where('id', $id)->update($data);
     }
-    
+
     public function MOD_GET_RESIDENT_BY_STATUS(string $status): array
     {
         return $this->table('socio_economic_profiles')->where('employment_status', $status)->get();
+    }
+
+    public function MOD_GET_AVERAGE_INCOME(): float
+    {
+        $records = $this->table('socio_economic_profiles')
+            ->select('monthly_income')
+            ->get();
+
+        if (empty($records)) {
+            return 0;
+        }
+
+        $total = 0;
+        $count = 0;
+
+        foreach ($records as $record) {
+            if ($record['monthly_income'] !== null && $record['monthly_income'] !== '') {
+                $total += (float) $record['monthly_income'];
+                $count++;
+            }
+        }
+
+        return $count > 0 ? $total / $count : 0;
     }
 }

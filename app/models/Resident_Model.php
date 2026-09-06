@@ -47,12 +47,12 @@ class Resident_Model extends Query
     {
         return $this->table('residents')->where('id', $id)->update($data);
     }
-    
+
     public function MOD_CHECK_IF_BIRTH_RECORD_EXISTS(string $id): bool
     {
         return $this->table('birth_records')->where('child_resident_id', $id)->exists();
     }
-    
+
     public function MOD_UPDATE_BIRTH_RECORD_DATE_OF_BIRTH_AND_SEX(string $id, array $data): string
     {
         return $this->table('birth_records')->where('child_resident_id', $id)->update($data);
@@ -67,9 +67,42 @@ class Resident_Model extends Query
     {
         return $this->table('residents')->where('sex', $sex)->get();
     }
-    
+
     public function MOD_GET_RESIDENT_BY_STATUS(string $status): array
     {
         return $this->table('residents')->where('status', $status)->get();
+    }
+
+    public function MOD_GET_CHILDREN(): array
+    {
+        return $this->table('residents')
+            ->raw("
+            SELECT *
+            FROM residents
+            WHERE TIMESTAMPDIFF(YEAR, birthdate, CURDATE()) BETWEEN 0 AND 17
+        ")
+            ->get();
+    }
+
+    public function MOD_GET_WORKING_AGE(): array
+    {
+        return $this->table('residents')
+            ->raw("
+            SELECT *
+            FROM residents
+            WHERE TIMESTAMPDIFF(YEAR, birthdate, CURDATE()) BETWEEN 18 AND 64
+        ")
+            ->get();
+    }
+
+    public function MOD_GET_SENIORS(): array
+    {
+        return $this->table('residents')
+            ->raw("
+            SELECT *
+            FROM residents
+            WHERE TIMESTAMPDIFF(YEAR, birthdate, CURDATE()) >= 65
+        ")
+            ->get();
     }
 }

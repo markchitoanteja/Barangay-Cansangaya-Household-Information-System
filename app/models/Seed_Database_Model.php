@@ -233,24 +233,6 @@ class Seed_Database_Model extends Query
             destination VARCHAR(150),
             FOREIGN KEY (resident_id) REFERENCES residents(id)
         ");
-
-        self::table('population_features')->createTableIfNotExists("
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            year INT NOT NULL,
-            total_population INT,
-            births INT DEFAULT 0,
-            deaths INT DEFAULT 0,
-            net_migration INT DEFAULT 0,
-            male_ratio DECIMAL(5,2),
-            female_ratio DECIMAL(5,2),
-            avg_household_size DECIMAL(5,2),
-            dependency_ratio DECIMAL(5,2),
-            employment_rate DECIMAL(5,2),
-            avg_income DECIMAL(10,2),
-            growth_rate DECIMAL(6,4),
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            UNIQUE KEY unique_year (year)
-        ");
     }
 
     /**

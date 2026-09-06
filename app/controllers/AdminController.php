@@ -99,13 +99,13 @@ class AdminController extends Controller
 
         $beneficiary_model = $this->model('Program_Beneficiary_Model');
         $total_beneficiaries = count($beneficiary_model->MOD_GET_BENEFICIARIES());
-        
+
         $birth_record_model = $this->model('Birth_Record_Model');
         $total_birth_records = count($birth_record_model->MOD_GET_BIRTH_RECORDS());
-        
+
         $death_record_model = $this->model('Death_Record_Model');
         $total_death_records = count($death_record_model->MOD_GET_DEATH_RECORDS());
-        
+
         $migration_record_model = $this->model('Migration_Record_Model');
         $total_migration_in_records = count($migration_record_model->MOD_GET_MIGRATION_IN_RECORDS());
         $total_migration_out_records = count($migration_record_model->MOD_GET_MIGRATION_OUT_RECORDS());
@@ -116,13 +116,13 @@ class AdminController extends Controller
             'male' => count($resident_model->MOD_GET_RESIDENT_BY_SEX('male')),
             'female' => count($resident_model->MOD_GET_RESIDENT_BY_SEX('female'))
         ];
-        
+
         $resident_status = [
             'active' => count($resident_model->MOD_GET_RESIDENT_BY_STATUS('active')),
             'deceased' => count($resident_model->MOD_GET_RESIDENT_BY_STATUS('deceased')),
             'transferred' => count($resident_model->MOD_GET_RESIDENT_BY_STATUS('transferred'))
         ];
-        
+
         $employment_data = [
             'employed' => count($socio_economic_model->MOD_GET_RESIDENT_BY_STATUS('Employed')),
             'unemployed' => count($socio_economic_model->MOD_GET_RESIDENT_BY_STATUS('Unemployed')),
@@ -189,7 +189,6 @@ class AdminController extends Controller
         $this->view([
             'includes/header',
             'admin/dashboard_view',
-            'includes/pagination/pagination',
             'includes/modals/global_modals',
             'includes/overlays/loading_overlay',
             'includes/footer'
@@ -295,6 +294,78 @@ class AdminController extends Controller
             'admin/households_view',
             'includes/pagination/pagination',
             'includes/modals/households_modals',
+            'includes/modals/global_modals',
+            'includes/overlays/loading_overlay',
+            'includes/footer'
+        ], $data);
+    }
+
+    public function population_forecast()
+    {
+        // ==============================
+        // 1. SESSION & ACCESS LOGGING
+        // ==============================
+        $current_user = session_get('user', null);
+        write_log('ACCESS_PAGE', 'population_forecast', null, 'Accessed population forecast page');
+
+
+        // ==============================
+        // 2. LOAD MODELS
+        // ==============================
+
+        $user_model = $this->model('User_Model');
+        $system_information_model = $this->model('System_Information_Model');
+        $household_model = $this->model('Household_Model');
+        $resident_model = $this->model('Resident_Model');
+        $birth_record_model = $this->model('Birth_Record_Model');
+        $death_record_model = $this->model('Death_Record_Model');
+        $migration_record_model = $this->model('Migration_Record_Model');
+        $health_record_model = $this->model('Health_Record_Model');
+        $socio_economic_model = $this->model('Socio_Economic_Model');
+
+        $db_data = [
+            'total_population' => count($resident_model->MOD_GET_RESIDENTS()),
+            'total_households' => count($household_model->MOD_GET_HOUSEHOLDS()),
+            'total_birth_records' => count($birth_record_model->MOD_GET_BIRTH_RECORDS()),
+            'total_death_records' => count($death_record_model->MOD_GET_DEATH_RECORDS()),
+            'total_migration_in_records' => count($migration_record_model->MOD_GET_MIGRATION_IN_RECORDS()),
+            'total_migration_out_records' => count($migration_record_model->MOD_GET_MIGRATION_OUT_RECORDS()),
+            'total_male' => count($resident_model->MOD_GET_RESIDENT_BY_SEX("Male")),
+            'total_female' => count($resident_model->MOD_GET_RESIDENT_BY_SEX("Female")),
+            'total_children' => count($resident_model->MOD_GET_CHILDREN()),
+            'total_working_age' => count($resident_model->MOD_GET_WORKING_AGE()),
+            'total_seniors' => count($resident_model->MOD_GET_SENIORS()),
+            'total_employed' => count($socio_economic_model->MOD_GET_RESIDENT_BY_STATUS("Employed")),
+            'averageIncome' => $socio_economic_model->MOD_GET_AVERAGE_INCOME(),
+            'total_pwd' => count($health_record_model->MOD_GET_PWD()),
+            'total_chronic_illness' => count($health_record_model->MOD_GET_CHRONIC_ILLNESS()),
+        ];
+
+        // ==============================
+        // 7. FETCH AUXILIARY DATA
+        // ==============================
+        $security_questions = $user_model->MOD_GET_QUESTIONS_BY_ID($current_user['id']);
+        $system_information = $system_information_model->MOD_GET_SYSTEM_INFORMATION();
+
+
+        // ==============================
+        // 8. PREPARE VIEW DATA
+        // ==============================
+        $data = [
+            'title' => 'Population Forecast',
+            'user' => $current_user,
+            'db_data' => $db_data,
+            'security_questions' => $security_questions,
+            'system_information' => $system_information
+        ];
+
+
+        // ==============================
+        // 9. LOAD VIEW
+        // ==============================
+        $this->view([
+            'includes/header',
+            'admin/population_forecast_view',
             'includes/modals/global_modals',
             'includes/overlays/loading_overlay',
             'includes/footer'

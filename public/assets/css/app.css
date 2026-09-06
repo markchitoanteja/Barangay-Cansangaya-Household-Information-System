@@ -85,6 +85,31 @@ body {
     padding: 8px 10px;
 }
 
+.nav-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    padding-right: 35px;
+    /* space for badge */
+}
+
+.new-badge {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+
+    font-size: 9px;
+    font-weight: 700;
+    line-height: 1;
+    padding: 3px 4px;
+
+    background: #fd0d0d;
+    color: #fff;
+    border-radius: 3px;
+}
+
 .side-nav .nav-link {
     color: rgba(255, 255, 255, .86);
     border-radius: 10px;
