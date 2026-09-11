@@ -14,3 +14,22 @@ declare const residentStatus: any;
 declare const employmentDataRaw: any;
 declare const birthsRaw: any;
 declare const deathsRaw: any;
+
+interface DemographicData {
+    population: number;
+    year: number;
+    births: number;
+    deaths: number;
+    migrationIn: number;
+    migrationOut: number;
+    children: number;
+    seniors: number;
+    workingAge: number;
+    employed: number;
+    male: number;
+    female: number;
+    households: number;
+    chronic: number;
+}
+
+declare const dbData: DemographicData;

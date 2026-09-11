@@ -25,6 +25,32 @@
             <!-- Dashboard Script -->
             <script src="<?= base_url('public/assets/js/dashboard.min.js?v=') . env('APP_VERSION', '1.0.0') ?>"></script>
         <?php endif ?>
+        
+        <?php if ($title == 'Population Forecast'): ?>
+            <script>
+                const dbData = {
+                    year: new Date().getFullYear(),
+                    population: <?= $population ?>,
+                    households: <?= $households ?>,
+                    male: <?= $male ?>,
+                    female: <?= $female ?>,
+                    births: <?= $births ?>,
+                    deaths: <?= $deaths ?>,
+                    migrationIn: <?= $migrationIn ?>,
+                    migrationOut: <?= $migrationOut ?>,
+                    children: <?= $children ?>,
+                    workingAge: <?= $workingAge ?>,
+                    seniors: <?= $seniors ?>,
+                    employed: <?= $employed ?>,
+                    averageIncome: <?= $averageIncome ?>,
+                    pwd: <?= $pwd ?>,
+                    chronic: <?= $chronic ?>
+                };
+            </script>
+
+            <!-- Population Forecast Script -->
+            <script src="<?= base_url('public/assets/js/population_forecast.min.js?v=') . env('APP_VERSION', '1.0.0') ?>"></script>
+        <?php endif ?>
     </body>
 
 </html>

@@ -15,6 +15,11 @@
     <link rel="stylesheet" href="<?= base_url('public/plugins/fontawesome/css/all.min.css') ?>">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="<?= base_url('public/assets/css/app.css?v=') . env('APP_VERSION', '1.0.0') ?>">
+
+    <?php if ($title == 'Population Forecast'): ?>
+        <!-- Population Forecast CSS -->
+        <link rel="stylesheet" href="<?= base_url('public/assets/css/population_forecast.css?v=') . env('APP_VERSION', '1.0.0') ?>">
+    <?php endif ?>
 </head>
 
 <body>
