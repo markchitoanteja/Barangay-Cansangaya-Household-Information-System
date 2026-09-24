@@ -734,7 +734,7 @@ class Sample_Data_Seeder_Model extends Query
             ['occupation' => 'Office Clerk', 'employment_status' => 'Employed', 'education' => ['Senior High', 'College'], 'income' => [15000, 30000], 'weight' => 10],
             ['occupation' => 'Teacher', 'employment_status' => 'Employed', 'education' => ['College'], 'income' => [25000, 50000], 'weight' => 8],
             ['occupation' => 'Factory Worker', 'employment_status' => 'Employed', 'education' => ['High School'], 'income' => [12000, 22000], 'weight' => 8],
-            ['occupation' => 'Unemployed', 'employment_status' => 'Unemployed', 'education' => ['None'], 'income' => [0, 0], 'weight' => 10],
+            ['occupation' => 'Unemployed', 'employment_status' => 'Unemployed', 'education' => ['Out of School Youth'], 'income' => [0, 0], 'weight' => 10],
         ];
 
         $extra = $sex === 'Male'
@@ -812,6 +812,11 @@ class Sample_Data_Seeder_Model extends Query
             [
                 'program_name' => 'Solo Parent Welfare Assistance Program',
                 'description' => 'Support program for registered solo parents providing monthly financial aid, counseling services, and priority access to livelihood and educational assistance programs.',
+            ],
+            
+            [
+                'program_name' => 'Walang Gutom Program',
+                'description' => 'A local government initiative aimed at addressing hunger and food insecurity by providing free meals, food packs, and nutritional support to indigent families and individuals in the community.',
             ],
         ]);
 

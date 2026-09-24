@@ -87,18 +87,10 @@
                                 <td><?= esc($resident['household_name']) ?></td>
                                 <td><?= esc($resident['relationship']) ?></td>
                                 <td class="text-center">
-                                    <button class="btn btn-sm btn-outline-success btn-view-resident"
-                                        title="View Resident Details"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#view_resident_modal"
-                                        data-resident='<?= json_encode($resident) ?>'>
+                                    <button class="btn btn-sm btn-outline-success btn-view-resident" title="View Resident Details" data-bs-toggle="modal" data-bs-target="#view_resident_modal" data-resident='<?= json_encode($resident) ?>'>
                                         <i class="fa-solid fa-eye"></i>
                                     </button>
-                                    <button class="btn btn-sm btn-outline-primary btn-edit-resident"
-                                        title="Edit Resident"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#edit_resident_modal"
-                                        data-resident='<?= json_encode($resident) ?>'>
+                                    <button class="btn btn-sm btn-outline-primary btn-edit-resident" title="Edit Resident" data-bs-toggle="modal" data-bs-target="#edit_resident_modal" data-resident='<?= json_encode($resident) ?>'>
                                         <i class="fa-solid fa-pen"></i>
                                     </button>
                                 </td>

@@ -61,6 +61,7 @@
                 <thead class="table-light">
                     <tr>
                         <th class="text-center">#</th>
+                        <th>Household Head</th>
                         <th>Household Code</th>
                         <th>Purok</th>
                         <th>Housing Type</th>
@@ -74,25 +75,55 @@
                         <?php $counter = ($current_page - 1) * 10 + 1; ?>
                         <?php foreach ($households as $household): ?>
                             <tr>
-                                <td class="text-center"><?= $counter ?></td>
-                                <td><?= esc($household['household_code']) ?></td>
-                                <td><?= esc($household['purok']) ?></td>
-                                <td><?= esc($household['housing_type']) ?></td>
-                                <td><?= esc($household['comfort_room']) ?></td>
-                                <td><?= esc($household['water_system']) ?></td>
                                 <td class="text-center">
-                                    <button class="btn btn-sm btn-outline-success btn-view-household"
-                                        title="View Household Details"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#viewHouseholdModal"
-                                        data-household='<?= json_encode($household) ?>'>
+                                    <?= $counter ?>
+                                </td>
+                                <td>
+                                    <?php if ($household['relationship'] === 'Head'): ?>
+                                        <?php
+                                        $middle_initial = !empty($household['middle_name'])
+                                            ? strtoupper(substr(trim($household['middle_name']), 0, 1)) . '.'
+                                            : '';
+
+                                        $resident_name = trim(
+                                            ($household['first_name'] ?? '') . ' ' .
+                                            $middle_initial . ' ' .
+                                            ($household['last_name'] ?? '')
+                                        );
+                                        ?>
+
+                                        <a href="javascript:void(0)" class="btn-view-household-residents text-decoration-none text-dark" data-bs-toggle="modal" data-bs-target="#viewHouseholdResidentsModal" data-household='<?= json_encode($household) ?>'>
+
+                                            <span class="fw-semibold">
+                                                <?= esc($resident_name) ?>
+                                            </span>
+                                        </a>
+                                    <?php else: ?>
+                                        <span class="text-muted fst-italic">
+                                            <?= esc($household['relationship']) ?>
+                                        </span>
+                                    <?php endif; ?>
+                                </td>
+                                <td>
+                                    <?= esc($household['household_code']) ?>
+                                </td>
+                                <td>
+                                    <?= esc($household['purok']) ?>
+                                </td>
+                                <td>
+                                    <?= esc($household['housing_type']) ?>
+                                </td>
+                                <td>
+                                    <?= esc($household['comfort_room']) ?>
+                                </td>
+                                <td>
+                                    <?= esc($household['water_system']) ?>
+                                </td>
+                                <td class="text-center">
+                                    <button class="btn btn-sm btn-outline-success btn-view-household" title="View Household Details" data-bs-toggle="modal" data-bs-target="#viewHouseholdModal" data-household='<?= json_encode($household) ?>'>
                                         <i class="fa-solid fa-eye"></i>
                                     </button>
-                                    <button class="btn btn-sm btn-outline-primary btn-edit-household"
-                                        title="Edit Household"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#editHouseholdModal"
-                                        data-household='<?= json_encode($household) ?>'>
+                                    <button class="btn btn-sm btn-outline-primary btn-edit-household" title="Edit Household" data-bs-toggle="modal" data-bs-target="#editHouseholdModal" data-household='<?= json_encode($household) ?>'>
                                         <i class="fa-solid fa-pen"></i>
                                     </button>
                                 </td>

@@ -53,6 +53,11 @@ class Death_Record_Model extends Query
     {
         return $this->table('death_records')->where('id', $id)->update($data);
     }
+    
+    public function MOD_DELETE_DEATH_RECORD($id): string
+    {
+        return $this->table('death_records')->where('id', $id)->delete();
+    }
 
     public function MOD_GET_DEATH_RECORDS_BY_MONTH(int $month): array
     {

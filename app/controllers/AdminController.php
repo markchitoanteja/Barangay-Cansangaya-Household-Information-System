@@ -203,7 +203,6 @@ class AdminController extends Controller
         $current_user = session_get('user', null);
         write_log('ACCESS_PAGE', 'households', null, 'Accessed households page');
 
-
         // ==============================
         // 2. LOAD MODELS
         // ==============================
@@ -211,12 +210,10 @@ class AdminController extends Controller
         $household_model = $this->model('Household_Model');
         $system_information_model = $this->model('System_Information_Model');
 
-
         // ==============================
         // 3. FETCH RAW DATA
         // ==============================
         $all_households = $household_model->MOD_GET_HOUSEHOLDS();
-
 
         // ==============================
         // 4. GET FILTER INPUTS
@@ -2644,6 +2641,36 @@ class AdminController extends Controller
                 'icon' => 'error',
             ]);
         }
+
+        return json([
+            'success' => true,
+            'message' => 'Death record added successfully.'
+        ]);
+    }
+
+    public function delete_death_record()
+    {
+        $death_record_id = input('death_record_id', null);
+
+        $death_record_model = $this->model('Death_Record_Model');
+
+        // Update resident status to "Deceased"
+        $death_record_model->MOD_DELETE_DEATH_RECORD($death_record_id);
+
+        // Log
+        write_log(
+            'DELETE_DEATH_RECORD',
+            'death_records',
+            $death_record_id,
+            "Deleted death record with ID: $death_record_id",
+            session_get('user')['id']
+        );
+
+        flash('flash_notif', [
+            'title' => 'Death Record Deleted',
+            'text' => 'The death record has been successfully deleted.',
+            'icon' => 'success',
+        ]);
 
         return json([
             'success' => true,

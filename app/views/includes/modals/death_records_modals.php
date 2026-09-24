@@ -123,7 +123,31 @@
 
                                 <div class="form-floating">
 
-                                    <input type="text" class="form-control gov-input" id="add_death_record_manner_of_death" placeholder="Manner of Death" maxlength="255">
+                                    <select class="form-select gov-input" id="add_death_record_manner_of_death" required>
+
+                                        <option value="" disabled selected>
+                                            -- Select One --
+                                        </option>
+                                        <option value="Natural">
+                                            Natural
+                                        </option>
+                                        <option value="Accident">
+                                            Accident
+                                        </option>
+                                        <option value="Suicide">
+                                            Suicide
+                                        </option>
+                                        <option value="Homicide">
+                                            Homicide
+                                        </option>
+                                        <option value="Murder">
+                                            Murder
+                                        </option>
+                                        <option value="Unknown">
+                                            Unknown
+                                        </option>
+
+                                    </select>
 
                                     <label>Manner of Death</label>
 
@@ -305,7 +329,28 @@
 
                                 <div class="form-floating">
 
-                                    <input type="text" class="form-control gov-input" id="edit_death_record_manner_of_death" placeholder="Manner of Death" maxlength="255">
+                                    <select class="form-select gov-input" id="edit_death_record_manner_of_death" required>
+
+                                        <option value="Natural">
+                                            Natural
+                                        </option>
+                                        <option value="Accident">
+                                            Accident
+                                        </option>
+                                        <option value="Suicide">
+                                            Suicide
+                                        </option>
+                                        <option value="Homicide">
+                                            Homicide
+                                        </option>
+                                        <option value="Murder">
+                                            Murder
+                                        </option>
+                                        <option value="Unknown">
+                                            Unknown
+                                        </option>
+
+                                    </select>
 
                                     <label>Manner of Death</label>
 

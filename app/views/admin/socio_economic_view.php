@@ -34,7 +34,7 @@
                 <div class="form-floating flex-grow-1">
                     <select class="form-select gov-input" name="education_level" id="education_level">
                         <option value="">All Levels</option>
-                        <option value="None" <?= ($education_level ?? '') === 'None' ? 'selected' : '' ?>>None</option>
+                        <option value="Out of School Youth" <?= ($education_level ?? '') === 'Out of School Youth' ? 'selected' : '' ?>>Out of School Youth</option>
                         <option value="Elementary" <?= ($education_level ?? '') === 'Elementary' ? 'selected' : '' ?>>Elementary</option>
                         <option value="High School" <?= ($education_level ?? '') === 'High School' ? 'selected' : '' ?>>High School</option>
                         <option value="Senior High" <?= ($education_level ?? '') === 'Senior High' ? 'selected' : '' ?>>Senior High</option>

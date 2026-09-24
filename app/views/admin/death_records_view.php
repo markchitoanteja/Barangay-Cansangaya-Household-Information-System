@@ -82,6 +82,9 @@
                                     <button class="btn btn-sm btn-outline-success btn-edit-death-record" title="Edit Death Record" data-bs-toggle="modal" data-bs-target="#edit_death_record_modal" data-death_record='<?= json_encode($death_record) ?>'>
                                         <i class="fa-solid fa-pen"></i>
                                     </button>
+                                    <button class="btn btn-sm btn-outline-danger btn-delete-death-record" title="Delete Death Record" data-death_record_id='<?= esc($death_record['id']) ?>'>
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
                                 </td>
                             </tr>
                         <?php endforeach; ?>

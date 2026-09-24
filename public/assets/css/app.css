@@ -1234,3 +1234,13 @@ input:-webkit-autofill:focus {
         border-bottom: none;
     }
 }
+
+.btn-view-household-residents {
+    color: inherit;
+}
+
+.btn-view-household-residents:hover .fw-semibold {
+    color: var(--bs-primary);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}

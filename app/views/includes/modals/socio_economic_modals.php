@@ -216,7 +216,7 @@
                                 <div class="form-floating">
                                     <select class="form-select gov-input" id="add_socio_economic_education_level" required>
                                         <option value="" disabled selected>-- Select One --</option>
-                                        <option value="None">None</option>
+                                        <option value="Out of School Youth">Out of School Youth</option>
                                         <option value="Elementary">Elementary</option>
                                         <option value="High School">High School</option>
                                         <option value="Senior High">Senior High</option>
@@ -351,7 +351,7 @@
                             <div class="col-md-6">
                                 <div class="form-floating">
                                     <select class="form-select gov-input" id="edit_socio_economic_education_level" required>
-                                        <option value="None">None</option>
+                                        <option value="Out of School Youth">Out of School Youth</option>
                                         <option value="Elementary">Elementary</option>
                                         <option value="High School">High School</option>
                                         <option value="Senior High">Senior High</option>

@@ -1048,14 +1048,111 @@ $((): void => {
     $(document).on('click', '.btn-view-household', function () {
         const household = $(this).data('household');
 
-        $('#view_household_household_code').text(household.household_code);
-        $('#view_household_purok').text(household.purok);
-        $('#view_household_address').text(household.address);
-        $('#view_household_housing_type').text(household.housing_type);
-        $('#view_household_ownership_status').text(household.ownership_status);
-        $('#view_household_comfort_room').text(household.comfort_room);
-        $('#view_household_water_system').text(household.water_system);
-        $('#view_household_electricity_access').text(household.electricity_access == '1' ? 'Yes' : 'No');
+        // ==========================================
+        // HOUSEHOLD INFORMATION
+        // ==========================================
+
+        $('#view_household_household_code').text(
+            household.household_code || '—'
+        );
+
+        $('#view_household_purok').text(
+            household.purok || '—'
+        );
+
+        $('#view_household_address').text(
+            household.address || '—'
+        );
+
+        $('#view_household_housing_type').text(
+            household.housing_type || '—'
+        );
+
+        $('#view_household_ownership_status').text(
+            household.ownership_status || '—'
+        );
+
+        $('#view_household_comfort_room').text(
+            household.comfort_room || '—'
+        );
+
+        $('#view_household_water_system').text(
+            household.water_system || '—'
+        );
+
+        $('#view_household_electricity_access').text(
+            household.electricity_access == '1' ? 'Yes' : 'No'
+        );
+
+
+        // ==========================================
+        // HOUSEHOLD HEAD
+        // ==========================================
+
+        const middleInitial = household.middle_name
+            ? household.middle_name.trim().charAt(0).toUpperCase() + '.'
+            : '';
+
+        const headName = [
+            household.first_name,
+            middleInitial,
+            household.last_name
+        ]
+            .filter(name => name && name.trim() !== '')
+            .join(' ');
+
+        $('#view_household_head_name').text(
+            headName || 'No Household Head Assigned Yet'
+        );
+
+        $('#view_household_head_sex').text(
+            household.sex || '—'
+        );
+
+        // Format birthdate
+        if (household.birthdate) {
+            const birthdate = new Date(household.birthdate);
+
+            const formattedBirthdate = birthdate.toLocaleDateString(
+                'en-US',
+                {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                }
+            );
+
+            $('#view_household_head_birthdate').text(
+                formattedBirthdate
+            );
+        } else {
+            $('#view_household_head_birthdate').text('—');
+        }
+
+        $('#view_household_head_civil_status').text(
+            household.civil_status || '—'
+        );
+
+
+        // ==========================================
+        // HOUSEHOLD HEAD STATUS
+        // ==========================================
+
+        const headStatus = household.status || 'Unknown';
+
+        const $headStatus = $('#view_household_head_status');
+
+        $headStatus
+            .text(headStatus)
+            .removeClass('bg-success bg-danger bg-secondary bg-warning');
+
+        if (headStatus === 'Deceased') {
+            $headStatus.addClass('bg-danger');
+        } else if (headStatus === 'Active') {
+            $headStatus.addClass('bg-success');
+        } else {
+            $headStatus.addClass('bg-secondary');
+        }
     });
 
     $(document).on('click', '.btn-edit-household', function () {
@@ -2051,7 +2148,7 @@ $((): void => {
             }
         });
     });
-    
+
     $('#add_death_record_form').on('submit', function (e) {
         e.preventDefault();
 
@@ -2096,6 +2193,60 @@ $((): void => {
         $('#edit_death_record_manner_of_death').val(death_record.manner_of_death);
     });
 
+    $(document).on('click', '.btn-delete-death-record', function () {
+        const death_record_id = $(this).data('death_record_id');
+
+        Swal.fire({
+            title: "Are you sure?",
+            text: "This action will permanently delete the death record.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#6c757d",
+            confirmButtonText: "Yes, delete record",
+            cancelButtonText: "Cancel"
+        }).then((result: any) => {
+            if (result.isConfirmed) {
+                const formData = { death_record_id };
+
+                showLoading();
+
+                setTimeout(() => {
+                    $.ajax({
+                        url: "delete-death-record",
+                        type: "POST",
+                        data: formData,
+                        dataType: "json",
+                        success: (response: { success: boolean; message: string }) => {
+                            if (response.success) {
+                                location.href = "death-records";
+                            } else {
+                                hideLoading();
+
+                                Swal.fire({
+                                    title: "Error",
+                                    text: response.message,
+                                    icon: "error"
+                                });
+                            }
+
+                        },
+                        error: (_jqXHR, _textStatus, errorThrown) => {
+                            console.error(errorThrown);
+                            hideLoading();
+
+                            Swal.fire({
+                                title: "Server Error",
+                                text: "Unable to clear logs.",
+                                icon: "error"
+                            });
+                        }
+                    });
+                }, 250);
+            }
+        });
+    });
+
     $('#edit_death_record_form').on('submit', function (e) {
         e.preventDefault();
 
@@ -2129,6 +2280,143 @@ $((): void => {
                 console.log(xhr.responseText);
             }
         });
+    });
+
+    $(document).on('click', '.btn-view-household-residents', function () {
+
+        const household = $(this).data('household');
+
+        // ==========================================
+        // HOUSEHOLD INFORMATION
+        // ==========================================
+
+        $('#view_residents_household_code').text(
+            household.household_code || '—'
+        );
+
+        $('#view_residents_purok').text(
+            household.purok || '—'
+        );
+
+        $('#view_residents_address').text(
+            household.address || '—'
+        );
+
+
+        // ==========================================
+        // HOUSEHOLD RESIDENTS
+        // ==========================================
+
+        const $tbody = $('#view_household_residents_table_body');
+
+        $tbody.empty();
+
+        const members: {
+            first_name: string;
+            middle_name: string;
+            last_name: string;
+            relationship: string;
+            sex: string;
+            birthdate: string;
+            civil_status: string;
+        }[] = household.members || [];
+
+
+        // ==========================================
+        // NO RESIDENTS
+        // ==========================================
+
+        if (members.length === 0) {
+
+            $tbody.html(`
+            <tr>
+                <td colspan="6"
+                    class="text-center text-muted py-4">
+                    No residents registered under
+                    this household.
+                </td>
+            </tr>
+        `);
+
+            return;
+        }
+
+
+        // ==========================================
+        // RESIDENT ROWS
+        // ==========================================
+
+        members.forEach((member, index) => {
+
+            const name = [
+                member.first_name,
+                member.middle_name,
+                member.last_name
+            ]
+                .filter(
+                    value => value && value.trim() !== ''
+                )
+                .join(' ');
+
+
+            // ==========================================
+            // FORMAT BIRTHDATE
+            // ==========================================
+
+            let formattedBirthdate = '—';
+
+            if (member.birthdate) {
+
+                const birthdate =
+                    new Date(member.birthdate);
+
+                formattedBirthdate =
+                    birthdate.toLocaleDateString(
+                        'en-US',
+                        {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                        }
+                    );
+            }
+
+
+            // ==========================================
+            // ADD ROW
+            // ==========================================
+
+            $tbody.append(`
+            <tr>
+
+                <td class="text-center">
+                    ${index + 1}
+                </td>
+
+                <td class="fw-semibold">
+                    ${name || '—'}
+                </td>
+
+                <td>
+                    ${member.relationship || '—'}
+                </td>
+
+                <td>
+                    ${member.sex || '—'}
+                </td>
+
+                <td>
+                    ${formattedBirthdate}
+                </td>
+
+                <td>
+                    ${member.civil_status || '—'}
+                </td>
+
+            </tr>
+        `);
+        });
+
     });
 });
 

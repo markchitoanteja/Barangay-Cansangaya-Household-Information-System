@@ -60,6 +60,7 @@ return function (Router $router) {
     $router->post('/edit-migration-record', 'AdminController@edit_migration_record');
     $router->post('/add-death-record', 'AdminController@add_death_record');
     $router->post('/edit-death-record', 'AdminController@edit_death_record');
+    $router->post('/delete-death-record', 'AdminController@delete_death_record');
 
     // System Update Routes
     $router->get('/check-updates', 'UpdateController@check');
