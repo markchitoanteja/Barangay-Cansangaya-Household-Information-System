@@ -2,6 +2,7 @@
             const ROLE = <?= json_encode(session_get('user', null)['role'] ?? null) ?>;
             const APP_DEBUG = <?= env('APP_DEBUG', true) ?>;
             const flashData = <?= json_encode(get_flash('flash_notif', null)) ?>;
+            const BASE_URL = <?= json_encode(base_url()) ?>;
 
             const genderData = <?= $title == 'Dashboard' ? json_encode($gender_data) : 'null' ?>;
             const residentStatus = <?= $title == 'Dashboard' ? json_encode($resident_status) : 'null' ?>;

@@ -2353,10 +2353,10 @@ $((): void => {
                 member.middle_name,
                 member.last_name
             ]
-                .filter(
-                    value => value && value.trim() !== ''
-                )
+                .filter(value => value && value.trim() !== '')
                 .join(' ');
+
+            const searchUrl = `${BASE_URL}programs-beneficiaries?search_input=${encodeURIComponent(name)}&page=1`;
 
 
             // ==========================================
@@ -2393,8 +2393,12 @@ $((): void => {
                     ${index + 1}
                 </td>
 
-                <td class="fw-semibold">
-                    ${name || '—'}
+                <td>
+                    <a href="${searchUrl}" class="btn-view-household-residents text-decoration-none text-dark loadable">
+                        <span class="fw-semibold">
+                            ${name || '—'}
+                        </span>
+                    </a>
                 </td>
 
                 <td>

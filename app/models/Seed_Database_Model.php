@@ -116,7 +116,7 @@ class Seed_Database_Model extends Query
             occupation VARCHAR(150),
             employment_status ENUM('Employed','Unemployed','Self-employed','Student','Retired'),
             monthly_income DECIMAL(10,2),
-            education_level ENUM('None','Elementary','High School','Senior High','College','Postgraduate'),
+            education_level ENUM('Out of School Youth','Elementary','High School','Senior High','College','Postgraduate'),
             is_literate TINYINT(1) DEFAULT 1,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

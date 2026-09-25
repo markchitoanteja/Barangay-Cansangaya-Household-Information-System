@@ -62,7 +62,6 @@
                     <tr>
                         <th class="text-center">#</th>
                         <th>Household Head</th>
-                        <th>Household Code</th>
                         <th>Purok</th>
                         <th>Housing Type</th>
                         <th>Comfort Room</th>
@@ -103,9 +102,6 @@
                                             <?= esc($household['relationship']) ?>
                                         </span>
                                     <?php endif; ?>
-                                </td>
-                                <td>
-                                    <?= esc($household['household_code']) ?>
                                 </td>
                                 <td>
                                     <?= esc($household['purok']) ?>

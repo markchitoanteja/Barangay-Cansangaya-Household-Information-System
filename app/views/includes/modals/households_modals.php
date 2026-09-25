@@ -218,66 +218,143 @@
 
 
                 <!-- HOUSEHOLD HEAD -->
-                <div class="panel mb-3">
+                <div class="panel mb-3 household-head-panel">
 
                     <div class="panel-body">
 
-                        <div class="d-flex align-items-center justify-content-between mb-3">
+                        <!-- SECTION TITLE -->
+                        <div class="d-flex align-items-center gap-2 mb-3">
+                            <div class="household-section-icon">
+                                <i class="fa-solid fa-user"></i>
+                            </div>
+
                             <div>
                                 <div class="text-uppercase small text-muted fw-semibold">
                                     Household Head
                                 </div>
 
-                                <div class="fw-bold fs-5" id="view_household_head_name">
-                                    ########## ##########
+                                <div class="small text-muted">
+                                    Primary person responsible for this household
                                 </div>
-                            </div>
-
-                            <div>
-                                <span id="view_household_head_status" class="badge rounded-pill bg-secondary">
-                                    ########
-                                </span>
                             </div>
                         </div>
 
+
+                        <!-- HEAD PROFILE -->
+                        <div class="household-head-profile">
+
+                            <!-- AVATAR -->
+                            <div class="household-head-avatar">
+                                <i class="fa-solid fa-user"></i>
+                            </div>
+
+
+                            <!-- NAME + STATUS -->
+                            <div class="household-head-main">
+
+                                <div class="d-flex align-items-center flex-wrap gap-2">
+
+                                    <h4 class="fw-bold mb-0" id="view_household_head_name">
+                                        ########## ##########
+                                    </h4>
+
+                                    <span id="view_household_head_status" class="badge rounded-pill bg-secondary px-3 py-2">
+                                        ########
+                                    </span>
+
+                                </div>
+
+                                <div class="small text-muted mt-1">
+                                    Household Head
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- DIVIDER -->
+                        <hr class="my-3">
+
+
+                        <!-- PERSONAL INFORMATION -->
                         <div class="row g-3">
 
                             <!-- SEX -->
                             <div class="col-md-4">
-                                <div class="small text-muted">
-                                    Sex
+
+                                <div class="household-head-info">
+
+                                    <div class="household-head-info-icon">
+                                        <i class="fa-solid fa-venus-mars"></i>
+                                    </div>
+
+                                    <div>
+                                        <div class="small text-muted">
+                                            Sex
+                                        </div>
+
+                                        <div class="fw-semibold" id="view_household_head_sex">
+                                            ########
+                                        </div>
+                                    </div>
+
                                 </div>
 
-                                <div class="fw-semibold" id="view_household_head_sex">
-                                    ########
-                                </div>
                             </div>
+
 
                             <!-- BIRTHDATE -->
                             <div class="col-md-4">
-                                <div class="small text-muted">
-                                    Birthdate
+
+                                <div class="household-head-info">
+
+                                    <div class="household-head-info-icon">
+                                        <i class="fa-solid fa-calendar-days"></i>
+                                    </div>
+
+                                    <div>
+                                        <div class="small text-muted">
+                                            Birthdate
+                                        </div>
+
+                                        <div class="fw-semibold" id="view_household_head_birthdate">
+                                            ##########
+                                        </div>
+                                    </div>
+
                                 </div>
 
-                                <div class="fw-semibold" id="view_household_head_birthdate">
-                                    ##########
-                                </div>
                             </div>
+
 
                             <!-- CIVIL STATUS -->
                             <div class="col-md-4">
-                                <div class="small text-muted">
-                                    Civil Status
+
+                                <div class="household-head-info">
+
+                                    <div class="household-head-info-icon">
+                                        <i class="fa-solid fa-heart"></i>
+                                    </div>
+
+                                    <div>
+                                        <div class="small text-muted">
+                                            Civil Status
+                                        </div>
+
+                                        <div class="fw-semibold" id="view_household_head_civil_status">
+                                            ########
+                                        </div>
+                                    </div>
+
                                 </div>
 
-                                <div class="fw-semibold" id="view_household_head_civil_status">
-                                    ########
-                                </div>
                             </div>
 
                         </div>
 
                     </div>
+
                 </div>
 
 
@@ -518,9 +595,9 @@
                                 <div class="form-floating">
                                     <select class="form-select gov-input" id="household_water_system" name="water_system" required>
                                         <option value="" disabled selected>-- Select One --</option>
-                                        <option value="Level 1">Level 1</option>
-                                        <option value="Level 2">Level 2</option>
-                                        <option value="Level 3">Level 3</option>
+                                        <option value="Level 1: Well/Spring">Level 1: Well/Spring</option>
+                                        <option value="Level 2: Communal faucet">Level 2: Communal faucet</option>
+                                        <option value="Level 3: Household connection">Level 3: Household connection</option>
                                     </select>
                                     <label>Water System</label>
                                 </div>
@@ -690,9 +767,9 @@
                             <div class="col-md-6">
                                 <div class="form-floating">
                                     <select class="form-select gov-input" id="edit_household_water_system" name="edit_water_system" required>
-                                        <option value="Level 1">Level 1</option>
-                                        <option value="Level 2">Level 2</option>
-                                        <option value="Level 3">Level 3</option>
+                                        <option value="Level 1: Well/Spring">Level 1: Well/Spring</option>
+                                        <option value="Level 2: Communal faucet">Level 2: Communal faucet</option>
+                                        <option value="Level 3: Household connection">Level 3: Household connection</option>
                                     </select>
                                     <label>Water System</label>
                                 </div>

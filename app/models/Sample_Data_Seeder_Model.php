@@ -110,7 +110,7 @@ class Sample_Data_Seeder_Model extends Query
                 'housing_type' => $this->random(['Concrete', 'Semi-concrete', 'Wood']),
                 'ownership_status' => $this->random(['Owned', 'Rented', 'Informal Settler']),
                 'comfort_room' => $this->random(['Owned', 'Shared', 'None']),
-                'water_system' => $this->random(['Level 1', 'Level 2', 'Level 3']),
+                'water_system' => $this->random(['Level 1: Well/Spring', 'Level 2: Communal faucet', 'Level 3: Household connection']),
                 'electricity_access' => rand(0, 1),
             ];
         }
