@@ -1,18 +1,22 @@
-<!-- View Household Residents Modal -->
-<div class="modal fade" id="viewHouseholdResidentsModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered modal-xl">
+<!-- =========================================================
+     VIEW HOUSEHOLD MODAL
+========================================================= -->
+<div class="modal fade" id="viewHouseholdResidentsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
         <div class="modal-content gov-modal">
 
-            <!-- HEADER -->
-            <div class="modal-header gov-modal-header">
+            <!-- =================================================
+                 HEADER
+            ================================================== -->
+            <div class="modal-header gov-modal-header py-3">
 
                 <div class="d-flex align-items-center gap-3">
 
-                    <img src="<?= base_url('public/assets/img/') . ($system_information['official_logo'] ?? 'default_logo.png') . '?v=' . env('APP_VERSION') ?>" class="gov-modal-logo">
+                    <img src="<?= base_url('public/assets/img/') . ($system_information['official_logo'] ?? 'default_logo.png') . '?v=' . env('APP_VERSION') ?>" class="gov-modal-logo" alt="Barangay Logo">
 
                     <div>
                         <h5 class="modal-title mb-0">
-                            VIEW HOUSEHOLD MEMBERS
+                            HOUSEHOLD RECORD
                         </h5>
 
                         <small class="gov-modal-subtitle">
@@ -23,42 +27,331 @@
 
                 </div>
 
-                <button class="btn-close" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                </button>
 
             </div>
 
 
-            <!-- BODY -->
+            <!-- =================================================
+                 BODY
+            ================================================== -->
             <div class="modal-body gov-modal-body">
 
-                <!-- RECORD HEADER -->
-                <div class="panel mb-3">
+                <!-- =============================================
+                     HOUSEHOLD IDENTITY
+                ============================================== -->
+                <div class="household-summary mb-3">
 
-                    <div class="panel-body">
+                    <div class="row align-items-center g-3">
 
-                        <div class="row align-items-center g-2">
+                        <!-- HOUSEHOLD CODE -->
+                        <div class="col-md-5">
 
-                            <div class="col-md-8">
+                            <div class="text-muted text-uppercase small fw-semibold">
+                                Household Code
+                            </div>
 
-                                <h5 class="fw-bold mb-1" id="view_residents_household_code">
-                                    #####-####
-                                </h5>
+                            <div id="view_household_household_code" class="fw-bold fs-5">
+                                #####-####
+                            </div>
 
-                                <div class="text-muted small" id="view_residents_address">
-                                    ##### #, ##########
+                        </div>
+
+
+                        <!-- ADDRESS -->
+                        <div class="col-md-5">
+
+                            <div class="text-muted text-uppercase small fw-semibold">
+                                Address
+                            </div>
+
+                            <div id="view_household_address" class="fw-semibold">
+                                ##### #, ##########
+                            </div>
+
+                        </div>
+
+
+                        <!-- PUROK -->
+                        <div class="col-md-2">
+
+                            <div class="text-muted text-uppercase small fw-semibold">
+                                Purok / Zone
+                            </div>
+
+                            <div id="view_household_purok" class="fw-semibold">
+                                ##### #
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =============================================
+                     HOUSEHOLD DETAILS
+                ============================================== -->
+                <div class="row g-3 mb-3">
+
+                    <!-- =========================================
+                         HOUSEHOLD HEAD
+                    ========================================== -->
+                    <div class="col-lg-7">
+
+                        <div class="compact-card h-100">
+
+                            <!-- SECTION HEADER -->
+                            <div class="compact-card-header">
+
+                                <div class="d-flex align-items-center gap-2">
+
+                                    <div class="compact-icon">
+                                        <i class="fa-solid fa-user"></i>
+                                    </div>
+
+                                    <div>
+                                        <div class="section-label">
+                                            Household Head
+                                        </div>
+
+                                        <div class="section-description">
+                                            Primary person responsible for this household
+                                        </div>
+                                    </div>
+
                                 </div>
 
                             </div>
 
 
-                            <div class="col-md-4 text-md-end">
+                            <!-- HEAD PROFILE -->
+                            <div class="compact-card-body">
 
-                                <div class="small text-muted">
-                                    Purok / Zone
+                                <div class="d-flex align-items-center gap-3 mb-3">
+
+                                    <div class="household-head-avatar">
+                                        <i class="fa-solid fa-user"></i>
+                                    </div>
+
+                                    <div class="flex-grow-1 min-width-0">
+
+                                        <div class="d-flex align-items-center flex-wrap gap-2">
+
+                                            <h5 id="view_household_head_name" class="fw-bold mb-0 text-truncate">
+                                                ########## ##########
+                                            </h5>
+
+                                            <span id="view_household_head_status" class="badge rounded-pill bg-secondary">
+                                                ########
+                                            </span>
+
+                                        </div>
+
+                                        <div class="small text-muted">
+                                            Household Head
+                                        </div>
+
+                                    </div>
+
                                 </div>
 
-                                <div class="fw-semibold" id="view_residents_purok">
-                                    ##### #
+                                <!-- HEAD INFORMATION -->
+                                <div class="row g-2">
+
+                                    <!-- SEX -->
+                                    <div class="col-md-4">
+
+                                        <div class="info-item">
+
+                                            <div class="info-icon">
+                                                <i class="fa-solid fa-venus-mars"></i>
+                                            </div>
+
+                                            <div>
+                                                <div class="info-label">
+                                                    Sex
+                                                </div>
+
+                                                <div id="view_household_head_sex" class="info-value">
+                                                    ########
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- BIRTHDATE -->
+                                    <div class="col-md-4">
+
+                                        <div class="info-item">
+
+                                            <div class="info-icon">
+                                                <i class="fa-solid fa-calendar-days"></i>
+                                            </div>
+
+                                            <div>
+                                                <div class="info-label">
+                                                    Birthdate
+                                                </div>
+
+                                                <div id="view_household_head_birthdate" class="info-value">
+                                                    ##########
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- CIVIL STATUS -->
+                                    <div class="col-md-4">
+
+                                        <div class="info-item">
+
+                                            <div class="info-icon">
+                                                <i class="fa-solid fa-heart"></i>
+                                            </div>
+
+                                            <div>
+                                                <div class="info-label">
+                                                    Civil Status
+                                                </div>
+
+                                                <div id="view_household_head_civil_status" class="info-value">
+                                                    ########
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- ACTION BUTTON -->
+                                    <div class="col-12 mt-3">
+                                        <button type="button" class="btn btn-sm btn-primary w-100 py-2 loadable" id="btn_view_household_head_programs">
+
+                                            <i class="fa-solid fa-list-check me-1"></i>
+                                            View Programs Listed
+
+                                        </button>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =========================================
+                         HOUSEHOLD INFORMATION
+                    ========================================== -->
+                    <div class="col-lg-5">
+
+                        <div class="compact-card h-100">
+
+                            <div class="compact-card-header">
+
+                                <div class="d-flex align-items-center gap-2">
+
+                                    <div class="compact-icon">
+                                        <i class="fa-solid fa-house"></i>
+                                    </div>
+
+                                    <div>
+                                        <div class="section-label">
+                                            Household Information
+                                        </div>
+
+                                        <div class="section-description">
+                                            Housing and basic utilities
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="compact-card-body p-0">
+
+                                <!-- HOUSING -->
+                                <div class="detail-row">
+
+                                    <span>
+                                        Housing Type
+                                    </span>
+
+                                    <strong id="view_household_housing_type">
+                                        #######
+                                    </strong>
+
+                                </div>
+
+
+                                <!-- OWNERSHIP -->
+                                <div class="detail-row">
+
+                                    <span>
+                                        Ownership Status
+                                    </span>
+
+                                    <strong id="view_household_ownership_status">
+                                        #######
+                                    </strong>
+
+                                </div>
+
+
+                                <!-- COMFORT ROOM -->
+                                <div class="detail-row">
+
+                                    <span>
+                                        Comfort Room
+                                    </span>
+
+                                    <strong id="view_household_comfort_room">
+                                        #######
+                                    </strong>
+
+                                </div>
+
+
+                                <!-- WATER -->
+                                <div class="detail-row">
+
+                                    <span>
+                                        Water System
+                                    </span>
+
+                                    <strong id="view_household_water_system">
+                                        ##### #
+                                    </strong>
+
+                                </div>
+
+
+                                <!-- ELECTRICITY -->
+                                <div class="detail-row">
+
+                                    <span>
+                                        Electricity
+                                    </span>
+
+                                    <strong id="view_household_electricity_access">
+                                        ###
+                                    </strong>
+
                                 </div>
 
                             </div>
@@ -70,23 +363,53 @@
                 </div>
 
 
-                <!-- RESIDENTS TABLE -->
-                <div class="panel">
+                <!-- =============================================
+                     MEMBERS TABLE
+                ============================================== -->
+                <div class="compact-card">
 
-                    <div class="panel-body p-0">
+                    <!-- RESIDENT HEADER -->
+                    <div class="compact-card-header">
+
+                        <div class="d-flex align-items-center justify-content-between gap-3">
+
+                            <div class="d-flex align-items-center gap-2">
+
+                                <div class="compact-icon">
+                                    <i class="fa-solid fa-people-group"></i>
+                                </div>
+
+                                <div>
+
+                                    <div class="section-label">
+                                        Household Members
+                                    </div>
+
+                                    <div class="section-description">
+                                        Residents currently registered under this household
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <!-- OPTIONAL COUNT -->
+                            <span id="view_household_residents_count" class="badge bg-light text-dark border">
+                                0
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- RESIDENT TABLE -->
+                    <div class="table-responsive household-residents-table">
 
                         <table class="table mb-0 align-middle">
 
-                            <!-- RESIDENTS -->
                             <thead>
-                                <tr>
-                                    <th colspan="6" class="bg-light text-uppercase small">
-                                        Household Residents
-                                    </th>
-                                </tr>
-                            </thead>
 
-                            <thead>
                                 <tr>
 
                                     <th class="text-center" style="width: 55px;">
@@ -114,17 +437,21 @@
                                     </th>
 
                                 </tr>
+
                             </thead>
 
 
                             <tbody id="view_household_residents_table_body">
 
-                                <!-- RESIDENT ROWS WILL BE INSERTED HERE -->
-
                                 <tr>
+
                                     <td colspan="6" class="text-center text-muted py-4">
+
+                                        <i class="fa-solid fa-users-slash me-2"></i>
                                         No residents available.
+
                                     </td>
+
                                 </tr>
 
                             </tbody>
@@ -136,12 +463,15 @@
                 </div>
 
 
-                <!-- INFORMATION NOTE -->
+                <!-- =============================================
+                     INFORMATION NOTE
+                ============================================== -->
                 <div class="gov-meta mt-3">
 
                     <i class="fa-solid fa-circle-info me-2"></i>
 
-                    This record displays the residents currently registered
+                    This record displays the household information,
+                    household head, and residents currently registered
                     under this household.
 
                 </div>
@@ -149,320 +479,15 @@
             </div>
 
 
-            <!-- FOOTER -->
-            <div class="modal-footer gov-modal-footer">
+            <!-- =================================================
+                 FOOTER
+            ================================================== -->
+            <div class="modal-footer gov-modal-footer py-2">
 
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+
                     Close
-                </button>
 
-            </div>
-
-        </div>
-    </div>
-</div>
-
-<!-- View Household Modal -->
-<div class="modal fade" id="viewHouseholdModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content gov-modal">
-
-            <!-- HEADER -->
-            <div class="modal-header gov-modal-header">
-                <div class="d-flex align-items-center gap-3">
-                    <img src="<?= base_url('public/assets/img/') . ($system_information['official_logo'] ?? 'default_logo.png') . '?v=' . env('APP_VERSION') ?>" class="gov-modal-logo">
-
-                    <div>
-                        <h5 class="modal-title mb-0">VIEW HOUSEHOLD RECORD</h5>
-                        <small class="gov-modal-subtitle">
-                            Barangay <?= ucfirst($system_information['barangay_name']) ?>
-                            Household Information System
-                        </small>
-                    </div>
-                </div>
-
-                <button class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-
-            <!-- BODY -->
-            <div class="modal-body gov-modal-body">
-
-                <!-- RECORD HEADER -->
-                <div class="panel mb-3">
-                    <div class="panel-body">
-
-                        <div class="row align-items-center g-2">
-                            <div class="col-md-8">
-                                <h5 class="fw-bold mb-1" id="view_household_household_code">
-                                    #####-####
-                                </h5>
-
-                                <div class="text-muted small" id="view_household_address">
-                                    ##### #, ##########
-                                </div>
-                            </div>
-
-                            <div class="col-md-4 text-md-end">
-                                <div class="small text-muted">
-                                    Purok / Zone
-                                </div>
-
-                                <div class="fw-semibold" id="view_household_purok">
-                                    ##### #
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-
-
-                <!-- HOUSEHOLD HEAD -->
-                <div class="panel mb-3 household-head-panel">
-
-                    <div class="panel-body">
-
-                        <!-- SECTION TITLE -->
-                        <div class="d-flex align-items-center gap-2 mb-3">
-                            <div class="household-section-icon">
-                                <i class="fa-solid fa-user"></i>
-                            </div>
-
-                            <div>
-                                <div class="text-uppercase small text-muted fw-semibold">
-                                    Household Head
-                                </div>
-
-                                <div class="small text-muted">
-                                    Primary person responsible for this household
-                                </div>
-                            </div>
-                        </div>
-
-
-                        <!-- HEAD PROFILE -->
-                        <div class="household-head-profile">
-
-                            <!-- AVATAR -->
-                            <div class="household-head-avatar">
-                                <i class="fa-solid fa-user"></i>
-                            </div>
-
-
-                            <!-- NAME + STATUS -->
-                            <div class="household-head-main">
-
-                                <div class="d-flex align-items-center flex-wrap gap-2">
-
-                                    <h4 class="fw-bold mb-0" id="view_household_head_name">
-                                        ########## ##########
-                                    </h4>
-
-                                    <span id="view_household_head_status" class="badge rounded-pill bg-secondary px-3 py-2">
-                                        ########
-                                    </span>
-
-                                </div>
-
-                                <div class="small text-muted mt-1">
-                                    Household Head
-                                </div>
-
-                            </div>
-
-                        </div>
-
-
-                        <!-- DIVIDER -->
-                        <hr class="my-3">
-
-
-                        <!-- PERSONAL INFORMATION -->
-                        <div class="row g-3">
-
-                            <!-- SEX -->
-                            <div class="col-md-4">
-
-                                <div class="household-head-info">
-
-                                    <div class="household-head-info-icon">
-                                        <i class="fa-solid fa-venus-mars"></i>
-                                    </div>
-
-                                    <div>
-                                        <div class="small text-muted">
-                                            Sex
-                                        </div>
-
-                                        <div class="fw-semibold" id="view_household_head_sex">
-                                            ########
-                                        </div>
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-
-                            <!-- BIRTHDATE -->
-                            <div class="col-md-4">
-
-                                <div class="household-head-info">
-
-                                    <div class="household-head-info-icon">
-                                        <i class="fa-solid fa-calendar-days"></i>
-                                    </div>
-
-                                    <div>
-                                        <div class="small text-muted">
-                                            Birthdate
-                                        </div>
-
-                                        <div class="fw-semibold" id="view_household_head_birthdate">
-                                            ##########
-                                        </div>
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-
-                            <!-- CIVIL STATUS -->
-                            <div class="col-md-4">
-
-                                <div class="household-head-info">
-
-                                    <div class="household-head-info-icon">
-                                        <i class="fa-solid fa-heart"></i>
-                                    </div>
-
-                                    <div>
-                                        <div class="small text-muted">
-                                            Civil Status
-                                        </div>
-
-                                        <div class="fw-semibold" id="view_household_head_civil_status">
-                                            ########
-                                        </div>
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <!-- MAIN RECORD TABLE -->
-                <div class="panel">
-                    <div class="panel-body p-0">
-
-                        <table class="table mb-0 align-middle">
-
-                            <!-- HOUSING -->
-                            <thead>
-                                <tr>
-                                    <th colspan="2" class="bg-light text-uppercase small">
-                                        Housing Information
-                                    </th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-
-                                <tr>
-                                    <td class="text-muted" style="width: 40%;">
-                                        Housing Type
-                                    </td>
-
-                                    <td id="view_household_housing_type" class="fw-semibold">
-                                        #######
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td class="text-muted">
-                                        Ownership Status
-                                    </td>
-
-                                    <td id="view_household_ownership_status" class="fw-semibold">
-                                        #######
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td class="text-muted">
-                                        Comfort Room
-                                    </td>
-
-                                    <td id="view_household_comfort_room" class="fw-semibold">
-                                        #######
-                                    </td>
-                                </tr>
-
-                            </tbody>
-
-
-                            <!-- UTILITIES -->
-                            <thead>
-                                <tr>
-                                    <th colspan="2" class="bg-light text-uppercase small">
-                                        Basic Utilities
-                                    </th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-
-                                <tr>
-                                    <td class="text-muted">
-                                        Water System
-                                    </td>
-
-                                    <td id="view_household_water_system" class="fw-semibold">
-                                        ##### #
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td class="text-muted">
-                                        Electricity Access
-                                    </td>
-
-                                    <td id="view_household_electricity_access" class="fw-semibold">
-                                        ###
-                                    </td>
-                                </tr>
-
-                            </tbody>
-
-                        </table>
-
-                    </div>
-                </div>
-
-
-                <!-- RESIDENTS NOTE -->
-                <div class="gov-meta mt-3">
-                    <i class="fa-solid fa-circle-info me-2"></i>
-
-                    Household members are managed under
-                    <strong>Residents</strong>.
-                </div>
-
-            </div>
-
-
-            <!-- FOOTER -->
-            <div class="modal-footer gov-modal-footer">
-
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    Close
                 </button>
 
             </div>

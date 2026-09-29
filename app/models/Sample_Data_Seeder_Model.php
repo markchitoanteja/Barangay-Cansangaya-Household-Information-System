@@ -95,7 +95,7 @@ class Sample_Data_Seeder_Model extends Query
 
         for ($i = 1; $i <= $this->householdCount; $i++) {
 
-            $purok = rand(1, 10);
+            $purok = rand(1, 7);
 
             if (!isset($purokCounters[$purok])) {
                 $purokCounters[$purok] = 1;

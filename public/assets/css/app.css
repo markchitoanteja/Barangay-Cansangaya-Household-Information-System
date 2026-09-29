@@ -5,12 +5,16 @@
     --sidebar-accent: #f7c948;
     --content-bg: #f5f7fb;
 
-    /* ✅ compatibility for the government overlay */
+    /* Government compatibility */
     --main-blue: var(--sidebar-bg);
     --dark-blue: var(--sidebar-bg-2);
     --accent: var(--sidebar-accent);
     --bg: var(--content-bg);
 }
+
+/* =========================================================
+   GLOBAL
+========================================================= */
 
 body {
     background: var(--content-bg);
@@ -19,19 +23,29 @@ body {
 .under-development {
     text-decoration: line-through;
     color: #6b7280;
-    opacity: .75;
+    opacity: 0.75;
 }
 
-/* App shell */
+/* =========================================================
+   APP SHELL
+========================================================= */
+
 .app {
     min-height: 100vh;
     display: grid;
     grid-template-columns: var(--sidebar-w) 1fr;
 }
 
-/* Sidebar */
+/* =========================================================
+   SIDEBAR
+========================================================= */
+
 .sidebar {
-    background: linear-gradient(180deg, var(--sidebar-bg), var(--sidebar-bg-2));
+    background: linear-gradient(
+        180deg,
+        var(--sidebar-bg),
+        var(--sidebar-bg-2)
+    );
     color: #fff;
     padding: 18px 14px;
     position: sticky;
@@ -45,7 +59,7 @@ body {
     gap: 12px;
     align-items: center;
     padding: 10px 10px 14px;
-    border-bottom: 1px solid rgba(255, 255, 255, .12);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
     margin-bottom: 12px;
 }
 
@@ -53,7 +67,7 @@ body {
     width: 54px;
     height: 54px;
     border-radius: 50%;
-    background: #ffffff;
+    background: #fff;
     display: grid;
     place-items: center;
     border: 3px solid var(--sidebar-accent);
@@ -73,15 +87,15 @@ body {
 }
 
 .brand small {
-    opacity: .8;
+    opacity: 0.8;
 }
 
 .nav-section {
     margin-top: 10px;
-    font-size: .75rem;
-    letter-spacing: .08em;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    opacity: .75;
+    opacity: 0.75;
     padding: 8px 10px;
 }
 
@@ -91,7 +105,6 @@ body {
     text-overflow: ellipsis;
     display: block;
     padding-right: 35px;
-    /* space for badge */
 }
 
 .new-badge {
@@ -99,58 +112,62 @@ body {
     right: 8px;
     top: 50%;
     transform: translateY(-50%);
-
     font-size: 9px;
     font-weight: 700;
     line-height: 1;
     padding: 3px 4px;
-
     background: #fd0d0d;
     color: #fff;
     border-radius: 3px;
 }
 
 .side-nav .nav-link {
-    color: rgba(255, 255, 255, .86);
+    color: rgba(255, 255, 255, 0.86);
     border-radius: 10px;
     padding: 10px 12px;
     display: flex;
     align-items: center;
     gap: 10px;
-    transition: .15s ease;
+    transition: 0.15s ease;
 }
 
 .side-nav .nav-link:hover {
-    background: rgba(255, 255, 255, .10);
+    background: rgba(255, 255, 255, 0.1);
     color: #fff;
 }
 
 .side-nav .nav-link.active {
-    background: rgba(247, 201, 72, .18);
-    border: 1px solid rgba(247, 201, 72, .35);
+    background: rgba(247, 201, 72, 0.18);
+    border: 1px solid rgba(247, 201, 72, 0.35);
     color: #fff;
 }
 
-/* Updated for Font Awesome */
 .side-nav i {
     font-size: 1.05rem;
     width: 1.4rem;
     text-align: center;
-    opacity: .95;
+    opacity: 0.95;
 }
 
 .sidebar-footer {
     margin-top: 14px;
     padding: 10px;
-    border-top: 1px solid rgba(255, 255, 255, .12);
-    opacity: .9;
-    font-size: .9rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    opacity: 0.9;
+    font-size: 0.9rem;
 }
 
-/* Main */
+/* =========================================================
+   MAIN CONTENT
+========================================================= */
+
 .main {
     padding: 18px 18px 28px;
 }
+
+/* =========================================================
+   TOPBAR
+========================================================= */
 
 .topbar {
     background: #fff;
@@ -159,19 +176,19 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    box-shadow: 0 8px 22px rgba(16, 24, 40, .06);
+    box-shadow: 0 8px 22px rgba(16, 24, 40, 0.06);
 }
 
 .topbar .title {
     margin: 0;
     font-weight: 800;
-    letter-spacing: .02em;
+    letter-spacing: 0.02em;
 }
 
 .topbar .subtitle {
     margin: 0;
     color: #6b7280;
-    font-size: .9rem;
+    font-size: 0.9rem;
 }
 
 .pill {
@@ -185,11 +202,15 @@ body {
     color: #374151;
 }
 
+/* =========================================================
+   PANELS
+========================================================= */
+
 .panel {
     margin-top: 16px;
     background: #fff;
     border-radius: 14px;
-    box-shadow: 0 8px 22px rgba(16, 24, 40, .06);
+    box-shadow: 0 8px 22px rgba(16, 24, 40, 0.06);
     overflow: hidden;
 }
 
@@ -214,32 +235,19 @@ body {
     padding: 14px 16px 16px;
 }
 
+/* =========================================================
+   FILTERS
+========================================================= */
+
 .filters {
     display: grid;
     grid-template-columns: 1.1fr 1fr 1fr 1fr;
     gap: 10px;
 }
 
-@media (max-width: 1200px) {
-    .filters {
-        grid-template-columns: 1fr 1fr;
-    }
-}
-
-@media (max-width: 768px) {
-    .app {
-        grid-template-columns: 1fr;
-    }
-
-    .sidebar {
-        position: relative;
-        height: auto;
-    }
-
-    .filters {
-        grid-template-columns: 1fr;
-    }
-}
+/* =========================================================
+   TABLE
+========================================================= */
 
 .table thead th {
     background: #f8fafc;
@@ -247,6 +255,10 @@ body {
     font-weight: 700;
     border-bottom: 1px solid #eef2f7;
 }
+
+/* =========================================================
+   BUTTONS
+========================================================= */
 
 .btn-soft {
     background: #f3f4f6;
@@ -258,9 +270,33 @@ body {
     background: #e9edf2;
 }
 
-/* =========================
-   User Chip (Topbar Account Button)
-========================= */
+.pill-btn {
+    border: 0;
+    background: transparent;
+    padding: 6px 12px;
+    border-radius: 999px;
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.pill-btn:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.actions-bar {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    padding: 12px 16px;
+    border-top: 1px solid #eef2f7;
+    background: #fff;
+}
+
+/* =========================================================
+   USER CHIP
+========================================================= */
+
 .user-chip {
     background: #f3f4f6;
     border: 1px solid #e5e7eb;
@@ -268,7 +304,11 @@ body {
     border-radius: 999px;
     padding: 6px 10px;
     line-height: 1;
-    transition: background .15s ease, border-color .15s ease, box-shadow .15s ease, transform .15s ease;
+    transition:
+        background 0.15s ease,
+        border-color 0.15s ease,
+        box-shadow 0.15s ease,
+        transform 0.15s ease;
 }
 
 .user-chip:hover {
@@ -283,7 +323,6 @@ body {
 .user-chip:focus,
 .user-chip:focus-visible {
     outline: none;
-    /* subtle accessible focus ring */
     box-shadow: 0 0 0 4px rgba(11, 58, 110, 0.18);
     border-color: rgba(11, 58, 110, 0.35);
 }
@@ -293,7 +332,6 @@ body {
     height: 32px;
     border-radius: 50%;
     object-fit: cover;
-    /* clean separation from bg */
     border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
@@ -309,12 +347,13 @@ body {
 
 .user-chip__chev {
     font-size: 0.75rem;
-    opacity: .65;
+    opacity: 0.65;
 }
 
-/* =========================
-   User Dropdown Menu
-========================= */
+/* =========================================================
+   USER DROPDOWN
+========================================================= */
+
 .user-menu {
     border-radius: 12px;
     padding: 8px;
@@ -345,15 +384,9 @@ body {
     background: rgba(220, 53, 69, 0.08);
 }
 
-.actions-bar {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    justify-content: flex-end;
-    padding: 12px 16px;
-    border-top: 1px solid #eef2f7;
-    background: #fff;
-}
+/* =========================================================
+   NOTIFICATIONS
+========================================================= */
 
 .notification-dropdown {
     width: 300px;
@@ -364,7 +397,7 @@ body {
     display: flex;
     gap: 10px;
     padding: 10px 15px;
-    align-items: start;
+    align-items: flex-start;
     border-bottom: 1px solid #f1f1f1;
 }
 
@@ -377,19 +410,9 @@ body {
     background: #f8f9fa;
 }
 
-.pill-btn {
-    border: 0;
-    background: transparent;
-    padding: 6px 12px;
-    border-radius: 999px;
-    display: inline-flex;
-    gap: 8px;
-    align-items: center;
-}
-
-.pill-btn:hover {
-    background: rgba(0, 0, 0, 0.05);
-}
+/* =========================================================
+   SIMPLE CALENDAR
+========================================================= */
 
 .calendar-shell {
     padding: 10px;
@@ -429,11 +452,14 @@ body {
 
 .calendar-days {
     grid-column: 1 / -1;
-    /* span full width under headers */
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     gap: 6px;
 }
+
+/* =========================================================
+   DASHBOARD CARDS
+========================================================= */
 
 .dashboard-card {
     transition: 0.2s ease;
@@ -445,9 +471,9 @@ body {
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
 }
 
-/* =========================
-   Government-style Loading Overlay
-========================= */
+/* =========================================================
+   GOVERNMENT LOADING OVERLAY
+========================================================= */
 
 .loading-overlay {
     position: fixed;
@@ -458,7 +484,6 @@ body {
     align-items: center;
     justify-content: center;
 
-    /* restrained govt tone */
     background: rgba(8, 44, 83, 0.35);
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
@@ -467,8 +492,8 @@ body {
 }
 
 .loading-modal {
-    width: min(560px, calc(100% - 24px));
-    background: #ffffff;
+    width: 560px;
+    background: #fff;
     border-radius: 14px;
     overflow: hidden;
 
@@ -490,10 +515,13 @@ body {
     }
 }
 
-/* Top bar with official colors */
 .loading-bar {
     height: 8px;
-    background: linear-gradient(90deg, var(--main-blue), var(--accent));
+    background: linear-gradient(
+        90deg,
+        var(--main-blue),
+        var(--accent)
+    );
 }
 
 .loading-body {
@@ -503,7 +531,6 @@ body {
     padding: 22px 24px;
 }
 
-/* Seal ring around logo */
 .loading-seal {
     width: 74px;
     height: 74px;
@@ -524,11 +551,9 @@ body {
     border-radius: 50%;
 }
 
-/* Text block */
 .loading-title {
     font-weight: 800;
     color: #0f172a;
-    /* slate-ish */
     letter-spacing: 0.2px;
     font-size: 18px;
     line-height: 1.2;
@@ -540,14 +565,13 @@ body {
     font-size: 14px;
 }
 
-/* Professional progress (subtle, not flashy) */
 .loading-progress {
     height: 6px;
     background: rgba(11, 58, 110, 0.12);
     border-radius: 999px;
     overflow: hidden;
     margin-top: 12px;
-    width: min(320px, 100%);
+    width: 320px;
 }
 
 .loading-progress span {
@@ -581,21 +605,9 @@ body {
     letter-spacing: 0.6px;
 }
 
-/* Optional: reduce motion for accessibility */
-@media (prefers-reduced-motion: reduce) {
-    .loading-modal {
-        animation: none;
-    }
-
-    .loading-progress span {
-        animation: none;
-        width: 55%;
-    }
-}
-
-/* =========================
-            SHARED GOVERNMENT MODAL
-        ========================= */
+/* =========================================================
+   SHARED GOVERNMENT MODAL
+========================================================= */
 
 .gov-modal {
     border: 1px solid #cfd6df;
@@ -657,11 +669,12 @@ body {
 
 .gov-meta {
     margin-top: 1.5rem;
-    padding: 0.85rem 1rem;
+    padding: 0.55rem 0.75rem;
     background: #f8f9fa;
-    border: 1px solid #dce3ea;
-    border-radius: 6px;
-    font-size: 0.95rem;
+    border: 1px solid #e9ecef;
+    border-radius: 7px;
+    color: #6c757d;
+    font-size: 0.68rem;
 }
 
 .gov-btn-primary {
@@ -676,9 +689,9 @@ body {
     color: #fff;
 }
 
-/* =========================
-                ABOUT US
-        ========================= */
+/* =========================================================
+   ABOUT US
+========================================================= */
 
 .info-card {
     height: 100%;
@@ -698,9 +711,9 @@ body {
     color: #4b5563;
 }
 
-/* =========================
-            ACCOUNT SETTINGS
-        ========================= */
+/* =========================================================
+   ACCOUNT SETTINGS
+========================================================= */
 
 .settings-profile {
     display: flex;
@@ -737,11 +750,11 @@ body {
     box-shadow: 0 0 0 0.15rem rgba(31, 78, 121, 0.12);
 }
 
-.form-floating>.gov-input[readonly] {
+.form-floating > .gov-input[readonly] {
     background-color: #f8f9fa;
 }
 
-.form-floating>label {
+.form-floating > label {
     color: #6c757d;
 }
 
@@ -776,9 +789,9 @@ body {
     color: #4b5563;
 }
 
-/* =========================
-                CALENDAR
-        ========================= */
+/* =========================================================
+   FULL CALENDAR
+========================================================= */
 
 .calendar-panel {
     border: 1px solid #d6dde6;
@@ -795,7 +808,6 @@ body {
     padding: 1rem 1.25rem;
     background: #f8fafc;
     border-bottom: 1px solid #dce3ea;
-    flex-wrap: wrap;
 }
 
 .calendar-panel__label {
@@ -919,26 +931,9 @@ body {
     color: #fff;
 }
 
-@media (max-width: 768px) {
-    .calendar-nav__title {
-        min-width: auto;
-        font-size: 0.95rem;
-    }
-
-    .calendar-day {
-        min-height: 64px;
-        padding: 0.45rem;
-    }
-
-    .calendar-weekdays div {
-        font-size: 0.72rem;
-        padding: 0.65rem 0.25rem;
-    }
-
-    .settings-profile {
-        align-items: flex-start;
-    }
-}
+/* =========================================================
+   FORM VALIDATION / PASSWORD
+========================================================= */
 
 .border-danger {
     border-color: #dc3545 !important;
@@ -950,6 +945,27 @@ body {
     font-size: 0.85rem;
     color: #dc3545;
 }
+
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+    display: none;
+}
+
+input[type="password"]::-webkit-credentials-auto-fill-button {
+    visibility: hidden;
+    display: none !important;
+    pointer-events: none;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+    transition: background-color 9999s ease-in-out 0s;
+}
+
+/* =========================================================
+   UPDATE BADGE
+========================================================= */
 
 .update-badge {
     position: absolute;
@@ -964,14 +980,14 @@ body {
     line-height: 1;
 }
 
-/* =========================
+/* =========================================================
    GOVERNMENT STAT CARDS
-========================= */
+========================================================= */
 
 .gov-stat-card {
     border-radius: 12px;
     border: 1px solid #d6dde6;
-    background: #ffffff;
+    background: #fff;
     transition: 0.2s ease;
     height: 100%;
     overflow: hidden;
@@ -982,7 +998,6 @@ body {
     box-shadow: 0 10px 22px rgba(0, 0, 0, 0.08);
 }
 
-/* Header (formal tone) */
 .gov-stat-header {
     background: #f1f5f9;
     border-bottom: 2px solid var(--main-blue);
@@ -1001,7 +1016,6 @@ body {
     font-size: 1rem;
 }
 
-/* Body */
 .gov-stat-body {
     padding: 14px;
 }
@@ -1018,21 +1032,18 @@ body {
     font-size: 0.8rem;
 }
 
-/* Make card clickable without breaking design */
 .gov-stat-link {
     text-decoration: none;
     display: block;
     color: inherit;
 }
 
-/* Arrow styling */
 .gov-arrow {
     font-size: 0.8rem;
     opacity: 0.6;
     transition: 0.2s ease;
 }
 
-/* Hover effect (government subtle) */
 .gov-stat-link:hover .gov-arrow {
     transform: translateX(4px);
     opacity: 1;
@@ -1042,12 +1053,14 @@ body {
     border-color: var(--main-blue);
 }
 
-/* Custom tooltip style */
+/* =========================================================
+   CUSTOM TOOLTIP
+========================================================= */
+
 .info-text {
     display: block;
     font-size: 0.8rem;
     color: #1f4e79;
-    /* Government dark-blue */
     cursor: pointer;
     text-decoration: underline dotted;
     margin-top: 4px;
@@ -1056,7 +1069,6 @@ body {
     text-overflow: ellipsis;
 }
 
-/* Tooltip bubble */
 .tooltip-custom {
     position: absolute;
     background: #f8fafc;
@@ -1072,59 +1084,34 @@ body {
     display: none;
 }
 
-/* Small arrow under the tooltip */
 .tooltip-custom::after {
-    content: '';
+    content: "";
     position: absolute;
     bottom: 100%;
-    /* arrow at the top of tooltip */
     left: 10px;
     border-width: 6px;
     border-style: solid;
     border-color: transparent transparent #1f4e79 transparent;
 }
 
-input[type="password"]::-ms-reveal {
-    display: none;
-}
-
-input[type="password"]::-ms-clear {
-    display: none;
-}
-
-input[type="password"]::-webkit-credentials-auto-fill-button {
-    visibility: hidden;
-    display: none !important;
-    pointer-events: none;
-}
-
-input:-webkit-autofill,
-input:-webkit-autofill:hover,
-input:-webkit-autofill:focus {
-    transition: background-color 9999s ease-in-out 0s;
-}
-
-/* =========================
-   GOV UNDER DEVELOPMENT PANEL
-========================= */
+/* =========================================================
+   GOVERNMENT UNDER-DEVELOPMENT PANEL
+========================================================= */
 
 .gov-status-card {
     border: 1px solid #d6dde6;
     border-radius: 10px;
-    background: #ffffff;
+    background: #fff;
     overflow: hidden;
 }
 
-/* HEADER STRIP (formal, no gradients) */
 .gov-status-header {
     display: flex;
     align-items: center;
     gap: 10px;
-
     padding: 10px 14px;
     background: #f8f9fa;
     border-bottom: 2px solid #1f4e79;
-
     font-size: 0.75rem;
     font-weight: 700;
     letter-spacing: 0.08em;
@@ -1132,7 +1119,6 @@ input:-webkit-autofill:focus {
     color: #1f4e79;
 }
 
-/* static indicator (no animation) */
 .gov-status-indicator {
     width: 10px;
     height: 10px;
@@ -1140,12 +1126,10 @@ input:-webkit-autofill:focus {
     border: 1px solid #caa63a;
 }
 
-/* BODY */
 .gov-status-body {
     padding: 28px 18px;
 }
 
-/* ICON (static, formal) */
 .gov-icon {
     width: 58px;
     height: 58px;
@@ -1159,14 +1143,12 @@ input:-webkit-autofill:focus {
     font-size: 22px;
 }
 
-/* TITLE */
 .gov-title {
     font-weight: 700;
     color: #0f172a;
     margin-top: 10px;
 }
 
-/* TEXT */
 .gov-text {
     color: #4b5563;
     font-size: 0.95rem;
@@ -1174,7 +1156,6 @@ input:-webkit-autofill:focus {
     margin: 10px auto 0;
 }
 
-/* METADATA GRID */
 .gov-meta-grid {
     margin-top: 18px;
     display: grid;
@@ -1208,7 +1189,6 @@ input:-webkit-autofill:focus {
     color: #1f2d3d;
 }
 
-/* NOTE */
 .gov-note {
     font-size: 0.85rem;
     color: #6b7280;
@@ -1219,42 +1199,13 @@ input:-webkit-autofill:focus {
     display: inline-block;
 }
 
-/* MOBILE */
-@media (max-width: 768px) {
-    .gov-meta-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .gov-meta-item {
-        border-right: none;
-        border-bottom: 1px solid #e2e8f0;
-    }
-
-    .gov-meta-item:last-child {
-        border-bottom: none;
-    }
-}
-
-.btn-view-household-residents {
-    color: inherit;
-}
-
-.btn-view-household-residents:hover .fw-semibold {
-    color: var(--bs-primary);
-    text-decoration: underline;
-    text-underline-offset: 2px;
-}
-
 /* =========================================================
-   HOUSEHOLD HEAD
-   ========================================================= */
+   HOUSEHOLD HEAD — GENERAL COMPONENT
+========================================================= */
 
 .household-head-panel {
     overflow: hidden;
 }
-
-
-/* SECTION ICON */
 
 .household-section-icon {
     width: 36px;
@@ -1276,9 +1227,6 @@ input:-webkit-autofill:focus {
     font-size: 15px;
 }
 
-
-/* PROFILE */
-
 .household-head-profile {
     display: flex;
     align-items: center;
@@ -1292,12 +1240,9 @@ input:-webkit-autofill:focus {
     background: var(--bs-light);
 }
 
-
-/* AVATAR */
-
 .household-head-avatar {
-    width: 58px;
-    height: 58px;
+    width: 46px;
+    height: 46px;
 
     display: flex;
     align-items: center;
@@ -1307,18 +1252,16 @@ input:-webkit-autofill:focus {
 
     border-radius: 50%;
 
-    background: var(--bs-white);
+    background: #f1f3f5;
     border: 1px solid var(--bs-border-color);
 
-    color: var(--bs-secondary);
+    color: #495057;
+    font-size: 1rem;
 }
 
 .household-head-avatar i {
-    font-size: 24px;
+    font-size: 20px;
 }
-
-
-/* NAME */
 
 .household-head-main {
     min-width: 0;
@@ -1328,9 +1271,6 @@ input:-webkit-autofill:focus {
     line-height: 1.25;
     word-break: break-word;
 }
-
-
-/* INFORMATION CARDS */
 
 .household-head-info {
     height: 100%;
@@ -1346,9 +1286,6 @@ input:-webkit-autofill:focus {
 
     background: var(--bs-white);
 }
-
-
-/* INFORMATION ICON */
 
 .household-head-info-icon {
     width: 34px;
@@ -1370,33 +1307,942 @@ input:-webkit-autofill:focus {
     font-size: 14px;
 }
 
-
-/* DIVIDER */
-
 .household-head-panel hr {
-    opacity: .5;
+    opacity: 0.5;
 }
 
+/* =========================================================
+   HOUSEHOLD RECORD MODAL
+========================================================= */
 
-/* MOBILE */
+#viewHouseholdModal .modal-dialog {
+    max-width: 1150px;
+}
 
-@media (max-width: 575.98px) {
+#viewHouseholdModal .modal-content {
+    border: 0;
+    border-radius: 12px;
+    overflow: hidden;
+}
 
-    .household-head-profile {
-        align-items: flex-start;
-    }
+#viewHouseholdModal .modal-body {
+    padding: 1rem 1.25rem;
+    background: #fff;
+}
 
-    .household-head-avatar {
-        width: 50px;
-        height: 50px;
-    }
+/* =========================================================
+   HOUSEHOLD MODAL HEADER
+========================================================= */
 
-    .household-head-avatar i {
-        font-size: 20px;
-    }
+#viewHouseholdModal .gov-modal-header {
+    padding: 0.85rem 1.25rem;
+    border-bottom: 1px solid #dee2e6;
+    background: #fff;
+}
 
-    .household-head-main h4 {
-        font-size: 1.05rem;
-    }
+#viewHouseholdModal .gov-modal-logo {
+    width: 42px;
+    height: 42px;
+    object-fit: contain;
+}
 
+#viewHouseholdModal .modal-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+
+#viewHouseholdModal .gov-modal-subtitle {
+    font-size: 0.7rem;
+    color: #6c757d;
+}
+
+/* =========================================================
+   HOUSEHOLD SUMMARY
+========================================================= */
+
+.household-summary {
+    background: #f8f9fa;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 0.85rem 1rem;
+}
+
+.household-summary .text-muted {
+    font-size: 0.65rem;
+    letter-spacing: 0.04em;
+}
+
+#view_household_household_code {
+    font-size: 1rem;
+    letter-spacing: 0.02em;
+}
+
+#view_household_address,
+#view_household_purok {
+    font-size: 0.82rem;
+}
+
+/* =========================================================
+   HOUSEHOLD INFORMATION GRID
+========================================================= */
+
+#viewHouseholdModal .household-details-row {
+    margin-bottom: 0.85rem;
+}
+
+/* =========================================================
+   COMPACT CARDS
+========================================================= */
+
+.compact-card {
+    height: 100%;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.compact-card-header {
+    background: #f8f9fa;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 0.75rem 1rem;
+}
+
+.compact-card-body {
+    padding: 0.9rem 1rem;
+}
+
+/* =========================================================
+   SECTION HEADER
+========================================================= */
+
+.compact-icon {
+    width: 34px;
+    height: 34px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 8px;
+
+    background: #e9ecef;
+    color: #495057;
+
+    flex-shrink: 0;
+}
+
+.section-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+
+    color: #343a40;
+}
+
+.section-description {
+    font-size: 0.72rem;
+    color: #6c757d;
+}
+
+/* =========================================================
+   HOUSEHOLD HEAD
+========================================================= */
+
+#view_household_head_name {
+    font-size: 0.95rem;
+}
+
+#view_household_head_status {
+    font-size: 0.65rem;
+    padding: 0.3em 0.6em;
+}
+
+.household-head-avatar {
+    width: 48px;
+    height: 48px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    background: #f1f3f5;
+    color: #495057;
+
+    font-size: 1.15rem;
+}
+
+.household-head-avatar i {
+    font-size: 1rem;
+}
+
+/* =========================================================
+   HEAD INFORMATION
+========================================================= */
+
+.info-item {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+
+    padding: 0.55rem 0.65rem;
+
+    background: #f8f9fa;
+    border: 1px solid #edf0f2;
+    border-radius: 7px;
+}
+
+.info-icon {
+    width: 28px;
+    height: 28px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    color: #6c757d;
+}
+
+.info-label {
+    font-size: 0.68rem;
+    color: #6c757d;
+}
+
+.info-value {
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+/* =========================================================
+   HOUSEHOLD INFORMATION
+========================================================= */
+
+.detail-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 1rem;
+
+    padding: 0.65rem 1rem;
+
+    border-bottom: 1px solid #edf0f2;
+}
+
+.detail-row:last-child {
+    border-bottom: 0;
+}
+
+.detail-row span {
+    color: #6c757d;
+    font-size: 0.8rem;
+}
+
+.detail-row strong {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-align: right;
+}
+
+/* =========================================================
+   HOUSEHOLD MEMBERS TABLE
+========================================================= */
+
+#viewHouseholdModal .household-residents-table {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+#viewHouseholdModal .household-residents-table table {
+    width: 100%;
+    margin: 0;
+    font-size: 0.8rem;
+}
+
+#viewHouseholdModal .household-residents-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+
+    padding: 0.6rem 0.65rem;
+
+    background: #f8f9fa;
+
+    color: #495057;
+
+    font-size: 0.72rem;
+    font-weight: 700;
+
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+
+    white-space: nowrap;
+
+    border-bottom: 1px solid #dee2e6;
+}
+
+#viewHouseholdModal .household-residents-table tbody td {
+    padding: 0.55rem 0.65rem;
+
+    border-bottom: 1px solid #f0f1f2;
+
+    vertical-align: middle;
+}
+
+#viewHouseholdModal .household-residents-table tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+/* =========================================================
+   MEMBERS
+========================================================= */
+
+.member-number {
+    width: 45px;
+    color: #6c757d;
+    font-size: 0.7rem;
+}
+
+.household-member-link {
+    color: #212529;
+    text-decoration: none;
+}
+
+.household-member-link:hover {
+    text-decoration: underline;
+}
+
+.member-relationship {
+    color: #495057;
+}
+
+#view_household_residents_count {
+    min-width: 25px;
+    padding: 0.3rem 0.55rem;
+    font-size: 0.65rem;
+    font-weight: 600;
+}
+
+/* =========================================================
+   EMPTY MEMBERS STATE
+========================================================= */
+
+.empty-members-state {
+    padding: 0.75rem 0;
+}
+
+.empty-members-icon {
+    width: 36px;
+    height: 36px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin: 0 auto;
+
+    border-radius: 50%;
+
+    background: #f1f3f5;
+    color: #6c757d;
+
+    font-size: 0.9rem;
+}
+
+.empty-members-state .fw-semibold {
+    font-size: 0.78rem;
+}
+
+.empty-members-state small {
+    font-size: 0.7rem;
+    color: #868e96;
+}
+
+/* =========================================================
+   HOUSEHOLD MODAL META
+========================================================= */
+
+#viewHouseholdModal .gov-meta {
+    margin-top: 1rem;
+
+    padding: 0.55rem 0.75rem;
+
+    border: 1px solid #e9ecef;
+    border-radius: 7px;
+
+    background: #f8f9fa;
+
+    color: #6c757d;
+
+    font-size: 0.68rem;
+}
+
+/* =========================================================
+   HOUSEHOLD MODAL FOOTER
+========================================================= */
+
+#viewHouseholdModal .gov-modal-footer {
+    background: #fff;
+    border-top: 1px solid #dee2e6;
+}
+
+#viewHouseholdModal .gov-modal-footer .btn {
+    font-size: 0.75rem;
+}
+
+/* =========================================================
+   RESIDENT TABLE SCROLLBAR
+========================================================= */
+
+#viewHouseholdModal .household-residents-table::-webkit-scrollbar {
+    width: 6px;
+}
+
+#viewHouseholdModal .household-residents-table::-webkit-scrollbar-track {
+    background: #f8f9fa;
+}
+
+#viewHouseholdModal .household-residents-table::-webkit-scrollbar-thumb {
+    background: #ced4da;
+    border-radius: 10px;
+}
+
+#viewHouseholdModal .household-residents-table::-webkit-scrollbar-thumb:hover {
+    background: #adb5bd;
+}
+
+/* =========================================================
+   HOUSEHOLD RESIDENTS MODAL
+========================================================= */
+
+#viewHouseholdResidentsModal .modal-dialog {
+    max-width: 1150px;
+}
+
+#viewHouseholdResidentsModal .modal-content {
+    border: 0;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #fff;
+}
+
+/* =========================================================
+   RESIDENTS MODAL BODY
+========================================================= */
+
+#viewHouseholdResidentsModal .modal-body {
+    padding: 1rem 1.25rem;
+    background: #fff;
+}
+
+/* =========================================================
+   RESIDENTS HOUSEHOLD SUMMARY
+========================================================= */
+
+#viewHouseholdResidentsModal .household-summary {
+    background: #f8f9fa;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 0.85rem 1rem;
+    margin-bottom: 0.9rem;
+}
+
+#viewHouseholdResidentsModal .household-summary .text-muted {
+    display: block;
+    margin-bottom: 2px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #6c757d !important;
+}
+
+#viewHouseholdResidentsModal #view_household_household_code {
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: #1f2d3d;
+}
+
+#viewHouseholdResidentsModal #view_household_address,
+#viewHouseholdResidentsModal #view_household_purok {
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: #343a40;
+}
+
+/* =========================================================
+   RESIDENTS COMPACT CARD
+========================================================= */
+
+#viewHouseholdResidentsModal .compact-card {
+    height: 100%;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+/* =========================================================
+   RESIDENTS SECTION HEADER
+========================================================= */
+
+#viewHouseholdResidentsModal .compact-card-header {
+    padding: 0.7rem 1rem;
+    background: #f8f9fa;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+#viewHouseholdResidentsModal .compact-card-header .d-flex {
+    gap: 10px;
+}
+
+#viewHouseholdResidentsModal .compact-icon {
+    width: 32px;
+    height: 32px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 8px;
+
+    background: #e9ecef;
+    color: #495057;
+}
+
+#viewHouseholdResidentsModal .compact-icon i {
+    font-size: 14px;
+}
+
+#viewHouseholdResidentsModal .section-label {
+    margin: 0;
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: #343a40;
+}
+
+#viewHouseholdResidentsModal .section-description {
+    margin-top: 1px;
+    font-size: 0.7rem;
+    color: #6c757d;
+}
+
+/* =========================================================
+   RESIDENTS SECTION BODY
+========================================================= */
+
+#viewHouseholdResidentsModal .compact-card-body {
+    padding: 0.9rem 1rem;
+}
+
+/* =========================================================
+   HOUSEHOLD HEAD PROFILE
+========================================================= */
+
+#viewHouseholdResidentsModal .household-head-profile {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+
+    padding: 12px 14px;
+
+    background: #f8f9fa;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+}
+
+#viewHouseholdResidentsModal .household-head-avatar {
+    width: 44px;
+    height: 44px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    background: #fff;
+    border: 1px solid #d9dee5;
+
+    color: #495057;
+}
+
+#viewHouseholdResidentsModal .household-head-avatar i {
+    font-size: 18px;
+}
+
+#viewHouseholdResidentsModal #view_household_head_name {
+    margin: 0;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #212529;
+}
+
+#viewHouseholdResidentsModal #view_household_head_status {
+    font-size: 0.62rem;
+    font-weight: 600;
+    padding: 0.3em 0.55em;
+}
+
+/* =========================================================
+   RESIDENTS HEAD INFORMATION
+========================================================= */
+
+#viewHouseholdResidentsModal .info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+}
+
+#viewHouseholdResidentsModal .info-item {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    min-height: 48px;
+    padding: 0.5rem 0.6rem;
+
+    background: #fff;
+    border: 1px solid #edf0f2;
+    border-radius: 7px;
+}
+
+#viewHouseholdResidentsModal .info-icon {
+    width: 28px;
+    height: 28px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 6px;
+
+    background: #f8f9fa;
+    color: #6c757d;
+}
+
+#viewHouseholdResidentsModal .info-icon i {
+    font-size: 13px;
+}
+
+#viewHouseholdResidentsModal .info-label {
+    font-size: 0.64rem;
+    color: #6c757d;
+}
+
+#viewHouseholdResidentsModal .info-value {
+    font-size: 0.77rem;
+    font-weight: 600;
+    color: #343a40;
+}
+
+/* =========================================================
+   RESIDENTS HOUSEHOLD DETAILS
+========================================================= */
+
+#viewHouseholdResidentsModal .detail-list {
+    border: 1px solid #edf0f2;
+    border-radius: 7px;
+    overflow: hidden;
+}
+
+#viewHouseholdResidentsModal .detail-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+
+    padding: 0.6rem 0.8rem;
+
+    background: #fff;
+    border-bottom: 1px solid #edf0f2;
+}
+
+#viewHouseholdResidentsModal .detail-row:last-child {
+    border-bottom: 0;
+}
+
+#viewHouseholdResidentsModal .detail-row span {
+    font-size: 0.75rem;
+    color: #6c757d;
+}
+
+#viewHouseholdResidentsModal .detail-row strong {
+    font-size: 0.77rem;
+    font-weight: 600;
+    color: #343a40;
+    text-align: right;
+}
+
+/* =========================================================
+   RESIDENTS MEMBERS SECTION
+========================================================= */
+
+#viewHouseholdResidentsModal .members-section {
+    margin-top: 0.9rem;
+}
+
+#viewHouseholdResidentsModal .members-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0.7rem 1rem;
+
+    background: #f8f9fa;
+    border: 1px solid #e5e7eb;
+    border-bottom: 0;
+
+    border-radius: 10px 10px 0 0;
+}
+
+#viewHouseholdResidentsModal .members-title {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+#viewHouseholdResidentsModal .members-title-icon {
+    width: 32px;
+    height: 32px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 8px;
+
+    background: #e9ecef;
+    color: #495057;
+}
+
+#viewHouseholdResidentsModal .members-title-icon i {
+    font-size: 14px;
+}
+
+#viewHouseholdResidentsModal .members-title-text {
+    margin: 0;
+    font-size: 0.76rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: #343a40;
+}
+
+#viewHouseholdResidentsModal .members-title-description {
+    margin-top: 1px;
+    font-size: 0.68rem;
+    color: #6c757d;
+}
+
+#viewHouseholdResidentsModal #view_household_residents_count {
+    min-width: 25px;
+    padding: 0.3rem 0.55rem;
+
+    font-size: 0.65rem;
+    font-weight: 600;
+
+    border-radius: 999px;
+}
+
+/* =========================================================
+   RESIDENTS TABLE CONTAINER
+========================================================= */
+
+#viewHouseholdResidentsModal .household-residents-table {
+    max-height: 300px;
+    overflow-y: auto;
+
+    border: 1px solid #e5e7eb;
+    border-radius: 0 0 10px 10px;
+}
+
+/* =========================================================
+   RESIDENTS TABLE
+========================================================= */
+
+#viewHouseholdResidentsModal .household-residents-table table {
+    width: 100%;
+    margin: 0;
+
+    font-size: 0.78rem;
+
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+#viewHouseholdResidentsModal .household-residents-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+
+    padding: 0.55rem 0.65rem;
+
+    background: #f8f9fa;
+    color: #495057;
+
+    font-size: 0.68rem;
+    font-weight: 700;
+
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+
+    white-space: nowrap;
+
+    border-bottom: 1px solid #dee2e6;
+}
+
+#viewHouseholdResidentsModal .household-residents-table tbody td {
+    padding: 0.5rem 0.65rem;
+
+    background: #fff;
+
+    border-bottom: 1px solid #f0f1f2;
+
+    vertical-align: middle;
+
+    color: #343a40;
+}
+
+#viewHouseholdResidentsModal .household-residents-table tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+#viewHouseholdResidentsModal .household-residents-table tbody tr:hover td {
+    background: #f8fafc;
+}
+
+/* =========================================================
+   RESIDENT MEMBER NUMBER
+========================================================= */
+
+#viewHouseholdResidentsModal .member-number {
+    width: 45px;
+
+    color: #6c757d;
+
+    font-size: 0.68rem;
+    font-weight: 500;
+
+    text-align: center;
+}
+
+/* =========================================================
+   RESIDENT MEMBER NAME
+========================================================= */
+
+#viewHouseholdResidentsModal .household-member-link {
+    color: #212529;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+#viewHouseholdResidentsModal .household-member-link:hover {
+    color: var(--bs-primary);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+#viewHouseholdResidentsModal .member-relationship {
+    color: #495057;
+    font-size: 0.75rem;
+}
+
+/* =========================================================
+   EMPTY RESIDENT STATE
+========================================================= */
+
+#viewHouseholdResidentsModal .empty-members-state {
+    padding: 2rem 1rem;
+    text-align: center;
+}
+
+#viewHouseholdResidentsModal .empty-members-icon {
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin: 0 auto 0.65rem;
+
+    border-radius: 50%;
+
+    background: #f1f3f5;
+    color: #6c757d;
+}
+
+#viewHouseholdResidentsModal .empty-members-icon i {
+    font-size: 17px;
+}
+
+#viewHouseholdResidentsModal .empty-members-state .fw-semibold {
+    display: block;
+    font-size: 0.78rem;
+    color: #495057;
+}
+
+#viewHouseholdResidentsModal .empty-members-state small {
+    display: block;
+    margin-top: 2px;
+    font-size: 0.7rem;
+    color: #868e96;
+}
+
+/* =========================================================
+   RESIDENTS MODAL META
+========================================================= */
+
+#viewHouseholdResidentsModal .gov-meta {
+    margin-top: 0.9rem;
+
+    padding: 0.55rem 0.75rem;
+
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 7px;
+
+    color: #6c757d;
+
+    font-size: 0.66rem;
+}
+
+/* =========================================================
+   RESIDENTS TABLE SCROLLBAR
+========================================================= */
+
+#viewHouseholdResidentsModal .household-residents-table::-webkit-scrollbar {
+    width: 6px;
+}
+
+#viewHouseholdResidentsModal .household-residents-table::-webkit-scrollbar-track {
+    background: #f8f9fa;
+}
+
+#viewHouseholdResidentsModal .household-residents-table::-webkit-scrollbar-thumb {
+    background: #ced4da;
+    border-radius: 10px;
+}
+
+#viewHouseholdResidentsModal .household-residents-table::-webkit-scrollbar-thumb:hover {
+    background: #adb5bd;
 }

@@ -1045,116 +1045,6 @@ $((): void => {
         });
     });
 
-    $(document).on('click', '.btn-view-household', function () {
-        const household = $(this).data('household');
-
-        // ==========================================
-        // HOUSEHOLD INFORMATION
-        // ==========================================
-
-        $('#view_household_household_code').text(
-            household.household_code || '—'
-        );
-
-        $('#view_household_purok').text(
-            household.purok || '—'
-        );
-
-        $('#view_household_address').text(
-            household.address || '—'
-        );
-
-        $('#view_household_housing_type').text(
-            household.housing_type || '—'
-        );
-
-        $('#view_household_ownership_status').text(
-            household.ownership_status || '—'
-        );
-
-        $('#view_household_comfort_room').text(
-            household.comfort_room || '—'
-        );
-
-        $('#view_household_water_system').text(
-            household.water_system || '—'
-        );
-
-        $('#view_household_electricity_access').text(
-            household.electricity_access == '1' ? 'Yes' : 'No'
-        );
-
-
-        // ==========================================
-        // HOUSEHOLD HEAD
-        // ==========================================
-
-        const middleInitial = household.middle_name
-            ? household.middle_name.trim().charAt(0).toUpperCase() + '.'
-            : '';
-
-        const headName = [
-            household.first_name,
-            middleInitial,
-            household.last_name
-        ]
-            .filter(name => name && name.trim() !== '')
-            .join(' ');
-
-        $('#view_household_head_name').text(
-            headName || 'No Household Head Assigned Yet'
-        );
-
-        $('#view_household_head_sex').text(
-            household.sex || '—'
-        );
-
-        // Format birthdate
-        if (household.birthdate) {
-            const birthdate = new Date(household.birthdate);
-
-            const formattedBirthdate = birthdate.toLocaleDateString(
-                'en-US',
-                {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                }
-            );
-
-            $('#view_household_head_birthdate').text(
-                formattedBirthdate
-            );
-        } else {
-            $('#view_household_head_birthdate').text('—');
-        }
-
-        $('#view_household_head_civil_status').text(
-            household.civil_status || '—'
-        );
-
-
-        // ==========================================
-        // HOUSEHOLD HEAD STATUS
-        // ==========================================
-
-        const headStatus = household.status || 'Unknown';
-
-        const $headStatus = $('#view_household_head_status');
-
-        $headStatus
-            .text(headStatus)
-            .removeClass('bg-success bg-danger bg-secondary bg-warning');
-
-        if (headStatus === 'Deceased') {
-            $headStatus.addClass('bg-danger');
-        } else if (headStatus === 'Active') {
-            $headStatus.addClass('bg-success');
-        } else {
-            $headStatus.addClass('bg-secondary');
-        }
-    });
-
     $(document).on('click', '.btn-edit-household', function () {
         const household = $(this).data('household');
 
@@ -2286,32 +2176,163 @@ $((): void => {
 
         const household = $(this).data('household');
 
-        // ==========================================
-        // HOUSEHOLD INFORMATION
-        // ==========================================
+        // =========================================================
+        // HOUSEHOLD SUMMARY
+        // =========================================================
 
-        $('#view_residents_household_code').text(
+        $('#view_household_household_code').text(
             household.household_code || '—'
         );
 
-        $('#view_residents_purok').text(
+        $('#view_household_purok').text(
             household.purok || '—'
         );
 
-        $('#view_residents_address').text(
+        $('#view_household_address').text(
             household.address || '—'
         );
 
 
-        // ==========================================
-        // HOUSEHOLD RESIDENTS
-        // ==========================================
+        // =========================================================
+        // HOUSEHOLD INFORMATION
+        // =========================================================
 
-        const $tbody = $('#view_household_residents_table_body');
+        $('#view_household_housing_type').text(
+            household.housing_type || '—'
+        );
+
+        $('#view_household_ownership_status').text(
+            household.ownership_status || '—'
+        );
+
+        $('#view_household_comfort_room').text(
+            household.comfort_room || '—'
+        );
+
+        $('#view_household_water_system').text(
+            household.water_system || '—'
+        );
+
+        $('#view_household_electricity_access').text(
+            household.electricity_access == '1'
+                ? 'Yes'
+                : 'No'
+        );
+
+
+        // =========================================================
+        // HOUSEHOLD HEAD
+        // =========================================================
+
+        const middleInitial = household.middle_name
+            ? household.middle_name.trim().charAt(0).toUpperCase() + '.'
+            : '';
+
+        const headName = [
+            household.first_name,
+            middleInitial,
+            household.last_name
+        ]
+            .filter(name => name && name.trim() !== '')
+            .join(' ');
+
+
+        $('#view_household_head_name').text(
+            headName || 'No Household Head Assigned Yet'
+        );
+
+
+        // =========================================================
+        // HOUSEHOLD HEAD - SEX
+        // =========================================================
+
+        $('#view_household_head_sex').text(
+            household.sex || '—'
+        );
+
+
+        // =========================================================
+        // HOUSEHOLD HEAD - BIRTHDATE
+        // =========================================================
+
+        let formattedHeadBirthdate = '—';
+
+        if (household.birthdate) {
+
+            const birthdate = new Date(
+                household.birthdate
+            );
+
+            formattedHeadBirthdate =
+                birthdate.toLocaleDateString(
+                    'en-US',
+                    {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    }
+                );
+        }
+
+        $('#view_household_head_birthdate').text(
+            formattedHeadBirthdate
+        );
+
+
+        // =========================================================
+        // HOUSEHOLD HEAD - CIVIL STATUS
+        // =========================================================
+
+        $('#view_household_head_civil_status').text(
+            household.civil_status || '—'
+        );
+
+
+        // =========================================================
+        // HOUSEHOLD HEAD STATUS
+        // =========================================================
+
+        const headStatus = household.status || 'Unknown';
+
+        const $headStatus = $('#view_household_head_status');
+
+        $headStatus
+            .text(headStatus)
+            .removeClass(
+                'bg-success bg-danger bg-secondary bg-warning'
+            );
+
+        if (headStatus === 'Deceased') {
+
+            $headStatus.addClass('bg-danger');
+
+        } else if (headStatus === 'Active') {
+
+            $headStatus.addClass('bg-success');
+
+        } else {
+
+            $headStatus.addClass('bg-secondary');
+
+        }
+
+
+        // =========================================================
+        // HOUSEHOLD MEMBERS
+        // =========================================================
+
+        const $tbody = $(
+            '#view_household_residents_table_body'
+        );
 
         $tbody.empty();
 
-        const members: {
+
+        // =========================================================
+        // MEMBERS DATA
+        // =========================================================
+
+        const allMembers: {
             first_name: string;
             middle_name: string;
             last_name: string;
@@ -2322,18 +2343,81 @@ $((): void => {
         }[] = household.members || [];
 
 
-        // ==========================================
-        // NO RESIDENTS
-        // ==========================================
+        // =========================================================
+        // REMOVE HOUSEHOLD HEAD FROM MEMBERS TABLE
+        //
+        // The household head is already displayed above.
+        // =========================================================
+
+        const headFullName = [
+            household.first_name,
+            household.last_name
+        ]
+            .filter(
+                name =>
+                    name &&
+                    name.trim() !== ''
+            )
+            .join(' ')
+            .toLowerCase();
+
+
+        const members = allMembers.filter(member => {
+
+            const memberFullName = [
+                member.first_name,
+                member.last_name
+            ]
+                .filter(
+                    name =>
+                        name &&
+                        name.trim() !== ''
+                )
+                .join(' ')
+                .toLowerCase();
+
+            return memberFullName !== headFullName;
+
+        });
+
+
+        // =========================================================
+        // MEMBER COUNT
+        // =========================================================
+
+        $('#view_household_residents_count').text(
+            members.length.toString()
+        );
+
+
+        // =========================================================
+        // NO OTHER MEMBERS
+        // =========================================================
 
         if (members.length === 0) {
 
             $tbody.html(`
             <tr>
-                <td colspan="6"
-                    class="text-center text-muted py-4">
-                    No residents registered under
-                    this household.
+                <td
+                    colspan="6"
+                    class="text-center text-muted py-4"
+                >
+                    <div class="empty-members-state">
+
+                        <div class="empty-members-icon">
+                            <i class="fa-solid fa-user-group"></i>
+                        </div>
+
+                        <div class="fw-semibold mt-2">
+                            No Other Household Members
+                        </div>
+
+                        <small>
+                            No additional members are registered
+                            under this household.
+                        </small>
+
+                    </div>
                 </td>
             </tr>
         `);
@@ -2342,26 +2426,40 @@ $((): void => {
         }
 
 
-        // ==========================================
-        // RESIDENT ROWS
-        // ==========================================
+        // =========================================================
+        // MEMBER ROWS
+        // =========================================================
 
         members.forEach((member, index) => {
+
+            // -----------------------------------------------------
+            // MEMBER NAME
+            // -----------------------------------------------------
 
             const name = [
                 member.first_name,
                 member.middle_name,
                 member.last_name
             ]
-                .filter(value => value && value.trim() !== '')
+                .filter(
+                    value =>
+                        value &&
+                        value.trim() !== ''
+                )
                 .join(' ');
 
-            const searchUrl = `${BASE_URL}programs-beneficiaries?search_input=${encodeURIComponent(name)}&page=1`;
+
+            // -----------------------------------------------------
+            // SEARCH URL
+            // -----------------------------------------------------
+
+            const searchUrl =
+                `${BASE_URL}programs-beneficiaries?search_input=${encodeURIComponent(name)}&page=1`;
 
 
-            // ==========================================
+            // -----------------------------------------------------
             // FORMAT BIRTHDATE
-            // ==========================================
+            // -----------------------------------------------------
 
             let formattedBirthdate = '—';
 
@@ -2382,19 +2480,22 @@ $((): void => {
             }
 
 
-            // ==========================================
+            // -----------------------------------------------------
             // ADD ROW
-            // ==========================================
+            // -----------------------------------------------------
 
             $tbody.append(`
             <tr>
 
-                <td class="text-center">
+                <td class="text-center member-number">
                     ${index + 1}
                 </td>
 
                 <td>
-                    <a href="${searchUrl}" class="btn-view-household-residents text-decoration-none text-dark loadable">
+                    <a
+                        href="${searchUrl}"
+                        class="household-member-link loadable" title="Click to view the programs ${name || '—'} is listed in"
+                    >
                         <span class="fw-semibold">
                             ${name || '—'}
                         </span>
@@ -2402,7 +2503,9 @@ $((): void => {
                 </td>
 
                 <td>
-                    ${member.relationship || '—'}
+                    <span class="member-relationship">
+                        ${member.relationship || '—'}
+                    </span>
                 </td>
 
                 <td>
@@ -2419,8 +2522,17 @@ $((): void => {
 
             </tr>
         `);
+
         });
 
+    });
+
+    $(document).on('click', '#btn_view_household_head_programs', function () {
+        const resident_name = $("#view_household_head_name").text();
+
+        const searchUrl = `${BASE_URL}programs-beneficiaries?search_input=${encodeURIComponent(resident_name)}&page=1`;
+
+        window.location.href = searchUrl;
     });
 });
 

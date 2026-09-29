@@ -81,7 +81,7 @@ class Seed_Database_Model extends Query
             housing_type ENUM('Concrete','Semi-concrete','Wood') NOT NULL,
             ownership_status ENUM('Owned','Rented','Informal Settler') DEFAULT NULL,
             comfort_room ENUM('Owned','Shared','None') NOT NULL,
-            water_system ENUM('Level 1','Level 2','Level 3') NOT NULL,
+            water_system ENUM('Level 1: Well/Spring','Level 2: Communal faucet','Level 3: Household connection') NOT NULL,
             electricity_access TINYINT(1) DEFAULT 1,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP

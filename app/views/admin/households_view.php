@@ -91,12 +91,7 @@
                                         );
                                         ?>
 
-                                        <a href="javascript:void(0)" class="btn-view-household-residents text-decoration-none text-dark" data-bs-toggle="modal" data-bs-target="#viewHouseholdResidentsModal" data-household='<?= json_encode($household) ?>'>
-
-                                            <span class="fw-semibold">
-                                                <?= esc($resident_name) ?>
-                                            </span>
-                                        </a>
+                                        <?= esc($resident_name) ?>
                                     <?php else: ?>
                                         <span class="text-muted fst-italic">
                                             <?= esc($household['relationship']) ?>
@@ -116,7 +111,7 @@
                                     <?= esc($household['water_system']) ?>
                                 </td>
                                 <td class="text-center">
-                                    <button class="btn btn-sm btn-outline-success btn-view-household" title="View Household Details" data-bs-toggle="modal" data-bs-target="#viewHouseholdModal" data-household='<?= json_encode($household) ?>'>
+                                    <button class="btn btn-sm btn-outline-success btn-view-household-residents" title="View Household Residents" data-bs-toggle="modal" data-bs-target="#viewHouseholdResidentsModal" data-household='<?= json_encode($household) ?>'>
                                         <i class="fa-solid fa-eye"></i>
                                     </button>
                                     <button class="btn btn-sm btn-outline-primary btn-edit-household" title="Edit Household" data-bs-toggle="modal" data-bs-target="#editHouseholdModal" data-household='<?= json_encode($household) ?>'>
