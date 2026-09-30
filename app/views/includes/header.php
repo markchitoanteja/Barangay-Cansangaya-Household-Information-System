@@ -20,6 +20,29 @@
         <!-- Population Forecast CSS -->
         <link rel="stylesheet" href="<?= base_url('public/assets/css/population_forecast.css?v=') . env('APP_VERSION', '1.0.0') ?>">
     <?php endif ?>
+
+    <style>
+        .ai-badge {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+
+            font-size: 9px;
+            font-weight: 700;
+            line-height: 1;
+
+            padding: 3px 5px;
+
+            background: #0f766e;
+            color: #fff;
+
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 4px;
+
+            letter-spacing: 0.3px;
+        }
+    </style>
 </head>
 
 <body>
@@ -45,13 +68,13 @@
                 </a>
 
                 <!-- POPULATION FORECAST -->
-                <a class="nav-link loadable position-relative <?= ($title == 'Population Forecast') ? 'active' : '' ?>" href="population-forecast" title="Population Forecast">
+                <a class="nav-link loadable position-relative <?= ($title == 'Population Forecast') ? 'active' : '' ?>" href="population-forecast" title="AI-Powered Population Forecast">
 
                     <i class="fa-solid fa-chart-line"></i>
 
                     <span class="nav-text">Population Forecast</span>
 
-                    <span class="new-badge">NEW</span>
+                    <span class="ai-badge">AI</span>
                 </a>
 
                 <div class="nav-section">Core Data</div>
@@ -126,6 +149,13 @@
                     <a class="nav-link loadable <?= ($title == 'System Logs') ? 'active' : '' ?>" href="system-logs" title="System Logs">
                         <i class="fa-solid fa-clock-rotate-left"></i>
                         <span class="nav-text">System Logs</span>
+                    </a>
+
+                    <div class="nav-section">System Maintenance</div>
+                    <!-- BACKUP -->
+                    <a class="nav-link loadable <?= ($title == 'Backup and Restore') ? 'active' : '' ?>" href="backup-and-restore" title="Backup">
+                        <i class="fa-solid fa-database"></i>
+                        <span class="nav-text">Backup and Restore</span>
                     </a>
                 <?php endif; ?>
             </nav>

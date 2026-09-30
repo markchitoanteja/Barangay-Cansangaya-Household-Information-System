@@ -15,7 +15,7 @@
             <div class="col-md-4 d-flex flex-column">
                 <div class="form-floating flex-grow-1">
                     <input type="text" name="search_input" class="form-control gov-input" id="search_input" placeholder="Search User" value="<?= esc($search_input ?? '') ?>">
-                    <label><i class="fa-solid fa-magnifying-glass me-1"></i>Search Beneficiary Name</label>
+                    <label><i class="fa-solid fa-magnifying-glass me-1"></i>Search Beneficiary or Program Name</label>
                 </div>
             </div>
             <div class="col-md-3 d-flex flex-column">

@@ -105,4 +105,35 @@ class Resident_Model extends Query
         ")
             ->get();
     }
+
+    public function MOD_GET_POPULATION_HISTORY(int $years = 10): array
+    {
+        $currentYear = (int) date('Y');
+
+        $startYear = $currentYear - $years;
+        $endYear = $currentYear - 1;
+
+        $history = [];
+
+        for ($year = $startYear; $year <= $endYear; $year++) {
+
+            $population = $this->table('residents')
+                ->raw("
+                SELECT COUNT(*) AS population
+                FROM residents
+                WHERE birthdate <= ?
+                  AND status = 'Active'
+            ", [
+                    $year . '-12-31'
+                ])
+                ->first();
+
+            $history[] = [
+                'year' => $year,
+                'population' => (int) ($population['population'] ?? 0)
+            ];
+        }
+
+        return $history;
+    }
 }
